@@ -47,8 +47,12 @@ Should you be interested in modifying the underlying source code, you will simpl
 (**TODO**) Should you have made changes to the Java code and would now like to create a distributable `.jar` file, you simply have to run `XYZ ANT CMD`.
 
 ---
+# Tutorial on using VizBin
 
-###LICENSES
+You can find the tutorial [here](doc/tutorial/tutorial.md).
+---
+
+#LICENSES
 
 1. ejml-0.23.jar:
  - Download page: http://code.google.com/p/efficient-java-matrix-library/
