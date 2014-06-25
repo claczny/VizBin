@@ -14,6 +14,7 @@ backend:
 
 interface:
 	@echo "COPYING: binaries into destination folder ..."
+	mkdir $(INTERFACE_PATH)/$(PREFIX)
 	install -m 0755 $(BACKEND_PATH)/pbh_tsne $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne 
 	install -m 0755  $(BACKEND_PATH)/pbh_tsne.exe $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne.exe
 	install -m 0755 $(BACKEND_PATH)/pbh_tsne_osx $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne_osx
