@@ -892,6 +892,8 @@ int main(int argc, char* argv[]) {
     // Read the parameters and the dataset
 	if(tsne->load_data(&data, &origN, &D, &theta, &perplexity, &num_threads, &seed)) {
 
+	omp_set_num_threads(num_threads);
+
 	printf("Running BH_TSNE with %d threads and seed = %d\n", num_threads, seed);
 
 	//Setting seed for PRNG	
