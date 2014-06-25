@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="dist/VizBin-dist.jar"/>
+	<classpathentry kind="lib" path="dist/VizBin.jar"/>
+	<classpathentry kind="lib" path="dist/lib/blas.jar"/>
+	<classpathentry kind="lib" path="dist/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="dist/lib/ejml-0.23.jar"/>
+	<classpathentry kind="lib" path="dist/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/blas.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/ejml-0.23.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <title>Binning</title>
+</head>
+<body >
+	<form action="upload" method="post" enctype="multipart/form-data">
+		<table>
+			<tr><td>File to visualise:</td><td><input type="file" name="file" /></td></tr> 
+			<tr><td>Labels (optional):</td><td><input type="file" name="labels" /></td></tr> 
+			<tr><td>Kmer length:</td><td><input name="kmer" value="5"/></td></tr> 
+			<tr><td>Merge rev compl</td><td> 
+				<select name="merge">
+    			<option value="0" >No</option>
+    			<option value="1" selected="selected">Yes</option>
+    		</select>
+    	</td></tr>
+    	<tr><td>PCA columns:</td><td><input name="pcaColumns" value="50"/></td></tr> 
+			<tr><td>Theta:</td><td><input name="theta" value="0.5"/></td></tr> 
+			<tr><td>Perplexity:</td><td><input name="perplexity" value="30"/></td></tr> 
+		</table>
+  	<input type="submit" value="Submit"/>
+	</form>
+</body>
+</html>
