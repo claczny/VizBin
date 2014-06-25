@@ -2,8 +2,8 @@
 
 |    Description	|	Picture		|
 |---------------------------	| --------------------------|
-|To run VizBin double click the VizBin-dist.jar icon|![img][01]|
-|This will open the following window. |	![img][02]	|
+|To run VizBin double click the VizBin-dist.jar icon|![img][00]|
+|This will open the following window. |	![img][01]	|
 |Upon your first run, VizBin will initialize the settings. | ![img][02] |
 |To specify the input sequences in fasta format, click on the "Choose" button | ![img][03] |
 |Navigate to the directory containing your input sequences in fasta format. Here, we have them in "Desktop/Data/"  | ![img][04] ![img][05] |
