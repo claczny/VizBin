@@ -48,8 +48,8 @@ Should you be interested in modifying the underlying source code, you will simpl
 
 ---
 # Tutorial on using VizBin
-
 You can find the tutorial [here](doc/tutorial/tutorial.md).
+
 ---
 
 #LICENSES
