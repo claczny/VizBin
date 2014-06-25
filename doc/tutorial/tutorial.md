@@ -2,15 +2,15 @@
 
 |    Description	|	Picture		|
 |---------------------------	| --------------------------|
-|To run VizBin double click VizBin-dist.jar icon|![img][01]|
-|Following window will open. |	![img][02]	|
-| VizBin will inform you about setting initiallizaion during first run| ![img][a0] |
-|To specify fasta file that VizBin should visualize, click choose button | ![img][03] |
-|Navigate through your file system to directory containing fasta file. In our case this is Desktop/Data/  | ![img][04] ![img][05] |
-|We choose EssentialGenes.fa file| ![img][06] |
-|File path should now appear in "File to visualize" box| ![img][07] |
-|To start processing and visualization press "Start" button| ![img][08] |
-|After VizBin finishes calculations following window chould appear. Since it uses stochastic algorithm, picture obtained in differen runs may differ between runs | ![img][09] |
+|To run VizBin double click the VizBin-dist.jar icon|![img][01]|
+|This will open the following window. |	![img][02]	|
+|Upon your first run, VizBin will initialize the settings. | ![img][02] |
+|To specify the input sequences in fasta format, click on the "Choose" button | ![img][03] |
+|Navigate to the directory containing your input sequences in fasta format. Here, we have them in "Desktop/Data/"  | ![img][04] ![img][05] |
+|Choose your file of interest, here `EssentialGenes.fa` | ![img][06] |
+|The path to your file of interest should now appear in the "File to visualize" box. | ![img][07] |
+|To star, simply click on the "Start" button. | ![img][08] |
+|Upon successful termination, a scatterplot will appear in which you will be able to select your clusters of interest. Please note that on different operating systems the resulting visualizations might differ but should be consistent qualitatively. | ![img][09] |
 |Now you can choose group of points that you want to export to seperate file. You can do this by drawing polygon. All points inside of this polygon will be exported. Each left mouse button click marks new polygon vertex. Vertexes need to be marked in clock-wise of counter clock-wise order.  |![img][10]![img][11]![img][12]![img][13]|
 | To export points press right mouse button anywhere on window. Following window should appear| ![img][14] |
 | Press "yes", and choose directory where file should be saved and provide file name | ![img][15] |
