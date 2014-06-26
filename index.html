@@ -10,6 +10,11 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <style>
+    .default-spacer{
+            margin-right:10px;
+    }
+    </style>
     <title>VizBin - Fast and easy human-augmented binning</title>
   </head>
 
@@ -43,17 +48,34 @@
           
         <h3>
 <a name="the-application" class="anchor" href="#the-application"><span class="octicon octicon-link"></span></a>The application.</h3>
+<p>The application note manuscript is currently in preparation. Once it is published, we will include the reference here.</p>
 
 <p>Below, you can see the screenshot of the visualization window. Each point represents a genomic fragment (here of length >= 1,000nt). The colors are added for visualization purposes only and each color represents an invdividual taxon of origin. The points contained in the red polygon are selected.</p>
 <img src="https://github.com/claczny/VizBin/wiki/Tutorial/pictures/13.png" alt="img:polygonal selection">
 
+        <h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage.</h3>
+<p>VizBin is designed with the user in mind. Hence, all that is needed is a fasta file containing the sequences of interest. A step-by-step guide on using VizBin - including a description of loading the data, selecting points, and exporting the sequences represented by the selected points - is provided on the <a href="https://github.com/claczny/VizBin/wiki/Tutorial">tutorial page</a> of VizBin's github wiki.</p>
+<p>We suggest to visualize fragments that are at least 1,000nt long. Visualizing shorter fragments is also possible but may lead to blurring of distinct clusters, hence the suggested threshold. Filtering sequences based on their length can be done directly from within VizBin, as we explain in the <a href="">tutorial including filtering</a>. Thus, no prior separate filtering step is required.</p>
+
           <h3>
 <a name="the-concept" class="anchor" href="#the-concept"><span class="octicon octicon-link"></span></a>The concept.</h3>
-<p>We explain the concept underlying the intuitive visualization  in detaail in the publication <a href="http://www.nature.com/srep/2014/140331/srep04516/full/srep04516.html" ><span>Alignment-free Visualization of Metagenomic Data by Nonlinear Dimension Reduction</span></a>. We also include experiments and results on datasets of varying complexity and size. </p>
+<p>We explain the concept underlying the intuitive visualization  in detail in the publication <a href="http://www.nature.com/srep/2014/140331/srep04516/full/srep04516.html" ><span>Alignment-free Visualization of Metagenomic Data by Nonlinear Dimension Reduction</span></a>. We also include experiments and results on datasets of varying complexity and size. </p>
+
+<h4>Gist</h4>
 <p>The gist of the concept is that VizBin uses the state-of-the-art nonlinear dimension reduction algorithm <a href="http://homepage.tudelft.nl/19j49/t-SNE.html"><span>BH-SNE</span></a> and appropriate data transformation to visualize (assembled) metagenomic data-inherent clusters. 
 <h4>Speed</h4>
-<p>Due to the efficiency of BH-SNE, VizBin can be used on regular desktop computers and returns results very fast (for 30,000 datapaoints, it takes around 4 minutes on a MacBook Pro from 2011). To achieve further speedups, we have integrated parallelization through the <a href="http://openmp.org/wp/">OpenMP API</a> thus allowing to use multiple cores which are usually included in most modern computers.</p>
+<p>Due to the efficiency of BH-SNE, VizBin can be used on regular desktop computers and returns results very fast (for 30,000 datapaoints, it takes around 4 minutes on a MacBook Pro from 2011). To achieve further speedups, we have integrated parallelization through the <a href="http://openmp.org/wp/">OpenMP API</a> thus allowing to use multiple cores which are included in most modern computers.</p>
+
         </section>
+
+        <hr>
+
+        <section id="acknowledgments">
+        <h2>Acknowledgments</h2>
+        <p>Many people have collaborated on making this application become a reality: Cedric C. Laczny, Tomasz Sternal, Valentin Plugaru, Piotr Gawron, Arash Atashpendar, Hera Houry Margossian, Sergio Coronado, Laurens van der Maaten, Nikos Vlassis, and Paul Wilmes.</p>
+        <p>The present work was supported by an ATTRACT programme grant (A09/03) and a European Union Joint Programming in Neurodegenerative Diseases grant (INTER/JPND/12/01) to Paul Wilmes and an Aide &agrave; la Formation Recherche grant (AFR PHD/4964712) to Cedric C. Laczny all funded by the Luxembourg National Research Fund (FNR).</p>
+
 
         <footer>
           Vizbin is maintained by <a href="https://github.com/claczny">claczny</a><br>
