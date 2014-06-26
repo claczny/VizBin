@@ -10,7 +10,7 @@
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Vizbin by claczny</title>
+    <title>VizBin - Fast and easy human-augmented binning</title>
   </head>
 
   <body>
@@ -19,7 +19,7 @@
 
         <header>
           <h1>Vizbin</h1>
-          <h2>Repository of our application for human-augmented binning</h2>
+          <h2>The fast and easy-to-use application for human-augmented binning</h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -27,6 +27,7 @@
           <a href="https://github.com/claczny/VizBin/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
           <a href="https://github.com/claczny/VizBin/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
           --->
+          <a href="https://github.com/claczny/VizBin/blob/master/VizBin-dist.jar?raw=true" id="download-app-from-github" class="button"><span>Get the app</span></a>
           <a href="https://github.com/claczny/VizBin" id="view-on-github" class="button"><span>View on GitHub</span></a>
         </section>
 
@@ -36,9 +37,22 @@
           <h3>
 <a name="welcome-to-the-vizbin-page" class="anchor" href="#welcome-to-the-vizbin-page"><span class="octicon octicon-link"></span></a>Welcome to the VizBin page.</h3>
 
-<p>You can find news and updates about our Java-based application for human-augmented binning here.</p>
+<p>You can find news and updates about our application for human-augmented binning here.</p>
 
 <p>Stay tuned for updates!</p>
+          
+        <h3>
+<a name="the-application" class="anchor" href="#the-application"><span class="octicon octicon-link"></span></a>The application.</h3>
+
+<p>Below, you can see the screenshot of the visualization window. Each point represents a genomic fragment (here of length >= 1,000nt). The colors are added for visualization purposes only and each color represents an invdividual taxon of origin. The points contained in the red polygon are selected.</p>
+<img src="https://github.com/claczny/VizBin/wiki/Tutorial/pictures/13.png" alt="img:polygonal selection">
+
+          <h3>
+<a name="the-concept" class="anchor" href="#the-concept"><span class="octicon octicon-link"></span></a>The concept.</h3>
+<p>We explain the concept underlying the intuitive visualization  in detaail in the publication <a href="http://www.nature.com/srep/2014/140331/srep04516/full/srep04516.html" ><span>Alignment-free Visualization of Metagenomic Data by Nonlinear Dimension Reduction</span></a>. We also include experiments and results on datasets of varying complexity and size. </p>
+<p>The gist of the concept is that VizBin uses the state-of-the-art nonlinear dimension reduction algorithm <a href="http://homepage.tudelft.nl/19j49/t-SNE.html"><span>BH-SNE</span></a> and appropriate data transformation to visualize (assembled) metagenomic data-inherent clusters. 
+<h4>Speed</h4>
+<p>Due to the efficiency of BH-SNE, VizBin can be used on regular desktop computers and returns results very fast (for 30,000 datapaoints, it takes around 4 minutes on a MacBook Pro from 2011). To achieve further speedups, we have integrated parallelization through the <a href="http://openmp.org/wp/">OpenMP API</a> thus allowing to use multiple cores which are usually included in most modern computers.</p>
         </section>
 
         <footer>
