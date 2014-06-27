@@ -12,7 +12,7 @@ cd $HOME
 git clone https://github.com/tpoechtrager/osxcross.git && cd osxcross
 # Put the Mac OS X SDK into the right place
 cd tarballs
-wget https://www.dropbox.com/s/hxjgpbs6es9kgvg/MacOSX10.7.sdk.tar.gz
+#wget <PUT THE URL TO YOUR MAC OS X SDK (as tar.gz) here>
 # Do the actual build of osxcross
 cd ../
 time ./build.sh
