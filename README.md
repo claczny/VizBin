@@ -31,3 +31,6 @@
  - License page: N/A (sample template: https://spdx.org/licenses/BSD-4-Clause)
 
 The above list is potentially incomplete and represents the main external libraries/binaries used. It may be updated anytime in the future.
+
+------
+![University of Luxembourg](http://claczny.github.io/VizBin/images/Logo_Uni_quadri_88px.jpg) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![Fonds National de la Recherche](http://claczny.github.io/VizBin/images/fnr.gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![Luxembourg Centre for Systems Biomedicine](http://claczny.github.io/VizBin/images/LCSB_short_large_RGB_88px.jpg)
