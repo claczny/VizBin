@@ -41,20 +41,18 @@ public class DataSetUtils {
 	// private static ArrayList<Sequence> pointList = null;
 	// private static List<Point2D> polygonPoints = null;
 	private static JFrame drawingFrame = null;
-
+	
 	public static void createKmers(DataSet dataSet, int k, boolean mergeRevComp)
 			throws InvalidArgumentException {
 		int totalKmers = 0;
-		int totalKmersIgnored = 0;
+		Integer totalKmersIgnored = 0;
 		for (Sequence sequence : dataSet.getSequences()) {
 			if (sequence.getKmers(k) == null) {
-				Integer[] result = createKmers(sequence, k, mergeRevComp);
+				kmersResult res = createKmers(sequence, k, mergeRevComp, totalKmersIgnored);
+				Integer result[] = res.getResult();
+				totalKmersIgnored = res.getNumKmersRemoved();
 				totalKmers += sequence.getDna().length() + 1 - k;
-				totalKmersIgnored += result[result.length - 1];
-				Integer[] kmers = new Integer[result.length - 1];
-				for (int i = 0; i < kmers.length; i++)
-					kmers[i] = result[i];
-				sequence.setKmers(k, kmers);
+				sequence.setKmers(k, result);
 			}
 		}
 		if (totalKmersIgnored > 0) {
@@ -101,10 +99,6 @@ public class DataSetUtils {
 	 * Returns number of occurrences of every type of k-mers, and counts number
 	 * of k-mers that will be ingored.
 	 * 
-	 * NOTE! - last number in array is the number of k-mers that were deleted
-	 * due to containing unknown letters
-	 * 
-	 * 
 	 * k-mers are considered words in 4-base system. For example: CGTA =
 	 * 1230_(4)= 1*64 + 2*16 + 3*4 + 0*1 = 108 (dec)
 	 * 
@@ -114,16 +108,18 @@ public class DataSetUtils {
 	 * 
 	 * @mergeRevComp - determines whether all sequences counts will be returned
 	 * or only those that appeared at lest once
+	 * 
+	 * @kmersRemoved Number of k-mers containing unknown letters
 	 */
-	public static Integer[] createKmers(Sequence sequence, int k,
-			boolean mergeRevComp) throws InvalidArgumentException {
+	public static kmersResult createKmers(Sequence sequence, int k,
+			boolean mergeRevComp, Integer kmersRemoved) throws InvalidArgumentException {
 		if (usedVal[k] == null) {
 			createMergedKmerTabl(k);
 		}
-
+		
 		int maxVal = (int) Math.pow(alphabetSize, k);
-
-		Integer[] result = new Integer[maxVal + 1];
+		
+		Integer[] result = new Integer[maxVal];
 		for (int i = 0; i < maxVal; i++) {
 			if (mergeRevComp) {
 				result[usedVal[k][i]] = 1;
@@ -133,7 +129,6 @@ public class DataSetUtils {
 		String dnaSequence = sequence.getDna();
 		int val = 0;
 
-		int kmersRemoved = 0; // Number of k-mers containing unknown letters
 		int lastUnknownLetterPos = -1;
 
 		for (int i = 0; i < dnaSequence.length(); i++) {
@@ -168,17 +163,17 @@ public class DataSetUtils {
 					counter++;
 				}
 			}
-			Integer[] mergedResult = new Integer[counter + 1];
-			mergedResult[counter] = kmersRemoved;
+			Integer[] mergedResult = new Integer[counter];
 			int l = 0;
 			for (int j = 0; j < maxVal; j++) {
 				if (result[j] != null)
 					mergedResult[l++] = result[j];
 			}
-			return mergedResult;
+			kmersResult res = new kmersResult(mergedResult, kmersRemoved);
+			return res;
 		} else {
-			result[maxVal] = kmersRemoved;
-			return result;
+			kmersResult res = new kmersResult(result, kmersRemoved);
+			return res;
 		}
 	}
 
