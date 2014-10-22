@@ -25,7 +25,8 @@ import lcsb.vizbin.data.Sequence;
 
 /**
  *
- * @author Valentin Plugaru <valentin.plugaru.001@student.uni.lu>
+ * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
+ *         Plugaru</a>
  */
 public class DataExporter {
  

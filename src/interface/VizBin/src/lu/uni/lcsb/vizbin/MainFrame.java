@@ -23,7 +23,8 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author Valentin Plugaru <valentin.plugaru.001@student.uni.lu>
+ * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
+ *         Plugaru</a>
  */
 public class MainFrame extends javax.swing.JFrame {
 

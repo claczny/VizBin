@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 /**
- *
- * @author Valentin Plugaru <valentin.plugaru.001@student.uni.lu>
+ * 
+ * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
+ *         Plugaru</a>
  */
 public interface ClusteringPlugin {
-    public ArrayList<ArrayList<Point2D>> getClusters(ArrayList<Point2D> pointList);
-    public void drawOptionsPanel(JPanel optionsPanel);
-    public int getPluginModelVersion();
+	public ArrayList<ArrayList<Point2D>> getClusters(ArrayList<Point2D> pointList);
+
+	public void drawOptionsPanel(JPanel optionsPanel);
+
+	public int getPluginModelVersion();
 }

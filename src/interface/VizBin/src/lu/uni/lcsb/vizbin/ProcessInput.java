@@ -25,7 +25,8 @@ import lcsb.vizbin.graphics.PngGraphicsConverter;
 
 /**
  * 
- * @author Valentin Plugaru <valentin.plugaru.001@student.uni.lu>
+ * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
+ *         Plugaru</a>
  */
 public class ProcessInput {
 

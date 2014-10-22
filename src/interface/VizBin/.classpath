@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="dist/VizBin-dist.jar"/>
-	<classpathentry kind="lib" path="dist/VizBin.jar"/>
 	<classpathentry kind="lib" path="dist/lib/blas.jar"/>
 	<classpathentry kind="lib" path="dist/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="dist/lib/ejml-0.23.jar"/>
