@@ -1,7 +1,13 @@
 #DISCLAIMER
 
+Due to the inclusion of JFreeChart, VizBin and its code are now published under the 
+[GNU Lesser General Public Licence (LGPL)](http://www.gnu.org/licenses/lgpl.html).
+Detailed information will follow.
+
+(DEPRECATED
 VizBin and its code are published under the BSD License (4-clause). 
 For more details, s.a. the [sample template](https://spdx.org/licenses/BSD-4-Clause).
+)
 
 THIS SOFTWARE IS PROVIDED BY LCSB AND CONTRIBUTORS "AS IS" AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
