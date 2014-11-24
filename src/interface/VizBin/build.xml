@@ -17,6 +17,7 @@
 	    <zipfileset src="lib/ejml-0.23.jar" excludes="META-INF/*" />
 	    <zipfileset src="lib/log4j-1.2.17.jar" excludes="META-INF/*" />
 	    <zipfileset src="lib/commons-io-2.4.jar" excludes="META-INF/*" />
+	    <zipfileset src="lib/mtj-1.0.2-SNAPSHOT-jar-with-dependencies.jar" excludes="META-INF/*" />
 	    <manifest>
 	        <attribute name="Main-Class" value="lu.uni.lcsb.vizbin.Main"/>
 	    </manifest>

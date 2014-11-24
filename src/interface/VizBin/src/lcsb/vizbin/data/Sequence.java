@@ -14,6 +14,10 @@ public class Sequence {
 
 	private String									dna				= "";
 
+	private Double									gc;
+	private Double									coverage;
+	private Boolean									marker;
+
 	private double									descVector[];
 
 	private double									clrVector[];
@@ -92,5 +96,56 @@ public class Sequence {
 
 	public void setLabelName(String labelName) {
 		this.labelName = labelName;
+	}
+
+	/**
+	 * @return the gc
+	 * @see #gc
+	 */
+	public Double getGc() {
+		return gc;
+	}
+
+	/**
+	 * @param gc
+	 *          the gc to set
+	 * @see #gc
+	 */
+	public void setGc(Double gc) {
+		this.gc = gc;
+	}
+
+	/**
+	 * @return the coverage
+	 * @see #coverage
+	 */
+	public Double getCoverage() {
+		return coverage;
+	}
+
+	/**
+	 * @param coverage
+	 *          the coverage to set
+	 * @see #coverage
+	 */
+	public void setCoverage(Double coverage) {
+		this.coverage = coverage;
+	}
+
+	/**
+	 * @return the marker
+	 * @see #marker
+	 */
+	public Boolean getMarker() {
+		return marker;
+	}
+
+	/**
+	 * @param marker
+	 *          the marker to set
+	 * @see #marker
+	 */
+	public void setMarker(Boolean marker) {
+		this.marker = marker;
 	}
 }

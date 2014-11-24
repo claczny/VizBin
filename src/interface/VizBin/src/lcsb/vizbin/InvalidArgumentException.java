@@ -1,9 +1,15 @@
 package lcsb.vizbin;
 
-public class InvalidArgumentException extends Exception{
+import no.uib.cipr.matrix.NotConvergedException;
+
+public class InvalidArgumentException extends Exception {
 
 	public InvalidArgumentException(String string) {
 		super(string);
+	}
+
+	public InvalidArgumentException(Exception e) {
+		super(e);
 	}
 
 	/**
