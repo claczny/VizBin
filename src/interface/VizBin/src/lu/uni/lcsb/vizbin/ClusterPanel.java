@@ -102,7 +102,8 @@ public class ClusterPanel {
 		for (Sequence sequence : pointList) {
 			data[0][counter] = (float) sequence.getLocation().getX();
 			data[1][counter] = (float) sequence.getLocation().getY();
-			logger.debug(sequence.getLocation());
+            // DEBUG
+			//logger.debug(sequence.getLocation());
 			colors[counter] = getColor(sequence.getLabelId());
 			shapes[counter] = getShape(sequence.getLabelId());
 
@@ -138,6 +139,7 @@ public class ClusterPanel {
 		final JFreeChart chart = new JFreeChart("", plot);
 		panel = new ChartPanel(chart);
 		panel.addMouseListener(new MouseMarker(panel, polygon));
+        panel.setMouseWheelEnabled(true); // Enable scroll-wheel support for zooming
 
 		JPopupMenu popup = panel.getPopupMenu();
 

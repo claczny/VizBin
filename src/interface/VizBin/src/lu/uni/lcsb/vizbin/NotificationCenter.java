@@ -7,7 +7,7 @@
 package lu.uni.lcsb.vizbin;
 
 import java.util.ArrayList;
-import javax.swing.JPanel;
+//import javax.swing.JPanel;
 
 /**
  *

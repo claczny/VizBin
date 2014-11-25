@@ -18,15 +18,15 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
+//import javax.swing.Scrollable;
+//import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import lcsb.vizbin.data.Cluster;
 import lcsb.vizbin.data.DataSet;
 import lcsb.vizbin.data.Sequence;
 import lcsb.vizbin.service.ClusterFactory;
-import lcsb.vizbin.service.utils.DataSetUtils;
+//import lcsb.vizbin.service.utils.DataSetUtils;
 
 public class ClusterPanel2 extends JPanel implements NotificationListener {
 	private final int SIZE = 2; // radius of each dot

@@ -1,14 +1,14 @@
 package lu.uni.lcsb.vizbin;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
+//import java.io.FileInputStream;
+//import java.io.FileNotFoundException;
+//import java.io.IOException;
+//import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PropertyConfigurator;
 
 /**
  * 
@@ -17,7 +17,7 @@ import org.apache.log4j.PropertyConfigurator;
  * 
  */
 public class Main {
-	static Logger		logger		= Logger.getLogger(Main.class);
+	//static Logger		logger		= Logger.getLogger(Main.class);
 	static Settings	settings	= null;
 
 	public static void main(String[] args) {
