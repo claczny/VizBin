@@ -7,7 +7,7 @@ package lu.uni.lcsb.vizbin;
 
 import javax.swing.JOptionPane;
 
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 //import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -17,11 +17,12 @@ import javax.swing.JOptionPane;
  * 
  */
 public class Main {
-	//static Logger		logger		= Logger.getLogger(Main.class);
+	static Logger		logger		= null;
 	static Settings	settings	= null;
 
 	public static void main(String[] args) {
 		settings = new Settings();
+		logger		= Logger.getLogger(Main.class);
 
 		MainFrame mframe = new MainFrame();
 		mframe.setVisible(true);
