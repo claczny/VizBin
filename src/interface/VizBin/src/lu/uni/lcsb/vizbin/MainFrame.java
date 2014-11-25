@@ -74,7 +74,7 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 
 		// for easy debugging, pre-set input file selector:
-		// this.textfield_file.setText("~/testFiles/grinder-reads.fa");
+		this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/data/EssentialGenes.fa");
 	}
 
 	void setSettings(Settings _settings) {

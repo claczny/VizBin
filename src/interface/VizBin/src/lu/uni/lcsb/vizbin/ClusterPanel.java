@@ -93,6 +93,7 @@ public class ClusterPanel {
 		ArrayList<Sequence> pointList = (ArrayList<Sequence>) ds.getSequences();// seqs;//points;
 		COUNT = pointList.size();
 
+		int min_size = 6; // A minimal size
 		data = new float[2][COUNT];
 		sizes = new int[COUNT];
 		colors = new Color[COUNT];
@@ -119,7 +120,7 @@ public class ClusterPanel {
 				shapes[counter] = PointShape.STAR;
 			}
 
-			sizes[counter] = 3;
+			sizes[counter] = min_size;
 			counter++;
 		}
 

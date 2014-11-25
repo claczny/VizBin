@@ -4,9 +4,12 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
+
+import lcsb.vizbin.graphics.sl.shapes.StarPolygon;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.axis.NumberAxis;
@@ -42,6 +45,8 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 	@Override
 	public void render(Graphics2D g2, Rectangle2D dataArea, PlotRenderingInfo info, CrosshairState crosshairState) {
 		// g2.setPaint(Color.BLUE);
+		Stroke default_stroke = g2.getStroke();
+		int start_angle = 60; // Start angle of the star shape
 		int polygon_edge_size = 6;
 		if (this.getData() != null) {
 			for (int i = 0; i < this.getData()[0].length; i++) {
@@ -65,18 +70,20 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 						g2.fillPolygon(new int[] { transX - size, transX, transX + size }, new int[] { transY, transY + size, transY }, 3);
 						break;
 					case CROSS:
-						g2.drawLine((int) transX - size, (int) transY - size, (int) transX + size, (int) transY + size);
-						g2.drawLine((int) transX + size, (int) transY - size, (int) transX - size, (int) transY + size);
+						g2.setStroke(new BasicStroke(1.5f)); // Make the stroke of the polygon a bit thicker
+						g2.drawLine((int) transX - (size/2), (int) transY - (size/2), (int) transX + (size/2), (int) transY + (size/2));
+						g2.drawLine((int) transX + (size/2), (int) transY - (size/2), (int) transX - (size/2), (int) transY + (size/2));
+						g2.setStroke(default_stroke); // Reset the stroke;not sure if needed;
 						break;
 					case PLUS:
-						g2.drawLine((int) transX - size, (int) transY, (int) transX + size, (int) transY);
-						g2.drawLine((int) transX, (int) transY - size, (int) transX, (int) transY + size);
+						g2.setStroke(new BasicStroke(1.5f)); // Make the stroke of the polygon a bit thicker
+						g2.drawLine((int) transX - (size/2), (int) transY, (int) transX + (size/2), (int) transY);
+						g2.drawLine((int) transX, (int) transY - (size/2), (int) transX, (int) transY + (size/2));
+						g2.setStroke(default_stroke); // Reset the stroke;not sure if needed;
 						break;
 					case STAR:
-						g2.drawLine((int) transX - size, (int) transY - size, (int) transX + size, (int) transY + size);
-						g2.drawLine((int) transX + size, (int) transY - size, (int) transX - size, (int) transY + size);
-						g2.drawLine((int) transX - size, (int) transY, (int) transX + size, (int) transY);
-						g2.drawLine((int) transX, (int) transY - size, (int) transX, (int) transY + size);
+					    StarPolygon star = new StarPolygon(transX, transY, size+1, size/2, 5, start_angle); 
+					    g2.fill(star);
 						break;
 				}
 			}
