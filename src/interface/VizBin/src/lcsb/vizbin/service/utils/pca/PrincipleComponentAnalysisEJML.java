@@ -1,4 +1,7 @@
-package lcsb.vizbin.service.utils;
+package lcsb.vizbin.service.utils.pca;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
@@ -40,7 +43,7 @@ import org.ejml.ops.SingularOps;
  * 
  * @author Peter Abeles
  */
-public class PrincipleComponentAnalysis {
+public class PrincipleComponentAnalysisEJML implements IPrincipleComponentAnalysis {
 
 	// principle component subspace is stored in the rows
 	private DenseMatrix64F	V_t;
@@ -49,13 +52,15 @@ public class PrincipleComponentAnalysis {
 	private int							numComponents;
 
 	// where the data is stored
-	private DenseMatrix64F	A	= new DenseMatrix64F(1, 1);
+	private DenseMatrix64F	A				= new DenseMatrix64F(1, 1);
 	private int							sampleIndex;
 
 	// mean values of each element across all the samples
 	double									mean[];
 
-	public PrincipleComponentAnalysis() {
+	List<double[]>					samples	= new ArrayList<double[]>();
+
+	public PrincipleComponentAnalysisEJML() {
 	}
 
 	/**
@@ -90,6 +95,7 @@ public class PrincipleComponentAnalysis {
 		for (int i = 0; i < sampleData.length; i++) {
 			A.set(sampleIndex, i, sampleData[i]);
 		}
+		samples.add(sampleData);
 		sampleIndex++;
 	}
 
@@ -252,5 +258,10 @@ public class PrincipleComponentAnalysis {
 		CommonOps.mult(V_t, s, dots);
 
 		return NormOps.normF(dots);
+	}
+
+	@Override
+	public double[] sampleToEigenSpace(int sample) {
+		return sampleToEigenSpace(samples.get(sample));
 	}
 }
