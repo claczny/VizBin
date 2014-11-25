@@ -1,5 +1,6 @@
 package lu.uni.lcsb.vizbin;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -41,7 +42,7 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 	@Override
 	public void render(Graphics2D g2, Rectangle2D dataArea, PlotRenderingInfo info, CrosshairState crosshairState) {
 		// g2.setPaint(Color.BLUE);
-
+		int polygon_edge_size = 6;
 		if (this.getData() != null) {
 			for (int i = 0; i < this.getData()[0].length; i++) {
 				float x = this.getData()[0][i];
@@ -80,7 +81,8 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 				}
 			}
 		}
-		g2.setPaint(Color.BLACK);
+		g2.setPaint(Color.RED); // Set the color of the polygon
+		g2.setStroke(new BasicStroke(2)); // Make the stroke of the polygon a bit thicker
 		for (int i = 0; i < polygon.size() - 1; i++) {
 			int x1 = (int) this.getDomainAxis().valueToJava2D(polygon.get(i).getX(), dataArea, RectangleEdge.BOTTOM);
 			int y1 = (int) this.getRangeAxis().valueToJava2D(polygon.get(i).getY(), dataArea, RectangleEdge.LEFT);
@@ -89,6 +91,15 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 			int y2 = (int) this.getRangeAxis().valueToJava2D(polygon.get(i + 1).getY(), dataArea, RectangleEdge.LEFT);
 
 			g2.drawLine(x1, y1, x2, y2);
+			
+			// Move the polygon edges just a slight bit such that they are nicely centered with the edges of the line.
+			x1 = x1 - (polygon_edge_size/2);
+			y1 = y1 - (polygon_edge_size/2);
+			x2 = x2 - (polygon_edge_size/2);
+			y2 = y2 - (polygon_edge_size/2);
+
+			g2.fillRect(x1, y1, polygon_edge_size, polygon_edge_size);
+			g2.fillRect(x2, y2, polygon_edge_size, polygon_edge_size);
 		}
 		if (polygon.size() > 1) {
 			int x1 = (int) this.getDomainAxis().valueToJava2D(polygon.get(0).getX(), dataArea, RectangleEdge.BOTTOM);
@@ -98,6 +109,26 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 			int y2 = (int) this.getRangeAxis().valueToJava2D(polygon.get(polygon.size() - 1).getY(), dataArea, RectangleEdge.LEFT);
 
 			g2.drawLine(x1, y1, x2, y2);
+			
+			// Move the polygon edges just a slight bit such that they are nicely centered with the edges of the line.
+			x1 = x1 - (polygon_edge_size/2);
+			y1 = y1 - (polygon_edge_size/2);
+			x2 = x2 - (polygon_edge_size/2);
+			y2 = y2 - (polygon_edge_size/2);
+
+			g2.fillRect(x1, y1, polygon_edge_size, polygon_edge_size);
+			g2.fillRect(x2, y2, polygon_edge_size, polygon_edge_size);
 		}
+		if (polygon.size() == 1) { // Draw a filled rectancle based on the clicked coordinates
+			int x1 = (int) this.getDomainAxis().valueToJava2D(polygon.get(0).getX(), dataArea, RectangleEdge.BOTTOM);
+			int y1 = (int) this.getRangeAxis().valueToJava2D(polygon.get(0).getY(), dataArea, RectangleEdge.LEFT);
+			
+			// Move the polygon edges just a slight bit such that they are nicely centered with the edges of the line.
+			x1 = x1 - (polygon_edge_size/2);
+			y1 = y1 - (polygon_edge_size/2);
+			
+			g2.fillRect(x1, y1, polygon_edge_size, polygon_edge_size);
+		}
+
 	}
 }
