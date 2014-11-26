@@ -114,11 +114,6 @@ public class ClusterPanel {
 			colors[counter] = getColor(sequence.getLabelId());
 			shapes[counter] = getShape(sequence.getLabelId());
 
-			//***********************
-			// FOR Cedric !!!!
-			// sequence.getDna().length();
-			// ds.getMaxSequenceLength();
-			//***********************
 			if (sequence.getCoverage() != null) {
 				alpha = (sequence.getCoverage()).floatValue();
 				alpha = alpha * alpha;

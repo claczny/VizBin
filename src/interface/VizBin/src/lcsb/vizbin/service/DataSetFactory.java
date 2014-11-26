@@ -257,6 +257,7 @@ public class DataSetFactory {
 		DataSet result = new DataSet();
 		Double maxCoverage = null;
 		Double maxGc = null;
+		Double minLength = null;
 		String label = "";
 		ArrayList<String> labels = new ArrayList<String>();
 
@@ -304,6 +305,7 @@ public class DataSetFactory {
 						markerColumn = colId;
 					} else if ("length".equalsIgnoreCase(string)) {
 						lengthColumn = colId;
+						minLength = Double.MAX_VALUE;
 					} else {
 						throw new InvalidMetaFileException("Unknonw column header: " + string);
 					}
@@ -358,6 +360,7 @@ public class DataSetFactory {
 						try {
 							Double val = Double.valueOf(string);
 							sequence.setLength(val);
+							minLength = Math.min(val, minLength);
 						} catch (NumberFormatException e) {
 							throw new InvalidMetaFileException("Problem with parsing length value: " + string + ". Double expected.");
 						}
@@ -421,6 +424,12 @@ public class DataSetFactory {
 			if (maxGc != null) {
 				sequence.setGc(sequence.getGc() / maxGc);
 			}
+		}
+
+		//TODO Insert an assert() or so to make sure that IF length information is provided is must be > 0
+		if (minLength != null) {
+			// Set the minimum length of the entire dataset
+			result.setMinSequenceLength(minLength.doubleValue());
 		}
 
 		return result;
