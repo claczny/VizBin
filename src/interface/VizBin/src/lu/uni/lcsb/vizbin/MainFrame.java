@@ -697,7 +697,7 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 		if (pcaType == null) {
 			logger.warn("Invalid PCA type: " + this.combobox_pca.getSelectedItem() + ".");
-			pcaType = PcaType.MTJ;
+			pcaType = PcaType.EJML;
 		}
 
 		try {
