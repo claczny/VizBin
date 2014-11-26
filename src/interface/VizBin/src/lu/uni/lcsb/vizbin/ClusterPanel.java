@@ -117,10 +117,10 @@ public class ClusterPanel {
 			if (sequence.getCoverage() != null) {
 				alpha = (sequence.getCoverage()).floatValue();
 				alpha = alpha * alpha;
-				colors[counter] = new Color(colors[counter].getRed(), 
-											colors[counter].getGreen(), 
-											colors[counter].getBlue(), 
-											alpha);
+				colors[counter] = new Color((int) colors[counter].getRed(), 
+											(int) colors[counter].getGreen(), 
+											(int) colors[counter].getBlue(), 
+											(int) (alpha * 255));
 			}
 			if (sequence.getMarker() != null && sequence.getMarker()) {
 				shapes[counter] = PointShape.STAR;
