@@ -97,7 +97,7 @@ public class ClusterPanel {
 		// If there is additional length information provided use a smaller default minimum size
 		if((double) 0 < ds.getMinSequenceLength())
 		{
-			min_size = 1;
+			min_size = 2;
 		}
 		data = new float[2][COUNT];
 		sizes = new int[COUNT];
