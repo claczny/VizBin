@@ -29,7 +29,7 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 	int[]											sizes;
 	Paint[]										colors;
 	PointShape[]							shapes;
-	Double[]									alpha;
+	//Double[]									alpha;
 	List<Point2D>							polygon;
 
 	public ExtendedFastScatterPlot(float[][] data, NumberAxis domainAxis, NumberAxis rangeAxis, int[] sizes, Paint[] colors, PointShape[] shapes,

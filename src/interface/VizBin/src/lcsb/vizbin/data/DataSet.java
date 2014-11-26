@@ -11,7 +11,7 @@ public class DataSet {
 	static Logger						logger						= Logger.getLogger(DataSet.class);
 	private List<Sequence>	sequences					= new ArrayList<Sequence>();
 
-	private int											maxSequenceLength	= 0;
+	private double											minSequenceLength	= 0;
 
 	public List<Sequence> getSequences() {
 		return sequences;
@@ -23,7 +23,18 @@ public class DataSet {
 
 	public void addSequence(Sequence sequence) {
 		sequences.add(sequence);
-		maxSequenceLength = Math.max(maxSequenceLength, sequence.getDna().length());
+		if(sequence.getLength() != null)
+		{
+			// First sequence that is visited? -> Initialize to a _meaningful_ value
+			if((double) 0 == this.minSequenceLength)
+			{
+				this.minSequenceLength = sequence.getLength();
+			}
+			else
+			{
+				this.minSequenceLength = Math.min(this.minSequenceLength, sequence.getLength());				
+			}
+		}
 	}
 
 	public Integer getLabelsCount() {
@@ -40,17 +51,17 @@ public class DataSet {
 
 	/**
 	 * @return the maxSequenceLength
-	 * @see #maxSequenceLength
+	 * @see #minSequenceLength
 	 */
-	public int getMaxSequenceLength() {
-		return maxSequenceLength;
+	public double getMinSequenceLength() {
+		return minSequenceLength;
 	}
 
 	/**
-	 * @param maxSequenceLength the maxSequenceLength to set
-	 * @see #maxSequenceLength
+	 * @param minSequenceLength the minSequenceLength to set
+	 * @see #minSequenceLength
 	 */
-	public void setMaxSequenceLength(int maxSequenceLength) {
-		this.maxSequenceLength = maxSequenceLength;
+	public void setMinSequenceLength(double minSequenceLength) {
+		this.minSequenceLength = minSequenceLength;
 	}
 }

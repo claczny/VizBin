@@ -17,6 +17,7 @@ public class Sequence {
 	private Double									gc;
 	private Double									coverage;
 	private Boolean									marker;
+	private Double									length;
 
 	private double									descVector[];
 
@@ -148,4 +149,19 @@ public class Sequence {
 	public void setMarker(Boolean marker) {
 		this.marker = marker;
 	}
+
+	/**
+	 * @param length
+	 *          the length to set
+	 * @see #length
+	 */
+
+	public void setLength(Double length) {
+		this.length = length;
+	}
+	
+	public Double getLength() {
+		return length;
+	}
+
 }

@@ -93,7 +93,12 @@ public class ClusterPanel {
 		ArrayList<Sequence> pointList = (ArrayList<Sequence>) ds.getSequences();// seqs;//points;
 		COUNT = pointList.size();
 
-		int min_size = 6; // A minimal size
+		int min_size = 4;
+		// If there is additional length information provided use a smaller default minimum size
+		if((double) 0 < ds.getMinSequenceLength())
+		{
+			min_size = 1;
+		}
 		data = new float[2][COUNT];
 		sizes = new int[COUNT];
 		colors = new Color[COUNT];
@@ -114,13 +119,23 @@ public class ClusterPanel {
 			// ds.getMaxSequenceLength();
 			//***********************
 			if (sequence.getCoverage() != null) {
-				colors[counter] = new Color(colors[counter].getRed(), colors[counter].getGreen(), colors[counter].getBlue(), (int) (255 * sequence.getCoverage()));
+				logger.debug((sequence.getCoverage()).floatValue());
+				colors[counter] = new Color(colors[counter].getRed(), 
+											colors[counter].getGreen(), 
+											colors[counter].getBlue(), 
+											(sequence.getCoverage()).floatValue());
 			}
 			if (sequence.getMarker() != null && sequence.getMarker()) {
 				shapes[counter] = PointShape.STAR;
 			}
-
+			// Use a minimum size
 			sizes[counter] = min_size;
+			// Adjust the size if additional length information is given
+			if (sequence.getLength() != null) {
+				double magnification = (sequence.getLength()).doubleValue() - ds.getMinSequenceLength();
+				magnification = magnification * magnification;
+				sizes[counter] = (int) (sizes[counter] + (sizes[counter] * magnification));
+			}
 			counter++;
 		}
 
