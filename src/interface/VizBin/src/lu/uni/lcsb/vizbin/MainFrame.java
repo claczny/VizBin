@@ -49,7 +49,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private ProcessInput	processor					= null;
 
-	private PcaType				pcaType						= PcaType.MTJ;
+	private PcaType				pcaType						= PcaType.EJML;
 
 	private Logger				logger						= Logger.getLogger(MainFrame.class.getName());
 
@@ -65,7 +65,7 @@ public class MainFrame extends javax.swing.JFrame {
 		this.formatfield_perplexity.setText(Double.toString(def_perplexity));
 		this.formatfield_seed.setText(Integer.toString(def_seed));
 		this.combobox_merge.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
-		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.MTJ.getName(), PcaType.MTJ_OPTIMIZED.getName(), PcaType.EJML.getName() }));
+		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.EJML.getName(), PcaType.MTJ.getName(), PcaType.MTJ_OPTIMIZED.getName() }));
 		this.combobox_pca.setSelectedIndex(0);
 		if (def_merge) {
 			this.combobox_merge.setSelectedIndex(0);
@@ -101,11 +101,11 @@ public class MainFrame extends javax.swing.JFrame {
 		label_labels = new javax.swing.JLabel();
 		label_kmer = new javax.swing.JLabel();
 		label_merge = new javax.swing.JLabel();
-		label_pca = new javax.swing.JLabel();
+		label_pca_dimensions = new javax.swing.JLabel();
 		label_theta = new javax.swing.JLabel();
 		label_perplexity = new javax.swing.JLabel();
 		label_seed = new javax.swing.JLabel();
-		label_pca = new javax.swing.JLabel();
+		label_pca_library = new javax.swing.JLabel();
 		textfield_file = new javax.swing.JTextField();
 		textfield_points_file = new javax.swing.JTextField();
 		textfield_labels = new javax.swing.JTextField();
@@ -187,7 +187,7 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		tab_panel_main.add(label_points_file, gridBagConstraints);
 
-		label_labels.setText("Labels (optional):");
+		label_labels.setText("Annotation file (optional):");
 		label_labels.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -211,13 +211,13 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		tab_panel_main.add(label_merge, gridBagConstraints);
 
-		label_pca.setText("PCA columns:");
-		label_pca.setVisible(false);
+		label_pca_dimensions.setText("Intermediate dimensions:");
+		label_pca_dimensions.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 8;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_pca, gridBagConstraints);
+		tab_panel_main.add(label_pca_dimensions, gridBagConstraints);
 
 		label_theta.setText("Theta:");
 		label_theta.setVisible(false);
@@ -243,13 +243,13 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		tab_panel_main.add(label_seed, gridBagConstraints);
 
-		label_pca.setText("PCA:");
-		label_pca.setVisible(false);
+		label_pca_library.setText("PCA library:");
+		label_pca_library.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 12;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_pca, gridBagConstraints);
+		tab_panel_main.add(label_pca_library, gridBagConstraints);
 
 		textfield_file.setMinimumSize(new java.awt.Dimension(4, 7));
 		textfield_file.setPreferredSize(new java.awt.Dimension(140, 15));
@@ -801,10 +801,11 @@ public class MainFrame extends javax.swing.JFrame {
 			label_labels.setVisible(false);
 			label_kmer.setVisible(false);
 			label_merge.setVisible(false);
-			label_pca.setVisible(false);
+			label_pca_dimensions.setVisible(false);
 			label_theta.setVisible(false);
 			label_perplexity.setVisible(false);
 			label_seed.setVisible(false);
+			label_pca_library.setVisible(false);
 			textfield_labels.setVisible(false);
 			textfield_points_file.setVisible(false);
 			formatfield_kmer.setVisible(false);
@@ -824,10 +825,11 @@ public class MainFrame extends javax.swing.JFrame {
 			label_labels.setVisible(true);
 			label_kmer.setVisible(true);
 			label_merge.setVisible(true);
-			label_pca.setVisible(true);
+			label_pca_dimensions.setVisible(true);
 			label_theta.setVisible(true);
 			label_perplexity.setVisible(true);
 			label_seed.setVisible(true);
+			label_pca_library.setVisible(true);
 			textfield_labels.setVisible(true);
 			textfield_points_file.setVisible(true);
 			formatfield_kmer.setVisible(true);
@@ -1007,9 +1009,10 @@ public class MainFrame extends javax.swing.JFrame {
 	private javax.swing.JLabel								label_kmer;
 	private javax.swing.JLabel								label_labels;
 	private javax.swing.JLabel								label_merge;
-	private javax.swing.JLabel								label_pca;
+	private javax.swing.JLabel								label_pca_dimensions;
 	private javax.swing.JLabel								label_perplexity;
 	private javax.swing.JLabel								label_seed;
+	private javax.swing.JLabel								label_pca_library;
 	private javax.swing.JLabel								label_plugin_list;
 	private javax.swing.JLabel								label_plugin_opts;
 	private javax.swing.JLabel								label_status;
