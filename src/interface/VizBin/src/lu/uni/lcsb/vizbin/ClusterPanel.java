@@ -105,6 +105,7 @@ public class ClusterPanel {
 		shapes = new PointShape[COUNT];
 
 		int counter = 0;
+		float alpha = 0f;
 		for (Sequence sequence : pointList) {
 			data[0][counter] = (float) sequence.getLocation().getX();
 			data[1][counter] = (float) sequence.getLocation().getY();
@@ -119,11 +120,12 @@ public class ClusterPanel {
 			// ds.getMaxSequenceLength();
 			//***********************
 			if (sequence.getCoverage() != null) {
-				logger.debug((sequence.getCoverage()).floatValue());
+				alpha = (sequence.getCoverage()).floatValue();
+				alpha = alpha * alpha;
 				colors[counter] = new Color(colors[counter].getRed(), 
 											colors[counter].getGreen(), 
 											colors[counter].getBlue(), 
-											(sequence.getCoverage()).floatValue());
+											alpha);
 			}
 			if (sequence.getMarker() != null && sequence.getMarker()) {
 				shapes[counter] = PointShape.STAR;
