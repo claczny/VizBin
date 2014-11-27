@@ -16,8 +16,6 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 
 	int					sample				= 0;
 
-	double[][]	A_init;
-
 	int					sampleSize		= -1;
 	int					numSamples		= -1;
 	int					numComponents	= -1;
@@ -37,7 +35,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 	@Override
 	public void setup(int numSamples, int sampleSize) {
 		svd = new SVD(numSamples, sampleSize, true, true);
-		A_init = new double[numSamples][sampleSize];
+		A = new DenseMatrix(numSamples, sampleSize);
 		sample = 0;
 		this.sampleSize = sampleSize;
 		this.numSamples = numSamples;
@@ -48,7 +46,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 		if (sampleData.length != sampleSize)
 			throw new InvalidArgumentException("Invalid row length. Expected " + sampleSize + ", but " + sampleData.length + " appeard.");
 		for (int i = 0; i < sampleSize; i++)
-			A_init[sample][i] = sampleData[i];
+			A.set(sample, i, sampleData[i]);
 		sample++;
 	}
 
@@ -66,7 +64,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 		// compute the mean of all the samples
 		for (int i = 0; i < numSamples; i++) {
 			for (int j = 0; j < mean.length; j++) {
-				mean[j] += A_init[i][j];
+				mean[j] += A.get(i,j);
 			}
 		}
 		for (int j = 0; j < mean.length; j++) {
@@ -76,15 +74,17 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 		normFactor = Math.sqrt(sampleSize - 1);
 
 		// subtract the mean from the original data
+		double centered_a_ij = 0.0;
 		for (int i = 0; i < numSamples; i++) {
 			for (int j = 0; j < sampleSize; j++) {
-				A_init[i][j] -= mean[j];
-				A_init[i][j] /= normFactor;
+				centered_a_ij = A.get(i,  j) - mean[j];
+				centered_a_ij /= normFactor;
+				A.set(i, j, centered_a_ij);
 			}
 		}
-
-		A = new DenseMatrix(A_init);
-		Y = new DenseMatrix(A_init);
+		
+		Y = new DenseMatrix(A);
+		logger.debug("Done creating a copy of A and storing it as Y.");
 
 		s = svd.factor(A);
 
