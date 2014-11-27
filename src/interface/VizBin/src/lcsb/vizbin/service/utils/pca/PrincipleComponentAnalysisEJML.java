@@ -1,7 +1,7 @@
 package lcsb.vizbin.service.utils.pca;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
@@ -58,7 +58,7 @@ public class PrincipleComponentAnalysisEJML implements IPrincipleComponentAnalys
 	// mean values of each element across all the samples
 	double									mean[];
 
-	List<double[]>					samples	= new ArrayList<double[]>();
+	//List<double[]>					samples	= new ArrayList<double[]>();
 
 	public PrincipleComponentAnalysisEJML() {
 	}
@@ -95,7 +95,7 @@ public class PrincipleComponentAnalysisEJML implements IPrincipleComponentAnalys
 		for (int i = 0; i < sampleData.length; i++) {
 			A.set(sampleIndex, i, sampleData[i]);
 		}
-		samples.add(sampleData);
+		//samples.add(sampleData);
 		sampleIndex++;
 	}
 
@@ -259,9 +259,11 @@ public class PrincipleComponentAnalysisEJML implements IPrincipleComponentAnalys
 
 		return NormOps.normF(dots);
 	}
-
+	
+	/*
 	@Override
 	public double[] sampleToEigenSpace(int sample) {
 		return sampleToEigenSpace(samples.get(sample));
 	}
+	*/
 }

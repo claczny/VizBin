@@ -83,8 +83,8 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 			}
 		}
 		
-		Y = new DenseMatrix(A);
-		logger.debug("Done creating a copy of A and storing it as Y.");
+		//Y = new DenseMatrix(A);
+		//logger.debug("Done creating a copy of A and storing it as Y.");
 
 		s = svd.factor(A);
 
@@ -116,6 +116,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 		return result;
 	}
 
+	/*
 	@Override
 	public double[] sampleToEigenSpace(int sample) {
 		if (SCORES == null) {
@@ -128,5 +129,6 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 		}
 		return result;
 	}
+	*/
 
 }

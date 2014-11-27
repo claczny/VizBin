@@ -65,7 +65,7 @@ public class MainFrame extends javax.swing.JFrame {
 		this.formatfield_perplexity.setText(Double.toString(def_perplexity));
 		this.formatfield_seed.setText(Integer.toString(def_seed));
 		this.combobox_merge.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
-		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.EJML.getName(), PcaType.MTJ.getName(), PcaType.MTJ_OPTIMIZED.getName() }));
+		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.MTJ.getName(), PcaType.EJML.getName() }));
 		this.combobox_pca.setSelectedIndex(0);
 		if (def_merge) {
 			this.combobox_merge.setSelectedIndex(0);

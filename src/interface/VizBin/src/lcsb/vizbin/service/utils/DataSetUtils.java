@@ -232,7 +232,7 @@ public class DataSetUtils {
 
 	public static void computePca(DataSet dataSet, int columns, PcaType pcaType) throws InvalidArgumentException {
 		IPrincipleComponentAnalysis pca = null;
-		if (pcaType.equals(PcaType.MTJ) || pcaType.equals(PcaType.MTJ_OPTIMIZED)) {
+		if (pcaType.equals(PcaType.MTJ)) {
 			pca = new PrincipleComponentAnalysisMtj();
 		} else if (pcaType.equals(PcaType.EJML)) {
 			pca = new PrincipleComponentAnalysisEJML();
@@ -246,18 +246,14 @@ public class DataSetUtils {
 		}
 		try {
 			pca.computeBasis(columns);
+			logger.debug("DONE: Computed the new basis.");
 		} catch (NotConvergedException e) {
 			throw new InvalidArgumentException(e);
 		}
-		if (pcaType.equals(PcaType.MTJ_OPTIMIZED)) {
-			for (int i = 0; i < dataSet.getSequences().size(); i++) {
-				dataSet.getSequences().get(i).setPcaVector(pca.sampleToEigenSpace(i));
-			}
-		} else {
-			for (Sequence sequence : dataSet.getSequences()) {
-				sequence.setPcaVector(pca.sampleToEigenSpace(sequence.getClrVector()));
-			}
+		for (Sequence sequence : dataSet.getSequences()) {
+			sequence.setPcaVector(pca.sampleToEigenSpace(sequence.getClrVector()));
 		}
+		logger.debug("DONE: Projected from sample to eigen space.");
 	}
 
 	public static void runTsneAndPutResultsToDir(DataSet dataSet, int numThreads, String dir, double theta, double perplexity, int seed, JLabel label_status,

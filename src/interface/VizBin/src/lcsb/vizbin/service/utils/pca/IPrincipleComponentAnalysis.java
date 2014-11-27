@@ -12,6 +12,6 @@ public interface IPrincipleComponentAnalysis {
 
 	double[] sampleToEigenSpace(double[] sampleData);
 	
-	double[] sampleToEigenSpace(int sample);
+	//double[] sampleToEigenSpace(int sample);
 
 }
