@@ -149,6 +149,8 @@ public class ClusterPanel {
 		ExtendedFastScatterPlot plot = new ExtendedFastScatterPlot(data, domainAxis, rangeAxis, sizes, colors, shapes, polygon);
 		plot.setDomainGridlinesVisible(false);
 		plot.setRangeGridlinesVisible(false);
+        plot.setDomainPannable(true);
+        plot.setRangePannable(true);
 		final JFreeChart chart = new JFreeChart("", plot);
 		panel = new ChartPanel(chart);
 		panel.addMouseListener(new MouseMarker(panel, polygon));
