@@ -167,7 +167,9 @@ public class ProcessInput {
 					}
 
 					dataSet_orig = dataSet;
-					int scale = 1; // Was "10" in legacy way of drawing.
+					int scale = 10; // Scaling is needed since AWT.Polygon() requires int-coordinates for the polygon vertices.
+									// Scaling by a factor of ten allows to zoom in and still get meaningful int-coordinates form double points.
+									// TODO: Refactor such that this is done internally in ClusterFactory.createClusterFromPolygon()
 					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale);
 					updateStatus("Creating png files....", 5);
 					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
