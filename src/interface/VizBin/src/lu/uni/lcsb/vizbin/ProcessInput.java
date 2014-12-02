@@ -167,7 +167,7 @@ public class ProcessInput {
 					}
 
 					dataSet_orig = dataSet;
-					int scale = 10;
+					int scale = 1; // Was "10" in legacy way of drawing.
 					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale);
 					updateStatus("Creating png files....", 5);
 					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
