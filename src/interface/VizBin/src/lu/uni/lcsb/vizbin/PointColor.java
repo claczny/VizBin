@@ -3,7 +3,7 @@ package lu.uni.lcsb.vizbin;
 import java.awt.Color;
 
 public enum PointColor {
-	BLUE(Color.BLUE), BLACK(Color.BLACK), RED(Color.RED), GREEN(Color.GREEN), ORANGE(Color.ORANGE);
+	BLUE(Color.BLUE), RED(Color.RED), GREEN(Color.GREEN), ORANGE(Color.ORANGE), BLACK(Color.BLACK);
 
 	private Color	color;
 
