@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+
 import javax.swing.JPanel;
 
 /**
@@ -40,7 +41,8 @@ public class PluginUtils {
         return pluginlist;
     }
     
-    public void loadPlugin(String className){
+    @SuppressWarnings("rawtypes")
+		public void loadPlugin(String className){
         URLClassLoader pluginClassLoader;
         Class pluginClass;
         try {

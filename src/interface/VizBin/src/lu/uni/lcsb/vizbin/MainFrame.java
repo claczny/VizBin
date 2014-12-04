@@ -29,9 +29,13 @@ import org.apache.log4j.Logger;
  */
 public class MainFrame extends javax.swing.JFrame {
 
+
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	// Default values for number of threads, kmer length,
 	// pca columns, theta, perplexity, seed for random number generator and merge
-
 	private Integer				def_contigLen			= 1000;
 	private Integer				def_numThreads		= 1;
 	private Integer				def_kmer					= 5;
@@ -43,7 +47,6 @@ public class MainFrame extends javax.swing.JFrame {
 	private Integer				def_seed					= 0;
 	private Settings			settings					= null;
 	private String				indatafile				= null;
-	private String				inpointsfile			= null;
 
 	private File					lastOpenPath			= null;
 
@@ -53,6 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private Logger				logger						= Logger.getLogger(MainFrame.class.getName());
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MainFrame() {
 		logger.debug("Init of Main application frame");
 		initComponents();
@@ -76,16 +80,16 @@ public class MainFrame extends javax.swing.JFrame {
 		// for easy debugging, pre-set input file selector:
 		//this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/data/EssentialGenes.fa");
 		
-		this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.fa");
-		this.textfield_points_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.points.txt");
-		this.textfield_labels.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.loglength.ann");
+//		this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.fa");
+//		this.textfield_points_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.points.txt");
+//		this.textfield_labels.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.loglength.ann");
 	}
 
 	void setSettings(Settings _settings) {
 		settings = _settings;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({  "rawtypes" })
 	// <editor-fold defaultstate="collapsed"
 	// desc="Generated Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
@@ -738,7 +742,7 @@ public class MainFrame extends javax.swing.JFrame {
 		fc.setMultiSelectionEnabled(false);
 		if (lastOpenPath != null)
 			fc.setCurrentDirectory(lastOpenPath);
-		int returnVal = fc.showOpenDialog(this.getParent());
+		fc.showOpenDialog(this.getParent());
 		if (fc.getSelectedFile() == null) {
 			return "";
 		} else {
@@ -874,6 +878,7 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}// GEN-LAST:event_label_statusMouseClicked
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void button_reload_pluginsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_reload_pluginsActionPerformed
 		DefaultListModel pluginListModel = new DefaultListModel();
 		ArrayList<String> pluginList = settings.pluginUtils.listPlugins();
@@ -990,7 +995,9 @@ public class MainFrame extends javax.swing.JFrame {
 	private javax.swing.JButton								button_load_plugin;
 	private javax.swing.JButton								button_process;
 	private javax.swing.JButton								button_reload_plugins;
+	@SuppressWarnings("rawtypes")
 	private javax.swing.JComboBox							combobox_merge;
+	@SuppressWarnings("rawtypes")
 	private javax.swing.JComboBox							combobox_pca;
 	private javax.swing.Box.Filler						filler1;
 	private javax.swing.JFormattedTextField		formatfield_contigLen;
@@ -1029,6 +1036,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private javax.swing.JMenuItem							menu_options_plottopng;
 	private javax.swing.JMenuItem							menu_options_showlog;
 	private javax.swing.JPanel								panel_plugin_options;
+	@SuppressWarnings("rawtypes")
 	private javax.swing.JList									plugin_list;
 	private javax.swing.JProgressBar					progBar;
 	private javax.swing.JPanel								statuspanel;

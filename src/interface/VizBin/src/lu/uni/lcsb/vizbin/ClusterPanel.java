@@ -46,11 +46,12 @@ public class ClusterPanel {
 
 	JFrame							frame;
 	String							filename;
+	private LegendFrame	legendFrame;
 
 	private final class MouseMarker extends MouseAdapter {
-		private final JFreeChart			chart;
-		private final ChartPanel			panel;
-		List<Point2D>									polygon;
+		private final JFreeChart	chart;
+		private final ChartPanel	panel;
+		List<Point2D>							polygon;
 
 		public MouseMarker(ChartPanel panel, List<Point2D> polygon) {
 			this.panel = panel;
@@ -87,6 +88,7 @@ public class ClusterPanel {
 	}
 
 	public ClusterPanel(DataSet ds, String _inFileName, JFrame _parentFrame, boolean _drawAxes) {
+
 		this.dataSet = ds;
 		this.frame = _parentFrame;
 		this.filename = _inFileName;
@@ -94,9 +96,9 @@ public class ClusterPanel {
 		COUNT = pointList.size();
 
 		int min_size = 4;
-		// If there is additional length information provided use a smaller default minimum size
-		if((double) 0 < ds.getMinSequenceLength())
-		{
+		// If there is additional length information provided use a smaller default
+		// minimum size
+		if ((double) 0 < ds.getMinSequenceLength()) {
 			min_size = 2;
 		}
 		data = new float[2][COUNT];
@@ -106,21 +108,22 @@ public class ClusterPanel {
 
 		int counter = 0;
 		float alpha = 0f;
+		legendFrame = new LegendFrame();
+
 		for (Sequence sequence : pointList) {
 			data[0][counter] = (float) sequence.getLocation().getX();
 			data[1][counter] = (float) sequence.getLocation().getY();
-            // DEBUG
-			//logger.debug(sequence.getLocation());
-			colors[counter] = getColor(sequence.getLabelId());
-			shapes[counter] = getShape(sequence.getLabelId());
+			// DEBUG
+			// logger.debug(sequence.getLocation());
+			colors[counter] = ShapePrinter.getColor(sequence.getLabelId());
+			shapes[counter] = ShapePrinter.getShape(sequence.getLabelId());
+
+			legendFrame.setLabel(sequence.getLabelId(), sequence.getLabelName());
 
 			if (sequence.getCoverage() != null) {
 				alpha = (sequence.getCoverage()).floatValue();
 				alpha = alpha * alpha;
-				colors[counter] = new Color((int) colors[counter].getRed(), 
-											(int) colors[counter].getGreen(), 
-											(int) colors[counter].getBlue(), 
-											(int) (alpha * 255));
+				colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
 			}
 			if (sequence.getMarker() != null && sequence.getMarker()) {
 				shapes[counter] = PointShape.STAR;
@@ -149,12 +152,12 @@ public class ClusterPanel {
 		ExtendedFastScatterPlot plot = new ExtendedFastScatterPlot(data, domainAxis, rangeAxis, sizes, colors, shapes, polygon);
 		plot.setDomainGridlinesVisible(false);
 		plot.setRangeGridlinesVisible(false);
-        plot.setDomainPannable(true);
-        plot.setRangePannable(true);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
 		final JFreeChart chart = new JFreeChart("", plot);
 		panel = new ChartPanel(chart);
 		panel.addMouseListener(new MouseMarker(panel, polygon));
-        panel.setMouseWheelEnabled(true); // Enable scroll-wheel support for zooming
+		panel.setMouseWheelEnabled(true); // Enable scroll-wheel support for zooming
 
 		JPopupMenu popup = panel.getPopupMenu();
 
@@ -175,7 +178,7 @@ public class ClusterPanel {
 						DataExporter.exportCluster(frame, filename, selectedCluster.getElements());
 					else if (option == JOptionPane.CANCEL_OPTION) {
 						polygon.clear();
-						
+
 						panel.repaint();
 					}
 				}
@@ -194,21 +197,39 @@ public class ClusterPanel {
 		selectionMenu.add(clearMenu);
 
 		popup.add(selectionMenu);
+
+		JMenuItem legendMenu = new JMenuItem("Legend");
+
+		legendMenu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LegendFrame legendFrame = getLegendFrame();
+				legendFrame.setVisible(!legendFrame.isVisible());
+			}
+		});
+		popup.add(legendMenu);
+
 	}
 
 	public ChartPanel getChartPanel() {
 		return panel;
 	}
 
-	Color getColor(int id) {
-		int size = PointColor.values().length;
-		int base = id % size;
-		return PointColor.values()[base].getColor();
+	/**
+	 * @return the legendFrame
+	 * @see #legendFrame
+	 */
+	public LegendFrame getLegendFrame() {
+		return legendFrame;
 	}
 
-	PointShape getShape(int id) {
-		int base = id % (PointShape.values().length - 1);
-		return PointShape.values()[base];
+	/**
+	 * @param legendFrame
+	 *          the legendFrame to set
+	 * @see #legendFrame
+	 */
+	public void setLegendFrame(LegendFrame legendFrame) {
+		this.legendFrame = legendFrame;
 	}
-
 }

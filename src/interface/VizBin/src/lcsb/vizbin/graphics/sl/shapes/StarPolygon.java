@@ -5,7 +5,12 @@ package lcsb.vizbin.graphics.sl.shapes;
 import java.awt.*;
 
 public class StarPolygon extends Polygon {
-    public StarPolygon(int x, int y, int r, int innerR, int vertexCount) {
+    /**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+
+		public StarPolygon(int x, int y, int r, int innerR, int vertexCount) {
         this(x, y, r, innerR, vertexCount, 0);
     }
     public StarPolygon(int x, int y, int r, int innerR, int vertexCount, double startAngle) {

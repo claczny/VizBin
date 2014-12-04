@@ -2,9 +2,14 @@ package lcsb.vizbin.graphics.sl.shapes;
 
 //package sl.shapes;
 
-import java.awt.font.*;
-import java.awt.*;
-import java.awt.geom.*;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 public class RoundPolygon implements Shape {
     GeneralPath path;

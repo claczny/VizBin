@@ -62,7 +62,6 @@ public class Settings {
     }
     
     public void extractTSNEBin(){
-        String os = System.getProperty("os.name");
         String binName = getTSNEBinName();
         
         if (binName != "") {
