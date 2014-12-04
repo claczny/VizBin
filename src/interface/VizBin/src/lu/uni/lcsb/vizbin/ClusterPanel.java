@@ -135,6 +135,7 @@ public class ClusterPanel {
 				double magnification = (sequence.getLength()).doubleValue() - ds.getMinSequenceLength();
 				magnification = magnification * magnification;
 				sizes[counter] = (int) (sizes[counter] + (sizes[counter] * magnification));
+				
 			}
 			counter++;
 		}

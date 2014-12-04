@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 import lcsb.vizbin.data.DataSet;
 import lcsb.vizbin.graphics.PngGraphicsConverter;
 import lcsb.vizbin.service.DataSetFactory;
+import lcsb.vizbin.service.InvalidMetaFileException;
 import lcsb.vizbin.service.utils.DataSetUtils;
 import lcsb.vizbin.service.utils.PcaType;
 
@@ -45,6 +46,7 @@ public class ProcessInput {
 	private JFrame						parentFrame;
 	private File							tsneCmd;
 	private boolean						drawAxes;
+	private boolean						log;
 
 	private DataSet						dataSet_orig	= null;
 	private DataSet						dataSet				= null;
@@ -55,7 +57,7 @@ public class ProcessInput {
 
 	ProcessInput(String _indatafile, Integer _contigLen, Integer _numThreads, String _inpointsfile, String _inlabelsfile, Integer _kmer, Boolean _merge,
 			Integer _pca, Double _theta, Double _perplexity, Integer _seed, JLabel _status, JProgressBar _progBar, JTabbedPane tabPane, JFrame _parentFrame,
-			File _tsneCmd, boolean _drawAxes, PcaType pcaType) {
+			File _tsneCmd, boolean _drawAxes, PcaType pcaType, boolean _log) {
 		logger.debug("Init of ProcessInput");
 		indatafile = _indatafile;
 		filteredSequencesFile = "filteredSequences.fa";
@@ -78,6 +80,7 @@ public class ProcessInput {
 		progressVal = 0;
 		processEnded = new AtomicBoolean(true);
 		pcaAlgorithmType = pcaType;
+		log = _log;
 	}
 
 	void updateStatus(String message) {
@@ -120,7 +123,7 @@ public class ProcessInput {
 
 					logger.debug("Loading data from file.\nContig length treshold: " + contigLen);
 					updateStatus("Loading fasta file: " + indatafile, 5);
-					dataSet = DataSetFactory.createDataSetFromFastaFile(indatafile, filteredSequencesFile, inlabelsfile, inpointsfile, contigLen);
+					dataSet = DataSetFactory.createDataSetFromFastaFile(indatafile, filteredSequencesFile, inlabelsfile, inpointsfile, contigLen, log);
 					if (dataSet == null) {
 						JOptionPane.showMessageDialog(null, "Error during loading data from given file! Check the logs.", "alert", JOptionPane.ERROR_MESSAGE);
 						updateStatus("", -100);
@@ -167,9 +170,12 @@ public class ProcessInput {
 					}
 
 					dataSet_orig = dataSet;
-					int scale = 10; // Scaling is needed since AWT.Polygon() requires int-coordinates for the polygon vertices.
-									// Scaling by a factor of ten allows to zoom in and still get meaningful int-coordinates form double points.
-									// TODO: Refactor such that this is done internally in ClusterFactory.createClusterFromPolygon()
+					int scale = 10; // Scaling is needed since AWT.Polygon() requires
+													// int-coordinates for the polygon vertices.
+					// Scaling by a factor of ten allows to zoom in and still get
+					// meaningful int-coordinates form double points.
+					// TODO: Refactor such that this is done internally in
+					// ClusterFactory.createClusterFromPolygon()
 					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale);
 					updateStatus("Creating png files....", 5);
 					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
@@ -188,18 +194,15 @@ public class ProcessInput {
 
 					ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, parentFrame, drawAxes);
 					tabPane.setComponentAt(1, cp.getChartPanel());
-//					NotificationCenter.addObserver(cp);
+					// NotificationCenter.addObserver(cp);
 					// Show data points
 					JFrame frame = new JFrame("Cluster");
 					DataSetUtils.setDrawingFrame(frame);
 					// frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 					ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, parentFrame, drawAxes);
-//					NotificationCenter.addObserver(cpPopOut);
+					// NotificationCenter.addObserver(cpPopOut);
 					// frame.getContentPane().add(cpPopOut);
 
-					// frame.setSize(
-					// GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth(),
-					// GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight());
 					frame.setSize(800, 600);
 					JScrollPane scrPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 					scrPane.getViewport().add(cpPopOut.getChartPanel());
@@ -210,11 +213,11 @@ public class ProcessInput {
 					JOptionPane.showMessageDialog(parentFrame, "Error! Java machine ran out of memmory.\n" + "Check input file size, or increase java heap size.\n"
 							+ "Application will now restart.");
 					e.printStackTrace();
-					/*
-					 * updateStatus("Error! Check the logs.");
-					 * logger.error(e.getMessage(), e); parentFrame.dispose();
-					 */
 					restartApplication();
+				} catch (InvalidMetaFileException e) {
+					logger.error(e.getMessage(), e);
+					updateStatus("Error! Check the logs.");
+					JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Label file error", JOptionPane.ERROR_MESSAGE);
 				} catch (Exception e) {
 					e.printStackTrace();
 					updateStatus("Error! Check the logs.");

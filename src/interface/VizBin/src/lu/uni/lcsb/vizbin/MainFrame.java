@@ -29,32 +29,32 @@ import org.apache.log4j.Logger;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
 	// Default values for number of threads, kmer length,
 	// pca columns, theta, perplexity, seed for random number generator and merge
-	private Integer				def_contigLen			= 1000;
-	private Integer				def_numThreads		= 1;
-	private Integer				def_kmer					= 5;
-	private Integer				def_pca						= 50;
-	private Double				def_theta					= 0.5;
-	private Boolean				def_merge					= true;
-	private Boolean				moreOpionsVisible	= false;
-	private Double				def_perplexity		= 30.;
-	private Integer				def_seed					= 0;
-	private Settings			settings					= null;
-	private String				indatafile				= null;
+	private Integer						def_contigLen			= 1000;
+	private Integer						def_numThreads		= 1;
+	private Integer						def_kmer					= 5;
+	private Integer						def_pca						= 50;
+	private Double						def_theta					= 0.5;
+	private Boolean						def_merge					= true;
+	private Boolean						def_log						= true;
+	private Boolean						moreOpionsVisible	= false;
+	private Double						def_perplexity		= 30.;
+	private Integer						def_seed					= 0;
+	private Settings					settings					= null;
+	private String						indatafile				= null;
 
-	private File					lastOpenPath			= null;
+	private File							lastOpenPath			= null;
 
-	private ProcessInput	processor					= null;
+	private ProcessInput			processor					= null;
 
-	private PcaType				pcaType						= PcaType.EJML;
+	private PcaType						pcaType						= PcaType.EJML;
 
-	private Logger				logger						= Logger.getLogger(MainFrame.class.getName());
+	private Logger						logger						= Logger.getLogger(MainFrame.class.getName());
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MainFrame() {
@@ -69,6 +69,7 @@ public class MainFrame extends javax.swing.JFrame {
 		this.formatfield_perplexity.setText(Double.toString(def_perplexity));
 		this.formatfield_seed.setText(Integer.toString(def_seed));
 		this.combobox_merge.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
+		this.combobox_log.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
 		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.MTJ.getName(), PcaType.EJML.getName() }));
 		this.combobox_pca.setSelectedIndex(0);
 		if (def_merge) {
@@ -77,19 +78,25 @@ public class MainFrame extends javax.swing.JFrame {
 			this.combobox_merge.setSelectedIndex(1);
 		}
 
+		if (def_log) {
+			this.combobox_log.setSelectedIndex(0);
+		} else {
+			this.combobox_log.setSelectedIndex(1);
+		}
+
 		// for easy debugging, pre-set input file selector:
-		//this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/data/EssentialGenes.fa");
-		
-//		this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.fa");
-//		this.textfield_points_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.points.txt");
-//		this.textfield_labels.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.loglength.ann");
+		// this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/data/EssentialGenes.fa");
+
+		// this.textfield_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.fa");
+		// this.textfield_points_file.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.points.txt");
+		// this.textfield_labels.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.loglength.ann");
 	}
 
 	void setSettings(Settings _settings) {
 		settings = _settings;
 	}
 
-	@SuppressWarnings({  "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	// <editor-fold defaultstate="collapsed"
 	// desc="Generated Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
@@ -110,11 +117,13 @@ public class MainFrame extends javax.swing.JFrame {
 		label_perplexity = new javax.swing.JLabel();
 		label_seed = new javax.swing.JLabel();
 		label_pca_library = new javax.swing.JLabel();
+		label_log = new javax.swing.JLabel();
 		textfield_file = new javax.swing.JTextField();
 		textfield_points_file = new javax.swing.JTextField();
 		textfield_labels = new javax.swing.JTextField();
 		formatfield_kmer = new javax.swing.JFormattedTextField();
 		combobox_merge = new javax.swing.JComboBox();
+		combobox_log = new javax.swing.JComboBox();
 		combobox_pca = new javax.swing.JComboBox();
 		formatfield_contigLen = new javax.swing.JFormattedTextField();
 		formatfield_numThreads = new javax.swing.JFormattedTextField();
@@ -254,6 +263,21 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.gridy = 12;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
 		tab_panel_main.add(label_pca_library, gridBagConstraints);
+
+		textfield_file.setMinimumSize(new java.awt.Dimension(4, 7));
+		textfield_file.setPreferredSize(new java.awt.Dimension(140, 15));
+		textfield_file.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				textfield_fileMouseClicked(evt);
+			}
+		});
+		label_log.setText("Log coverage/length:");
+		label_log.setVisible(false);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 13;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+		tab_panel_main.add(label_log, gridBagConstraints);
 
 		textfield_file.setMinimumSize(new java.awt.Dimension(4, 7));
 		textfield_file.setPreferredSize(new java.awt.Dimension(140, 15));
@@ -405,6 +429,16 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.ipadx = 69;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		tab_panel_main.add(combobox_pca, gridBagConstraints);
+
+		combobox_log.setPreferredSize(new java.awt.Dimension(140, 24));
+		combobox_log.setVisible(false);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 1;
+		gridBagConstraints.gridy = 13;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.ipadx = 69;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+		tab_panel_main.add(combobox_log, gridBagConstraints);
 
 		button_file.setText("Choose...");
 		button_file.addActionListener(new java.awt.event.ActionListener() {
@@ -660,6 +694,7 @@ public class MainFrame extends javax.swing.JFrame {
 		Double perplexity = def_perplexity;
 		Integer seed = def_seed;
 		Boolean merge = def_merge;
+		Boolean log= def_log;
 
 		indatafile = this.textfield_file.getText();
 		if (indatafile.isEmpty()) {
@@ -692,6 +727,8 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 
 		merge = ((String) this.combobox_merge.getSelectedItem()).equals("Yes");
+
+		log = ((String) this.combobox_log.getSelectedItem()).equals("Yes");
 
 		pcaType = null;
 		for (PcaType type : PcaType.values()) {
@@ -731,7 +768,7 @@ public class MainFrame extends javax.swing.JFrame {
 		if (processor == null || processor.getProcessEnded().get() == true) {
 			processor = new ProcessInput(
 					indatafile, contigLen, numThreads, inpointsfile, inlabelsfile, kmer, merge, pca, theta, perplexity, seed, this.label_status, this.progBar,
-					this.tabpanel, this, settings.binFile, menu_options_drawaxes.isSelected(), pcaType);
+					this.tabpanel, this, settings.binFile, menu_options_drawaxes.isSelected(), pcaType, log);
 			processor.doProcess();
 		}
 	}// GEN-LAST:event_button_processActionPerformed
@@ -810,6 +847,7 @@ public class MainFrame extends javax.swing.JFrame {
 			label_perplexity.setVisible(false);
 			label_seed.setVisible(false);
 			label_pca_library.setVisible(false);
+			label_log.setVisible(false);
 			textfield_labels.setVisible(false);
 			textfield_points_file.setVisible(false);
 			formatfield_kmer.setVisible(false);
@@ -819,6 +857,7 @@ public class MainFrame extends javax.swing.JFrame {
 			formatfield_theta.setVisible(false);
 			combobox_merge.setVisible(false);
 			combobox_pca.setVisible(false);
+			combobox_log.setVisible(false);
 			button_more_options.setText("Show additional options");
 			moreOpionsVisible = false;
 			button_labels.setVisible(false);
@@ -834,6 +873,7 @@ public class MainFrame extends javax.swing.JFrame {
 			label_perplexity.setVisible(true);
 			label_seed.setVisible(true);
 			label_pca_library.setVisible(true);
+			label_log.setVisible(true);
 			textfield_labels.setVisible(true);
 			textfield_points_file.setVisible(true);
 			formatfield_kmer.setVisible(true);
@@ -843,10 +883,12 @@ public class MainFrame extends javax.swing.JFrame {
 			formatfield_theta.setVisible(true);
 			combobox_merge.setVisible(true);
 			combobox_pca.setVisible(true);
+			combobox_log.setVisible(true);
 			button_more_options.setText("Hide additional options");
 			moreOpionsVisible = true;
 			button_labels.setVisible(true);
 			button_points_file.setVisible(true);
+			pack();
 			repaint();
 		}
 	}
@@ -998,6 +1040,8 @@ public class MainFrame extends javax.swing.JFrame {
 	@SuppressWarnings("rawtypes")
 	private javax.swing.JComboBox							combobox_merge;
 	@SuppressWarnings("rawtypes")
+	private javax.swing.JComboBox							combobox_log;
+	@SuppressWarnings("rawtypes")
 	private javax.swing.JComboBox							combobox_pca;
 	private javax.swing.Box.Filler						filler1;
 	private javax.swing.JFormattedTextField		formatfield_contigLen;
@@ -1020,6 +1064,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private javax.swing.JLabel								label_perplexity;
 	private javax.swing.JLabel								label_seed;
 	private javax.swing.JLabel								label_pca_library;
+	private javax.swing.JLabel								label_log;
 	private javax.swing.JLabel								label_plugin_list;
 	private javax.swing.JLabel								label_plugin_opts;
 	private javax.swing.JLabel								label_status;

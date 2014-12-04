@@ -104,7 +104,7 @@ public class DataSetFactory {
 
 				String line = br.readLine();
 				int id = 0;
-				while (line != null && id<result.getSequences().size()) {
+				while (line != null && id < result.getSequences().size()) {
 
 					Sequence sequence = result.getSequences().get(id);
 
@@ -159,7 +159,6 @@ public class DataSetFactory {
 						}
 					}
 
-
 					Integer labelId = labels.get(label);
 					if (labelId == null) {
 						labelId = labels.size();
@@ -182,8 +181,9 @@ public class DataSetFactory {
 				sequence.setGc(sequence.getGc() / maxGc);
 			}
 		}
-		
-		//TODO Insert an assert() or so to make sure that IF length information is provided is must be > 0
+
+		// TODO Insert an assert() or so to make sure that IF length information is
+		// provided is must be > 0
 		if (minLength != null) {
 			// Set the minimum length of the entire dataset
 			result.setMinSequenceLength(minLength.doubleValue());
@@ -193,13 +193,13 @@ public class DataSetFactory {
 	}
 
 	public static DataSet createDataSetFromFastaFile(String fileName, String filteredSequencesFileName, String labelFileName, String pointsFileName,
-			Integer contigLen) throws IOException, InvalidMetaFileException {
+			Integer contigLen, boolean log) throws IOException, InvalidMetaFileException {
 
 		filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen);
 
 		return createDataSetFromFastaFile(
 				new FileInputStream(filteredSequencesFileName), labelFileName.isEmpty() ? null : new FileInputStream(labelFileName), pointsFileName.isEmpty() ? null
-						: new FileInputStream(pointsFileName));
+						: new FileInputStream(pointsFileName), log);
 
 	}
 
@@ -247,7 +247,8 @@ public class DataSetFactory {
 		bw.close();
 	}
 
-	public static DataSet createDataSetFromFastaFile(InputStream is, InputStream labelIS, InputStream pointsIS) throws IOException, InvalidMetaFileException {
+	public static DataSet createDataSetFromFastaFile(InputStream is, InputStream labelIS, InputStream pointsIS, boolean log) throws IOException,
+			InvalidMetaFileException {
 		DataSet result = new DataSet();
 		Double maxCoverage = null;
 		Double maxGc = null;
@@ -307,6 +308,10 @@ public class DataSetFactory {
 				}
 			}
 
+			if (gcColumn != null && coverageColumn != null) {
+				throw new InvalidMetaFileException("Only one of the 'gc' and 'legth' columns is allowed");
+			}
+
 			while (line != null) {
 				sequence = new Sequence();
 				sequence.setId("Seq" + (numSequences++));
@@ -343,6 +348,9 @@ public class DataSetFactory {
 						String string = data[coverageColumn];
 						try {
 							Double val = Double.valueOf(string);
+							if (log) {
+								val = Math.log(val);
+							}
 							sequence.setCoverage(val);
 							maxCoverage = Math.max(val, maxCoverage);
 						} catch (NumberFormatException e) {
@@ -353,6 +361,9 @@ public class DataSetFactory {
 						String string = data[lengthColumn];
 						try {
 							Double val = Double.valueOf(string);
+							if (log) {
+								val = Math.log(val);
+							}
 							sequence.setLength(val);
 							minLength = Math.min(val, minLength);
 						} catch (NumberFormatException e) {
@@ -420,7 +431,8 @@ public class DataSetFactory {
 			}
 		}
 
-		//TODO Insert an assert() or so to make sure that IF length information is provided is must be > 0
+		// TODO Insert an assert() or so to make sure that IF length information is
+		// provided is must be > 0
 		if (minLength != null) {
 			// Set the minimum length of the entire dataset
 			result.setMinSequenceLength(minLength.doubleValue());
