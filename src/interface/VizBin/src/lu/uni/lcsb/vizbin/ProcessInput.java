@@ -176,7 +176,7 @@ public class ProcessInput {
 					// meaningful int-coordinates form double points.
 					// TODO: Refactor such that this is done internally in
 					// ClusterFactory.createClusterFromPolygon()
-					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale);
+					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale,log);
 					updateStatus("Creating png files....", 5);
 					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
 					converter.createPngDirectory(directory + "/images/", 2);

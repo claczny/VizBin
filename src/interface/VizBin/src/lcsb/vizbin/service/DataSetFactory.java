@@ -28,17 +28,19 @@ import lcsb.vizbin.data.Sequence;
 public class DataSetFactory {
 	static Logger	logger	= Logger.getLogger(DataSetFactory.class);
 
-	public static DataSet createDataSetFromPointFile(String fileName, String labelFileName, double scale) throws IOException, InvalidMetaFileException {
+	public static DataSet createDataSetFromPointFile(String fileName, String labelFileName, double scale,boolean log) throws IOException, InvalidMetaFileException {
 		InputStream labelIS = null;
 		if (labelFileName != null) {
 			if (new File(labelFileName).exists()) {
 				labelIS = new FileInputStream(new File(labelFileName));
 			}
 		}
-		return createDataSetFromPointFile(new FileInputStream(fileName), labelIS, scale);
+		return createDataSetFromPointFile(new FileInputStream(fileName), labelIS, scale,log);
 	}
 
-	public static DataSet createDataSetFromPointFile(InputStream is, InputStream labelIS, double scale) throws IOException, InvalidMetaFileException {
+	public static DataSet createDataSetFromPointFile(InputStream is, InputStream labelIS, double scale, boolean log) throws IOException,
+			InvalidMetaFileException {
+		Double minCoverage = null;
 		Double maxCoverage = null;
 		Double maxGc = null;
 
@@ -86,6 +88,7 @@ public class DataSetFactory {
 					if ("coverage".equalsIgnoreCase(string)) {
 						coverageColumn = colId;
 						maxCoverage = 0.0;
+						minCoverage = Double.MAX_VALUE;
 					} else if ("gc".equalsIgnoreCase(string)) {
 						gcColumn = colId;
 						maxGc = 0.0;
@@ -142,8 +145,14 @@ public class DataSetFactory {
 						String string = data[coverageColumn];
 						try {
 							Double val = Double.valueOf(string);
+							if (log) {
+								val = Math.log(val);
+							}
 							sequence.setCoverage(val);
 							maxCoverage = Math.max(val, maxCoverage);
+							if (val > 0) {
+								minCoverage = Math.min(val, minCoverage);
+							}
 						} catch (NumberFormatException e) {
 							throw new InvalidMetaFileException("Problem with parsing coverage value: " + string + ". Double expected.");
 						}
@@ -175,7 +184,7 @@ public class DataSetFactory {
 		}
 		for (Sequence sequence : result.getSequences()) {
 			if (maxCoverage != null) {
-				sequence.setCoverage(sequence.getCoverage() / maxCoverage);
+				sequence.setCoverage(Math.max(minCoverage, sequence.getCoverage()) / maxCoverage);
 			}
 			if (maxGc != null) {
 				sequence.setGc(sequence.getGc() / maxGc);
@@ -249,8 +258,11 @@ public class DataSetFactory {
 
 	public static DataSet createDataSetFromFastaFile(InputStream is, InputStream labelIS, InputStream pointsIS, boolean log) throws IOException,
 			InvalidMetaFileException {
+
+		String invalidCoverage = "";
 		DataSet result = new DataSet();
 		Double maxCoverage = null;
+		Double minCoverage = null;
 		Double maxGc = null;
 		Double minLength = null;
 		String label = "";
@@ -291,6 +303,7 @@ public class DataSetFactory {
 					if ("coverage".equalsIgnoreCase(string)) {
 						coverageColumn = colId;
 						maxCoverage = 0.0;
+						minCoverage = Double.MAX_VALUE;
 					} else if ("gc".equalsIgnoreCase(string)) {
 						gcColumn = colId;
 						maxGc = 0.0;
@@ -350,9 +363,15 @@ public class DataSetFactory {
 							Double val = Double.valueOf(string);
 							if (log) {
 								val = Math.log(val);
+								if (val < 0) {
+									invalidCoverage = string;
+								}
 							}
 							sequence.setCoverage(val);
 							maxCoverage = Math.max(val, maxCoverage);
+							if (val > 0) {
+								minCoverage = Math.min(val, minCoverage);
+							}
 						} catch (NumberFormatException e) {
 							throw new InvalidMetaFileException("Problem with parsing coverage value: " + string + ". Double expected.");
 						}
@@ -424,11 +443,15 @@ public class DataSetFactory {
 
 		for (Sequence sequence : result.getSequences()) {
 			if (maxCoverage != null) {
-				sequence.setCoverage(sequence.getCoverage() / maxCoverage);
+				sequence.setCoverage(Math.max(minCoverage, sequence.getCoverage()) / maxCoverage);
 			}
 			if (maxGc != null) {
 				sequence.setGc(sequence.getGc() / maxGc);
 			}
+		}
+		if (!invalidCoverage.equals("")) {
+			JOptionPane.showMessageDialog(null, "Invalid coverage: " + invalidCoverage);
+
 		}
 
 		// TODO Insert an assert() or so to make sure that IF length information is

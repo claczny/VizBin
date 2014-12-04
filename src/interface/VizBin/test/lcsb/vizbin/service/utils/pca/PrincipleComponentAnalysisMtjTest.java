@@ -51,12 +51,6 @@ public class PrincipleComponentAnalysisMtjTest {
 			assertTrue(arrayEquals(o4, pca.sampleToEigenSpace(s4)));
 			assertTrue(arrayEquals(o5, pca.sampleToEigenSpace(s5)));
 
-			assertTrue(arrayEquals(o1, pca.sampleToEigenSpace(0)));
-			assertTrue(arrayEquals(o2, pca.sampleToEigenSpace(1)));
-			assertTrue(arrayEquals(o3, pca.sampleToEigenSpace(2)));
-			assertTrue(arrayEquals(o4, pca.sampleToEigenSpace(3)));
-			assertTrue(arrayEquals(o5, pca.sampleToEigenSpace(4)));
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -109,13 +103,6 @@ public class PrincipleComponentAnalysisMtjTest {
 			assertTrue(arrayEquals(o4, pca.sampleToEigenSpace(s4)));
 			assertTrue(arrayEquals(o5, pca.sampleToEigenSpace(s5)));
 			assertTrue(arrayEquals(o6, pca.sampleToEigenSpace(s6)));
-
-			assertTrue(arrayEquals(o1, pca.sampleToEigenSpace(0)));
-			assertTrue(arrayEquals(o2, pca.sampleToEigenSpace(1)));
-			assertTrue(arrayEquals(o3, pca.sampleToEigenSpace(2)));
-			assertTrue(arrayEquals(o4, pca.sampleToEigenSpace(3)));
-			assertTrue(arrayEquals(o5, pca.sampleToEigenSpace(4)));
-			assertTrue(arrayEquals(o6, pca.sampleToEigenSpace(5)));
 
 		} catch (Exception e) {
 			e.printStackTrace();
