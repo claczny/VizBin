@@ -50,11 +50,20 @@ public class ShapePrinter {
 				g2.drawLine((int) transX - (size / 2), (int) transY, (int) transX + (size / 2), (int) transY);
 				g2.drawLine((int) transX, (int) transY - (size / 2), (int) transX, (int) transY + (size / 2));
 				g2.setStroke(default_stroke); // Reset the stroke;not sure if
-																			// needed;
+											  // needed;
 				break;
 			case STAR:
 				StarPolygon star = new StarPolygon(transX, transY, size + 1, size / 2, 5, START_ANGLE);
 				g2.fill(star);
+				// The star shape is a particular shape and to discriminate it 
+				// from similarly colored "normal" points it gets a black boundary
+				g2.setPaint(Color.BLACK);
+				g2.setStroke(new BasicStroke(1.5f)); // Make the stroke of the
+													 // polygon a bit thicker
+				g2.draw(star);
+				g2.setStroke(default_stroke); // Reset the stroke;not sure if
+											  // needed
+
 				break;
 		}
 	}
