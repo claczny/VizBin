@@ -161,6 +161,9 @@ public class DataSetFactory {
 						String string = data[lengthColumn];
 						try {
 							Double val = Double.valueOf(string);
+							if (log) {
+								val = Math.log(val);
+							}
 							sequence.setLength(val);
 							minLength = Math.min(val, minLength);
 						} catch (NumberFormatException e) {
@@ -450,7 +453,7 @@ public class DataSetFactory {
 			}
 		}
 		if (!invalidCoverage.equals("")) {
-			JOptionPane.showMessageDialog(null, "Invalid coverage: " + invalidCoverage);
+			JOptionPane.showMessageDialog(null, "WARNING: Unexpected coverage value of " + invalidCoverage + " found.\nWill take the minimum strictly positive input coverage value as default for now.\nPlease verify your input annotation file.");
 
 		}
 

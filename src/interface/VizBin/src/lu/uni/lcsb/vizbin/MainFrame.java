@@ -271,7 +271,7 @@ public class MainFrame extends javax.swing.JFrame {
 				textfield_fileMouseClicked(evt);
 			}
 		});
-		label_log.setText("Log coverage/length:");
+		label_log.setText("Take logarithm of coverage & length?");
 		label_log.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
