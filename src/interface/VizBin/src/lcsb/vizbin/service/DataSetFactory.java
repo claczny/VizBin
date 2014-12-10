@@ -325,7 +325,7 @@ public class DataSetFactory {
 			}
 
 			if (gcColumn != null && coverageColumn != null) {
-				throw new InvalidMetaFileException("Only one of the 'gc' and 'legth' columns is allowed");
+				throw new InvalidMetaFileException("Either provide 'gc' or 'coverage' values!");
 			}
 
 			while (line != null) {
