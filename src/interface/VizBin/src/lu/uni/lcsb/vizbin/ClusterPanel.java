@@ -140,15 +140,15 @@ public class ClusterPanel {
 			counter++;
 		}
 
-		final NumberAxis domainAxis = new NumberAxis("X");
+		final NumberAxis domainAxis = new NumberAxis("");
 		domainAxis.setAutoRangeIncludesZero(false);
-		domainAxis.setTickMarksVisible(true);
-		domainAxis.setTickLabelsVisible(true);
+		domainAxis.setTickMarksVisible(false);
+		domainAxis.setTickLabelsVisible(false);
 
-		final NumberAxis rangeAxis = new NumberAxis("Y");
+		final NumberAxis rangeAxis = new NumberAxis("");
 		rangeAxis.setAutoRangeIncludesZero(false);
-		rangeAxis.setTickMarksVisible(true);
-		rangeAxis.setTickLabelsVisible(true);
+		rangeAxis.setTickMarksVisible(false);
+		rangeAxis.setTickLabelsVisible(false);
 
 		ExtendedFastScatterPlot plot = new ExtendedFastScatterPlot(data, domainAxis, rangeAxis, sizes, colors, shapes, polygon);
 		plot.setDomainGridlinesVisible(false);
