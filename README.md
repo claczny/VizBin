@@ -1,13 +1,7 @@
 #DISCLAIMER
 
-Due to the inclusion of JFreeChart, VizBin and its code are now published under the 
-[GNU Lesser General Public Licence (LGPL)](http://www.gnu.org/licenses/lgpl.html).
-Detailed information will follow.
-
-(DEPRECATED
 VizBin and its code are published under the BSD License (4-clause). 
 For more details, s.a. the [sample template](https://spdx.org/licenses/BSD-4-Clause).
-)
 
 THIS SOFTWARE IS PROVIDED BY LCSB AND CONTRIBUTORS "AS IS" AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -30,27 +24,32 @@ This product includes software developed by the Delft University of Technology.
  - License type: Apache License 2.0
  - License page: http://www.apache.org/licenses/LICENSE-2.0
 
-2. log4j-1.2.17.jar: 
+2. mtj-1.0.2-SNAPSHOT-jar-with-dependencies.jar:
+ - Download page: http://code.google.com/p/efficient-java-matrix-library
+ - License type: GNU LGPL  
+ - License page: https://www.gnu.org/licenses/lgpl.html
+
+3. log4j-1.2.17.jar: 
  - Download page: http://logging.apache.org/log4j/1.2/download.html
  - License type: Apache License 2.0
  - License page: http://www.apache.org/licenses/LICENSE-2.0
 
-3. commons-io-2.4.jar:
+4. commons-io-2.4.jar:
  - Download page: http://commons.apache.org/proper/commons-io/download_io.cgi
  - License type: Apache License 2.0
  - License page: http://www.apache.org/licenses/LICENSE-2.0
 
-4. blas.jar (originally blas-0.8.jar):
+5. blas.jar (originally blas-0.8.jar):
  - Download page: http://sourceforge.net/projects/f2j/
  - License type: BSD License (3-clause)
  - License page: http://icl.cs.utk.edu/f2j/software/index.html#license
 
-5. Boost:
+6. Boost:
  - Downlad page: http://www.boost.org/users/download/
  - License type: Boost Software License
  - License page: http://www.boost.org/users/license.html
 
-6. BH-SNE:
+7. BH-SNE:
  - Download page: http://homepage.tudelft.nl/19j49/t-SNE.html
  - License type: BSD License (4-clause)
  - License page: N/A (sample template: https://spdx.org/licenses/BSD-4-Clause)
