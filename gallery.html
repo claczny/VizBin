@@ -27,11 +27,11 @@
 
         <header>
           <h1>VizBin</h1>
-          <h2>The fast and easy-to-use application for human-augmented binning</h2>
+          <h2>The fast and easy-to-use application for visualization and human-augmented binning of metagenomic datasets</h2>
         </header>
 
         <ul id=menu>
-          <li><a href="#downloads">Albertsen2013</a>
+          <li><a href="#albertsen2013">Albertsen2013</a>
           <li><a href="#main_content">Main</a>
           <li><a href="#acknowledgments">Acknowledgments</a>
         </ul>
@@ -48,42 +48,20 @@
         <hr>
 
         <section id="main_content">
-          <h3>
-<a name="welcome-to-the-vizbin-page" class="anchor" href="#welcome-to-the-vizbin-page"><span class="octicon octicon-link"></span></a>Welcome to the VizBin page.</h3>
-
-<p>You can find news and updates about our application for human-augmented binning here.</p>
-
-<p>Stay tuned for updates!</p>
-
         <h3>
-<a name="the-application" class="anchor" href="#the-application"><span class="octicon octicon-link"></span></a>The application.</h3>
-<p>Great news! The Software article manuscript <a href="http://www.microbiomejournal.com/content/3/1/1/abstract">VizBin - an application for reference-independent visualization and human-augmented binning of metagenomic data</a> is published in Microbiome!!! Happy reading. As of now, it is the author copy and the final version will follow soon. The "Download app" button always points to the most recent version of VizBin. The version of VizBin that is part of the manuscript can be downloaded <a href="https://github.com/claczny/VizBin/raw/v0.9/VizBin-dist.jar">here</a>.</p>
+        <a name="welcome-to-the-vizbin-page" class="anchor" href="#welcome-to-the-vizbin-page"><span class="octicon octicon-link"></span></a>Welcome to the VizBin gallery page.</h3>
 
-<p>Below, you can see the screenshot of the visualization window. Each point represents a genomic fragment (here of length >= 1,000nt). The colors are added for visualization purposes only and each color represents an invdividual taxon of origin. The points contained in the red polygon are selected.</p>
-<img src="https://github.com/claczny/VizBin/wiki/Tutorials/pictures/13.png" alt="img:polygonal selection">
-
-        <h3>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage.</h3>
-<p>VizBin is designed with the user in mind. Hence, we kept the default user-interface simple. No fiddling with parameters. All that is needed is a fasta file containing the sequences of interest. A step-by-step guide on using VizBin - including a description of loading the data, selecting points, and exporting the sequences represented by the selected points - is provided on the <a href="https://github.com/claczny/VizBin/wiki/Tutorial">tutorial page</a> of VizBin's github wiki.</p>
-<p>We suggest to visualize fragments that are at least 1,000nt long. Visualizing shorter fragments is also possible but may lead to blurring of distinct clusters, hence the suggested threshold. Filtering sequences based on their length can be done directly from within VizBin, as we explain in the <a href="">tutorial including filtering</a>. Thus, no prior separate filtering step is required.</p>
-<h4>Example datasets</h4>
-<ul>
-    <li><a href="http://claczny.github.io/VizBin/data/37A.zip">37A</a></li>
-    <li><a href="http://claczny.github.io/VizBin/data/37B.zip">37B</a></li>
-    <li><a href="http://claczny.github.io/VizBin/data/SRS013705.zip">SRS013705</a></li>
-    <li><a href="http://claczny.github.io/VizBin/data/AMFJ01.zip">AMFJ01</a></li>
-</ul>
-
-          <h3>
-<a name="the-concept" class="anchor" href="#the-concept"><span class="octicon octicon-link"></span></a>The concept.</h3>
-<p>We explain the concept underlying the intuitive visualization  in detail in the publication <a href="http://www.nature.com/srep/2014/140331/srep04516/full/srep04516.html" ><span>Alignment-free Visualization of Metagenomic Data by Nonlinear Dimension Reduction</span></a>. We also include experiments and results on datasets of varying complexity and size. </p>
-
-<h4>Gist</h4>
-<p>The gist of the concept is that VizBin uses the state-of-the-art nonlinear dimension reduction algorithm <a href="http://homepage.tudelft.nl/19j49/t-SNE.html"><span>BH-SNE</span></a> and appropriate data transformation to visualize (assembled) metagenomic data-inherent clusters.
-<h4>Speed</h4>
-<p>Due to the efficiency of BH-SNE, VizBin can be used on regular desktop computers and returns results very fast (for 30,000 datapoints, it takes less than 4 minutes on a MacBook Pro from 2011). To achieve further speedups, we have integrated parallelization through the <a href="http://openmp.org/wp/">OpenMP API</a> thus allowing to use multiple cores which are included in most modern computers.</p>
+        <p>You can find 2D embeddings and the associated screenshots of a collection of published metagenomic datasets here. More datasets may be included in the future</p>
+        <p>Stay tuned for updates!</p>
 
         </section>
+
+        <section id="albertsen2013">
+        <h3>
+        <a name="albertsen2013" class="anchor" href="#albertsen2013"><span class="octicon octicon-link"></span></a>Albertsen 2013</h3>
+        <img src="gallery/APMI01_gt_2000nt.png" alt="img:albertsen2013">
+        </section>
+
 
         <hr>
 
