@@ -1,6 +1,7 @@
 package lu.uni.lcsb.vizbin;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +9,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -45,7 +50,7 @@ public class ClusterPanel {
 	DataSet							dataSet;
 
 	JFrame							frame;
-	String							filename;
+	private String			filename;
 	private LegendFrame	legendFrame;
 
 	private final class MouseMarker extends MouseAdapter {
@@ -133,9 +138,9 @@ public class ClusterPanel {
 			// Adjust the size if additional length information is given
 			if (sequence.getLength() != null) {
 				double magnification = (sequence.getLength()).doubleValue() - ds.getMinSequenceLength();
-				//magnification = magnification * magnification;
+				// magnification = magnification * magnification;
 				sizes[counter] = (int) (sizes[counter] + (sizes[counter] * magnification));
-				
+
 			}
 			counter++;
 		}
@@ -175,9 +180,24 @@ public class ClusterPanel {
 							.showConfirmDialog(
 									null, selectedCluster.getElements().size() + " sequences selected, export to file? \n\nPress Cancel to remove your selection.",
 									"Export selected cluster", JOptionPane.YES_NO_CANCEL_OPTION);
-					if (option == JOptionPane.YES_OPTION)
-						DataExporter.exportCluster(frame, filename, selectedCluster.getElements());
-					else if (option == JOptionPane.CANCEL_OPTION) {
+					if (option == JOptionPane.YES_OPTION) {
+						File outFile = DataExporter.exportCluster(frame, filename, selectedCluster.getElements());
+
+						try {
+							String png = outFile.getCanonicalPath() + ".png";
+							int width = panel.getWidth();
+							int height = panel.getHeight();
+							BufferedImage image = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_ARGB);
+							Graphics2D g = image.createGraphics();
+							panel.paint(g);
+							panel.printAll(g);
+							File f = new File(png);
+							// png is an image format (like gif or jpg)
+							ImageIO.write(image, "png", f);
+						} catch (IOException ex) {
+							logger.error(ex, ex);
+						}
+					} else if (option == JOptionPane.CANCEL_OPTION) {
 						polygon.clear();
 
 						panel.repaint();

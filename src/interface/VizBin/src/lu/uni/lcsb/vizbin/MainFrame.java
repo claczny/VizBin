@@ -4,7 +4,12 @@ import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,13 +17,21 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu.Separator;
+import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import lcsb.vizbin.service.utils.DataSetUtils;
 import lcsb.vizbin.service.utils.PcaType;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 
@@ -28,37 +41,82 @@ import org.apache.log4j.Logger;
  *         Plugaru</a>
  */
 public class MainFrame extends javax.swing.JFrame {
+	private static final FileNameExtensionFilter	ZIP_FILTER							= new FileNameExtensionFilter("zip files", "zip");
+	private static final FileNameExtensionFilter	TEXT_FILTER							= new FileNameExtensionFilter("text files", "txt");
 
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long											serialVersionUID				= 1L;
+
+	private static final String										SAVEABLE_PROPERTY				= "custom:saveable";
+	private static final String										KMER_DATA_FILE_PROPERTY	= "custom:k-merDataFile";
+	private static final String										WORKSPACE_NAME_PROPERTY	= "custom:workspaceName";
+
+	/**
+	 * Property defining if the project can be saved or not.
+	 */
+	private Boolean																saveable								= false;
+
+	/**
+	 * Property describing where the k-mer frequencies should be saved (for debug
+	 * purposes). If null then this data won't be saved.
+	 */
+	private String																kmerDataFile						= null;
+
+	/**
+	 * Property describing the name of workspace.
+	 */
+	private String																workspaceName						= null;
+
 	// Default values for number of threads, kmer length,
 	// pca columns, theta, perplexity, seed for random number generator and merge
-	private Integer						def_contigLen			= 1000;
-	private Integer						def_numThreads		= 1;
-	private Integer						def_kmer					= 5;
-	private Integer						def_pca						= 50;
-	private Double						def_theta					= 0.5;
-	private Boolean						def_merge					= true;
-	private Boolean						def_log						= true;
-	private Boolean						moreOpionsVisible	= false;
-	private Double						def_perplexity		= 30.;
-	private Integer						def_seed					= 0;
-	private Settings					settings					= null;
-	private String						indatafile				= null;
+	private Integer																def_contigLen						= 1000;
+	private Integer																def_numThreads					= 1;
+	private Integer																def_kmer								= 5;
+	private Integer																def_pca									= 50;
+	private Double																def_theta								= 0.5;
+	private Boolean																def_merge								= true;
+	private Boolean																def_log									= true;
+	private Boolean																moreOpionsVisible				= false;
+	private Double																def_perplexity					= 30.;
+	private Integer																def_seed								= 0;
+	private Settings															settings								= null;
 
-	private File							lastOpenPath			= null;
+	/**
+	 * Data file from which results where computed.
+	 */
+	private String																indatafile							= null;
+	/**
+	 * Labels file from which results where computed.
+	 */
+	private String																inlabelsfile						= null;
+	/**
+	 * Input file from which results where computed.
+	 */
+	private String																inpointsfile						= null;
 
-	private ProcessInput			processor					= null;
+	private File																	lastOpenPath						= null;
 
-	private PcaType						pcaType						= PcaType.EJML;
+	private ProcessInput													processor								= null;
 
-	private Logger						logger						= Logger.getLogger(MainFrame.class.getName());
+	private PcaType																pcaType									= PcaType.EJML;
+
+	private Logger																logger									= Logger.getLogger(MainFrame.class.getName());
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MainFrame() {
 		logger.debug("Init of Main application frame");
+
+		PropertyChangeListener propertyChangeLogger = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent arg0) {
+				logger.debug("Property changed: " + arg0.getPropertyName() + ". Old: " + arg0.getOldValue() + " New: " + arg0.getNewValue());
+			}
+
+		};
+		addPropertyChangeListener(propertyChangeLogger);
+
 		initComponents();
 		// set default values to the GUI
 		this.formatfield_contigLen.setText(Integer.toString(def_contigLen));
@@ -149,17 +207,6 @@ public class MainFrame extends javax.swing.JFrame {
 		statuspanel = new javax.swing.JPanel();
 		label_status = new javax.swing.JLabel();
 		progBar = new javax.swing.JProgressBar();
-		menu = new javax.swing.JMenuBar();
-		menu_file = new javax.swing.JMenu();
-		menu_file_reinitialize = new javax.swing.JMenuItem();
-		menu_file_sep1 = new javax.swing.JPopupMenu.Separator();
-		menu_file_exit = new javax.swing.JMenuItem();
-		menu_options = new javax.swing.JMenu();
-		menu_options_extvis = new javax.swing.JMenuItem();
-		menu_options_drawaxes = new javax.swing.JCheckBoxMenuItem();
-		menu_options_plottopng = new javax.swing.JMenuItem();
-		menu_about = new javax.swing.JMenu();
-		menu_options_showlog = new javax.swing.JMenuItem();
 
 		jMenuItem1.setText("jMenuItem1");
 
@@ -611,6 +658,30 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
 		getContentPane().add(statuspanel, gridBagConstraints);
 
+		setJMenuBar(createMenu());
+
+		pack();
+	}// </editor-fold>//GEN-END:initComponents
+
+	/**
+	 * This method creates menu for the main form.
+	 * 
+	 * @return menu
+	 */
+	protected JMenuBar createMenu() {
+
+		final JMenuBar menu = new JMenuBar();
+		JMenu menu_file = new JMenu();
+		JMenuItem menu_file_reinitialize = new JMenuItem();
+		Separator menu_file_sep1 = new Separator();
+		JMenuItem menu_file_exit = new JMenuItem();
+		JMenu menu_options = new JMenu();
+		JMenuItem menu_options_extvis = new JMenuItem();
+		// menu_options_drawaxes = new javax.swing.JCheckBoxMenuItem();
+		JMenuItem menu_options_plottopng = new JMenuItem();
+		JMenu menu_about = new JMenu();
+		JMenuItem menu_options_showlog = new JMenuItem();
+
 		menu_file.setMnemonic('F');
 		menu_file.setText("File");
 
@@ -622,6 +693,47 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 		});
 		menu_file.add(menu_file_reinitialize);
+
+		final JMenuItem saveProject = new JMenuItem();
+		saveProject.setText("Save workspace");
+		saveProject.setMnemonic('s');
+		saveProject.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveProject();
+			}
+		});
+		saveProject.setEnabled(saveable);
+		saveProject.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+		addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (SAVEABLE_PROPERTY.equals(evt.getPropertyName())) {
+					if ((Boolean) evt.getNewValue()) {
+						saveProject.setEnabled(true);
+					} else {
+						saveProject.setEnabled(false);
+					}
+				}
+			}
+		});
+
+		menu_file.add(saveProject);
+
+		final JMenuItem openProject = new JMenuItem();
+		openProject.setText("Open workspace");
+		openProject.setMnemonic('o');
+		openProject.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openProject();
+			}
+		});
+		openProject.setEnabled(true);
+		openProject.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+
+		menu_file.add(openProject);
+
 		menu_file.add(menu_file_sep1);
 
 		menu_file_exit.setMnemonic('x');
@@ -647,7 +759,7 @@ public class MainFrame extends javax.swing.JFrame {
 		});
 		menu_options.add(menu_options_extvis);
 
-		menu_options_drawaxes.setText("Draw plot axes");
+		// menu_options_drawaxes.setText("Draw plot axes");
 		/*
 		 * Commented - not use for now. Axes drawing needs to be fixed.
 		 */
@@ -661,6 +773,38 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 		});
 		menu_options.add(menu_options_plottopng);
+
+		JMenu debugMenu = new JMenu();
+		debugMenu.setText("Debug");
+		debugMenu.setMnemonic('d');
+		final JCheckBoxMenuItem kmerDataMenu = new JCheckBoxMenuItem();
+		kmerDataMenu.setText("K-mer data");
+		kmerDataMenu.setMnemonic('k');
+		kmerDataMenu.setSelected(false);
+		kmerDataMenu.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (kmerDataMenu.isSelected()) {
+					File output = getSelectedOutputFile(TEXT_FILTER);
+					if (output == null) {
+						kmerDataMenu.setSelected(false);
+						setKmerDataFile(null);
+					} else {
+						try {
+							setKmerDataFile(output.getCanonicalPath());
+						} catch (IOException e1) {
+							logger.error(e1, e1);
+							JOptionPane.showMessageDialog(menu.getComponent(), e1.getMessage(), "Problem with file", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				} else {
+					setKmerDataFile(null);
+				}
+			}
+		});
+		debugMenu.add(kmerDataMenu);
+
+		menu_options.add(debugMenu);
 
 		menu.add(menu_options);
 
@@ -677,24 +821,62 @@ public class MainFrame extends javax.swing.JFrame {
 		menu_about.add(menu_options_showlog);
 
 		menu.add(menu_about);
+		return menu;
+	}
 
-		setJMenuBar(menu);
+	protected void saveProject() {
+		File output = getSelectedOutputFile(ZIP_FILTER);
+		if (output != null) {
+			Appender app = Logger.getRootLogger().getAppender("R");
+			String logFile = null;
+			if (app instanceof FileAppender && app != null) {
+				logFile = ((FileAppender) app).getFile();
+			} else {
+				logger.error("Cannot find log appender");
+			}
+			ZipProject zp = new ZipProject(indatafile, inlabelsfile, inpointsfile, logFile);
+			try {
+				if (new File(output.getCanonicalPath()).exists()) {
+					new File(output.getCanonicalPath()).delete();
+				}
+				zp.saveTo(output.getCanonicalPath());
+			} catch (IOException e) {
+				logger.error(e, e);
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Problem with file", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
 
-		pack();
-	}// </editor-fold>//GEN-END:initComponents
+	protected void openProject() {
+		String input = getSelectedInputFile(ZIP_FILTER);
+		if (input != null) {
+			ZipProject zip;
+			try {
+				zip = new ZipProject(input);
+				this.textfield_file.setText(zip.getDataInputFile());
+				if (zip.getLabelInputFile() != null) {
+					this.textfield_labels.setText(zip.getLabelInputFile());
+				}
+				this.textfield_points_file.setText(zip.getPointInputFile());
+				File f = new File(input);
+				setWorkspaceName(f.getName());
+			} catch (IOException e) {
+				logger.error(e, e);
+				JOptionPane.showMessageDialog(this, e.getMessage(), "Problem with file", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
 
 	private void button_processActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_processActionPerformed
 		Integer contigLen = def_contigLen;
 		Integer numThreads = def_numThreads;
-		String inlabelsfile;
-		String inpointsfile;
 		Integer kmer = def_kmer;
 		Integer pca = def_pca;
 		Double theta = def_theta;
 		Double perplexity = def_perplexity;
 		Integer seed = def_seed;
 		Boolean merge = def_merge;
-		Boolean log= def_log;
+		Boolean log = def_log;
 
 		indatafile = this.textfield_file.getText();
 		if (indatafile.isEmpty()) {
@@ -765,16 +947,48 @@ public class MainFrame extends javax.swing.JFrame {
 			logger.warn("Invalid seed value: " + this.formatfield_seed.getText() + ". Using value: " + seed);
 		}
 
-		if (processor == null || processor.getProcessEnded().get() == true) {
+		if (processor == null || processor.getProcessEnded() == true) {
 			processor = new ProcessInput(
 					indatafile, contigLen, numThreads, inpointsfile, inlabelsfile, kmer, merge, pca, theta, perplexity, seed, this.label_status, this.progBar,
-					this.tabpanel, this, settings.binFile, menu_options_drawaxes.isSelected(), pcaType, log);
+					this.tabpanel, this, settings.binFile,
+					// this should be refactorized when fixed (access by property not the
+					// menu option)
+					// menu_options_drawaxes.isSelected(),
+					false, pcaType, log);
+
+			processor.setKmerDebugFile(kmerDataFile);
+			processor.setName(getWorkspaceName());
+
+			processor.addPropertyChangeListener(new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (ProcessInput.FINISHED_PROPERTY.equals(evt.getPropertyName())) {
+						boolean saveable = false;
+						if ((Boolean) evt.getNewValue() && processor.getProgressVal() == 100) {
+							saveable = true;
+						}
+						setSaveable(saveable);
+					}
+				}
+			});
+			processor.addPropertyChangeListener(new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (ProcessInput.POINTS_FILE_PROPERTY.equals(evt.getPropertyName())) {
+						setInpointsfile((String) evt.getNewValue());
+					}
+				}
+			});
+
 			processor.doProcess();
 		}
 	}// GEN-LAST:event_button_processActionPerformed
 
-	private String getSelectedInputFile() {
+	private String getSelectedInputFile(FileNameExtensionFilter filter) {
 		final JFileChooser fc = new JFileChooser();
+		if (filter != null) {
+			fc.setFileFilter(filter);
+		}
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
 		if (lastOpenPath != null)
@@ -793,8 +1007,11 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}
 
-	private File getSelectedOutputFile() {
+	private File getSelectedOutputFile(FileNameExtensionFilter filter) {
 		final JFileChooser fc = new JFileChooser();
+		if (filter != null) {
+			fc.setFileFilter(filter);
+		}
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
 		if (lastOpenPath != null)
@@ -817,23 +1034,33 @@ public class MainFrame extends javax.swing.JFrame {
 	}
 
 	private void button_fileActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_fileActionPerformed
-		this.textfield_file.setText(getSelectedInputFile());
+		this.textfield_file.setText(getSelectedInputFile(null));
+		setSaveable(false);
+		File f = new File(this.textfield_file.getText());
+		setWorkspaceName(f.getName());
+
 	}// GEN-LAST:event_button_fileActionPerformed
 
 	private void textfield_fileMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_textfield_fileMouseClicked
-		this.textfield_file.setText(getSelectedInputFile());
+		this.textfield_file.setText(getSelectedInputFile(null));
+		setSaveable(false);
+		File f = new File(this.textfield_file.getText());
+		setWorkspaceName(f.getName());
 	}// GEN-LAST:event_textfield_fileMouseClicked
 
 	private void button_points_fileActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_points_fileActionPerformed
-		this.textfield_points_file.setText(getSelectedInputFile());
+		this.textfield_points_file.setText(getSelectedInputFile(null));
+		setSaveable(false);
 	}// GEN-LAST:event_button_points_fileActionPerformed
 
 	private void textfield_points_fileMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_textfield_points_fileMouseClicked
-		this.textfield_points_file.setText(getSelectedInputFile());
+		this.textfield_points_file.setText(getSelectedInputFile(null));
+		setSaveable(false);
 	}// GEN-LAST:event_textfield_points_fileMouseClicked
 
 	private void button_labelsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_labelsActionPerformed
-		this.textfield_labels.setText(getSelectedInputFile());
+		this.textfield_labels.setText(getSelectedInputFile(null));
+		setSaveable(false);
 	}// GEN-LAST:event_button_labelsActionPerformed
 
 	private void button_more_optionsActionPerformed(ActionEvent evt) {
@@ -894,7 +1121,8 @@ public class MainFrame extends javax.swing.JFrame {
 	}
 
 	private void textfield_labelsMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_textfield_labelsMouseClicked
-		this.textfield_labels.setText(getSelectedInputFile());
+		this.textfield_labels.setText(getSelectedInputFile(null));
+		setSaveable(false);
 	}// GEN-LAST:event_textfield_labelsMouseClicked
 
 	private void menu_file_exitActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menu_file_exitActionPerformed
@@ -952,7 +1180,11 @@ public class MainFrame extends javax.swing.JFrame {
 	private void popOutVisWindow(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_popOutVisWindow
 		if (DataSetUtils.isIsDataSetCreated()) {
 			JFrame frame = new JFrame("Visualisation");
-			ClusterPanel panel = new ClusterPanel(DataSetUtils.getDataSet(), indatafile, this, menu_options_drawaxes.isSelected());
+			ClusterPanel panel = new ClusterPanel(DataSetUtils.getDataSet(), indatafile, this,
+			// this should be refactorized when fixed (access by property not the
+			// menu option)
+			// menu_options_drawaxes.isSelected(),
+					false);
 			frame.getContentPane().add(panel.getChartPanel());
 			frame.pack();
 			frame.setVisible(true);
@@ -978,7 +1210,7 @@ public class MainFrame extends javax.swing.JFrame {
 			contentPane.printAll(graphics2DContext);
 			graphics2DContext.dispose();
 			try {
-				File outFile = getSelectedOutputFile();
+				File outFile = getSelectedOutputFile(null);
 				if (outFile != null)
 					ImageIO.write(bufferedImage, "png", outFile);
 			} catch (IOException ex) {
@@ -1029,69 +1261,134 @@ public class MainFrame extends javax.swing.JFrame {
 
 	}
 
+	/**
+	 * @return the saveable
+	 * @see #saveable
+	 */
+	public Boolean getSaveable() {
+		return saveable;
+	}
+
+	/**
+	 * @param saveable
+	 *          the saveable to set
+	 * @see #saveable
+	 */
+	public void setSaveable(Boolean saveable) {
+		Boolean oldValue = this.saveable;
+		this.saveable = saveable;
+		firePropertyChange(SAVEABLE_PROPERTY, oldValue, saveable);
+	}
+
+	/**
+	 * @return the inpointsfile
+	 * @see #inpointsfile
+	 */
+	public String getInpointsfile() {
+		return inpointsfile;
+	}
+
+	/**
+	 * @param inpointsfile
+	 *          the inpointsfile to set
+	 * @see #inpointsfile
+	 */
+	private void setInpointsfile(String inpointsfile) {
+		this.inpointsfile = inpointsfile;
+	}
+
+	/**
+	 * @return the kmerDataFile
+	 * @see #kmerDataFile
+	 */
+	public String getKmerDataFile() {
+		return kmerDataFile;
+	}
+
+	/**
+	 * @param kmerDataFile
+	 *          the kmerDataFile to set
+	 * @see #kmerDataFile
+	 */
+	public void setKmerDataFile(String kmerDataFile) {
+		String oldValue = this.kmerDataFile;
+		this.kmerDataFile = kmerDataFile;
+		firePropertyChange(KMER_DATA_FILE_PROPERTY, oldValue, kmerDataFile);
+	}
+
+	/**
+	 * @return the workspaceName
+	 * @see #workspaceName
+	 */
+	public String getWorkspaceName() {
+		return workspaceName;
+	}
+
+	/**
+	 * @param workspaceName
+	 *          the workspaceName to set
+	 * @see #workspaceName
+	 */
+	public void setWorkspaceName(String workspaceName) {
+		String oldValue = this.workspaceName;
+		this.workspaceName = workspaceName;
+		firePropertyChange(WORKSPACE_NAME_PROPERTY, oldValue, workspaceName);
+	}
+
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton								button_file;
-	private javax.swing.JButton								button_points_file;
-	private javax.swing.JButton								button_labels;
-	private javax.swing.JButton								button_more_options;
-	private javax.swing.JButton								button_load_plugin;
-	private javax.swing.JButton								button_process;
-	private javax.swing.JButton								button_reload_plugins;
+	private javax.swing.JButton							button_file;
+	private javax.swing.JButton							button_points_file;
+	private javax.swing.JButton							button_labels;
+	private javax.swing.JButton							button_more_options;
+	private javax.swing.JButton							button_load_plugin;
+	private javax.swing.JButton							button_process;
+	private javax.swing.JButton							button_reload_plugins;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JComboBox							combobox_merge;
+	private javax.swing.JComboBox						combobox_merge;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JComboBox							combobox_log;
+	private javax.swing.JComboBox						combobox_log;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JComboBox							combobox_pca;
-	private javax.swing.Box.Filler						filler1;
-	private javax.swing.JFormattedTextField		formatfield_contigLen;
-	private javax.swing.JFormattedTextField		formatfield_numThreads;
-	private javax.swing.JFormattedTextField		formatfield_kmer;
-	private javax.swing.JFormattedTextField		formatfield_pca;
-	private javax.swing.JFormattedTextField		formatfield_perplexity;
-	private javax.swing.JFormattedTextField		formatfield_seed;
-	private javax.swing.JFormattedTextField		formatfield_theta;
-	private javax.swing.JMenuItem							jMenuItem1;
-	private javax.swing.JScrollPane						jScrollPane1;
-	private javax.swing.JLabel								label_contigLen;
-	private javax.swing.JLabel								label_numThreads;
-	private javax.swing.JLabel								label_file;
-	private javax.swing.JLabel								label_points_file;
-	private javax.swing.JLabel								label_kmer;
-	private javax.swing.JLabel								label_labels;
-	private javax.swing.JLabel								label_merge;
-	private javax.swing.JLabel								label_pca_dimensions;
-	private javax.swing.JLabel								label_perplexity;
-	private javax.swing.JLabel								label_seed;
-	private javax.swing.JLabel								label_pca_library;
-	private javax.swing.JLabel								label_log;
-	private javax.swing.JLabel								label_plugin_list;
-	private javax.swing.JLabel								label_plugin_opts;
-	private javax.swing.JLabel								label_status;
-	private javax.swing.JLabel								label_theta;
-	private javax.swing.JMenuBar							menu;
-	private javax.swing.JMenu									menu_about;
-	private javax.swing.JMenu									menu_file;
-	private javax.swing.JMenuItem							menu_file_exit;
-	private javax.swing.JMenuItem							menu_file_reinitialize;
-	private javax.swing.JPopupMenu.Separator	menu_file_sep1;
-	private javax.swing.JMenu									menu_options;
-	private javax.swing.JCheckBoxMenuItem			menu_options_drawaxes;
-	private javax.swing.JMenuItem							menu_options_extvis;
-	private javax.swing.JMenuItem							menu_options_plottopng;
-	private javax.swing.JMenuItem							menu_options_showlog;
-	private javax.swing.JPanel								panel_plugin_options;
+	private javax.swing.JComboBox						combobox_pca;
+	private javax.swing.Box.Filler					filler1;
+	private javax.swing.JFormattedTextField	formatfield_contigLen;
+	private javax.swing.JFormattedTextField	formatfield_numThreads;
+	private javax.swing.JFormattedTextField	formatfield_kmer;
+	private javax.swing.JFormattedTextField	formatfield_pca;
+	private javax.swing.JFormattedTextField	formatfield_perplexity;
+	private javax.swing.JFormattedTextField	formatfield_seed;
+	private javax.swing.JFormattedTextField	formatfield_theta;
+	private javax.swing.JMenuItem						jMenuItem1;
+	private javax.swing.JScrollPane					jScrollPane1;
+	private javax.swing.JLabel							label_contigLen;
+	private javax.swing.JLabel							label_numThreads;
+	private javax.swing.JLabel							label_file;
+	private javax.swing.JLabel							label_points_file;
+	private javax.swing.JLabel							label_kmer;
+	private javax.swing.JLabel							label_labels;
+	private javax.swing.JLabel							label_merge;
+	private javax.swing.JLabel							label_pca_dimensions;
+	private javax.swing.JLabel							label_perplexity;
+	private javax.swing.JLabel							label_seed;
+	private javax.swing.JLabel							label_pca_library;
+	private javax.swing.JLabel							label_log;
+	private javax.swing.JLabel							label_plugin_list;
+	private javax.swing.JLabel							label_plugin_opts;
+	private javax.swing.JLabel							label_status;
+	private javax.swing.JLabel							label_theta;
+	// private javax.swing.JCheckBoxMenuItem menu_options_drawaxes;
+	private javax.swing.JPanel							panel_plugin_options;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JList									plugin_list;
-	private javax.swing.JProgressBar					progBar;
-	private javax.swing.JPanel								statuspanel;
-	private javax.swing.JPanel								tab_panel_main;
-	private javax.swing.JPanel								tab_panel_plugins;
-	private javax.swing.JPanel								tab_panel_vis;
-	private javax.swing.JTabbedPane						tabpanel;
-	private javax.swing.JTextField						textfield_file;
-	private javax.swing.JTextField						textfield_points_file;
-	private javax.swing.JTextField						textfield_labels;
+	private javax.swing.JList								plugin_list;
+	private javax.swing.JProgressBar				progBar;
+	private javax.swing.JPanel							statuspanel;
+	private javax.swing.JPanel							tab_panel_main;
+	private javax.swing.JPanel							tab_panel_plugins;
+	private javax.swing.JPanel							tab_panel_vis;
+	private javax.swing.JTabbedPane					tabpanel;
+	private javax.swing.JTextField					textfield_file;
+	private javax.swing.JTextField					textfield_points_file;
+	private javax.swing.JTextField					textfield_labels;
+
 	// End of variables declaration//GEN-END:variables
 
 }

@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="dist/lib/blas.jar"/>
-	<classpathentry kind="lib" path="dist/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="dist/lib/commons-io-2.4.jar" sourcepath="C:/Users/piotr.gawron/.m2/repository/commons-io/commons-io/2.4/commons-io-2.4-sources.jar"/>
 	<classpathentry kind="lib" path="dist/lib/ejml-0.23.jar"/>
 	<classpathentry kind="lib" path="dist/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/blas.jar"/>

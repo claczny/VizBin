@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JFrame;
@@ -30,30 +29,40 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
  *         Plugaru</a>
  */
-public class ProcessInput {
+public class ProcessInput extends ObjectWithProperties {
+	public final static String		FINISHED_PROPERTY			= "FINISHED";
 
-	private Logger						logger				= Logger.getLogger(ProcessInput.class.getName());
+	protected static final String	POINTS_FILE_PROPERTY	= "POINTS_FILE";
 
-	private String						indatafile, filteredSequencesFile, inpointsfile, inlabelsfile;
-	private Integer						kMerLength, pcaColumns, contigLen, numThreads, seed;
-	private PcaType						pcaAlgorithmType;
-	private Double						theta, perplexity;
-	private Boolean						merge;
+	private String								name;
 
-	private volatile JLabel		label_status;
-	private JProgressBar			progBar;
-	private JTabbedPane				tabPane;
-	private JFrame						parentFrame;
-	private File							tsneCmd;
-	private boolean						drawAxes;
-	private boolean						log;
+	private Logger								logger								= Logger.getLogger(ProcessInput.class.getName());
 
-	private DataSet						dataSet_orig	= null;
-	private DataSet						dataSet				= null;
+	private String								indatafile;
+	private String								filteredSequencesFile;
+	private String								inpointsfile;
+	private String								inlabelsfile;
 
-	private volatile Integer	progressVal;
+	private String								kmerDebugFile;
+	private Integer								kMerLength, pcaColumns, contigLen, numThreads, seed;
+	private PcaType								pcaAlgorithmType;
+	private Double								theta, perplexity;
+	private Boolean								merge;
 
-	private AtomicBoolean			processEnded;
+	private volatile JLabel				label_status;
+	private JProgressBar					progBar;
+	private JTabbedPane						tabPane;
+	private JFrame								parentFrame;
+	private File									tsneCmd;
+	private boolean								drawAxes;
+	private boolean								log;
+
+	private DataSet								dataSet_orig					= null;
+	private DataSet								dataSet								= null;
+
+	private volatile Integer			progressVal;
+
+	private Boolean								processEnded					= true;
 
 	ProcessInput(String _indatafile, Integer _contigLen, Integer _numThreads, String _inpointsfile, String _inlabelsfile, Integer _kmer, Boolean _merge,
 			Integer _pca, Double _theta, Double _perplexity, Integer _seed, JLabel _status, JProgressBar _progBar, JTabbedPane tabPane, JFrame _parentFrame,
@@ -78,7 +87,6 @@ public class ProcessInput {
 		tsneCmd = _tsneCmd;
 		drawAxes = _drawAxes;
 		progressVal = 0;
-		processEnded = new AtomicBoolean(true);
 		pcaAlgorithmType = pcaType;
 		log = _log;
 	}
@@ -110,7 +118,7 @@ public class ProcessInput {
 		new Thread() {
 			public void run() {
 
-				processEnded.set(false);
+				setProcessEnded(false);
 				String localPath = System.getProperty("java.io.tmpdir");
 				logger.debug(localPath);
 				try {
@@ -127,7 +135,7 @@ public class ProcessInput {
 					if (dataSet == null) {
 						JOptionPane.showMessageDialog(null, "Error during loading data from given file! Check the logs.", "alert", JOptionPane.ERROR_MESSAGE);
 						updateStatus("", -100);
-						processEnded.set(true);
+						setProcessEnded(true);
 						return;
 					}
 					// for (int i=0;i<dataSet.getSequences().size(); i++)
@@ -142,6 +150,10 @@ public class ProcessInput {
 						DataSetUtils.normalizeDescVectors(dataSet, kMerLength);
 						updateStatus("Clr normalization...", 5);
 						DataSetUtils.createClrData(dataSet);
+						logger.debug(kmerDebugFile);
+						if (kmerDebugFile != null) {
+							DataSetUtils.saveClrData(dataSet, kmerDebugFile);
+						}
 						updateStatus("Running PCA... (" + pcaAlgorithmType.getName() + ")", 5);
 						DataSetUtils.computePca(dataSet, pcaColumns, pcaAlgorithmType);
 						updateStatus("Running T-SNE...", 15);
@@ -155,7 +167,7 @@ public class ProcessInput {
 							throw new FileNotFoundException("points.txt file not found. Probably bh_tsne binaries execution failed.");
 						}
 
-						inpointsfile = directory + "/points.txt";
+						setInpointsfile(directory + "/points.txt");
 					}
 
 					File flabels = null;
@@ -176,7 +188,7 @@ public class ProcessInput {
 					// meaningful int-coordinates form double points.
 					// TODO: Refactor such that this is done internally in
 					// ClusterFactory.createClusterFromPolygon()
-					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale,log);
+					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale, log);
 					updateStatus("Creating png files....", 5);
 					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
 					converter.createPngDirectory(directory + "/images/", 2);
@@ -196,7 +208,7 @@ public class ProcessInput {
 					tabPane.setComponentAt(1, cp.getChartPanel());
 					// NotificationCenter.addObserver(cp);
 					// Show data points
-					JFrame frame = new JFrame("Cluster");
+					JFrame frame = new JFrame("Cluster " + name);
 					DataSetUtils.setDrawingFrame(frame);
 					// frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 					ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, parentFrame, drawAxes);
@@ -223,7 +235,7 @@ public class ProcessInput {
 					updateStatus("Error! Check the logs.");
 					logger.error(e.getMessage(), e);
 				}
-				processEnded.set(true);
+				setProcessEnded(true);
 			}
 		}.start();
 	}
@@ -258,10 +270,6 @@ public class ProcessInput {
 		return dataSet;
 	}
 
-	public AtomicBoolean getProcessEnded() {
-		return processEnded;
-	}
-
 	/**
 	 * @return the pcaAlgorithmType
 	 * @see #pcaAlgorithmType
@@ -278,4 +286,85 @@ public class ProcessInput {
 	public void setPcaAlgorithmType(PcaType pcaAlgorithmType) {
 		this.pcaAlgorithmType = pcaAlgorithmType;
 	}
+
+	/**
+	 * @param processEnded
+	 *          the processEnded to set
+	 * @see #processEnded
+	 */
+	private void setProcessEnded(Boolean processEnded) {
+		Boolean oldValue = this.processEnded;
+		this.processEnded = processEnded;
+		firePropertyChange(FINISHED_PROPERTY, oldValue, processEnded);
+	}
+
+	/**
+	 * @return the processEnded
+	 * @see #processEnded
+	 */
+	public Boolean getProcessEnded() {
+		return processEnded;
+	}
+
+	/**
+	 * @return the progressVal
+	 * @see #progressVal
+	 */
+	public Integer getProgressVal() {
+		return progressVal;
+	}
+
+	/**
+	 * @return the inpointsfile
+	 * @see #inpointsfile
+	 */
+	public String getInpointsfile() {
+		return inpointsfile;
+	}
+
+	/**
+	 * @param inpointsfile
+	 *          the inpointsfile to set
+	 * @see #inpointsfile
+	 */
+	public void setInpointsfile(String inpointsfile) {
+		String oldValue = this.inpointsfile;
+		this.inpointsfile = inpointsfile;
+		firePropertyChange(POINTS_FILE_PROPERTY, oldValue, inpointsfile);
+	}
+
+	/**
+	 * @return the kmerDebugFile
+	 * @see #kmerDebugFile
+	 */
+	public String getKmerDebugFile() {
+		return kmerDebugFile;
+	}
+
+	/**
+	 * @param kmerDebugFile
+	 *          the kmerDebugFile to set
+	 * @see #kmerDebugFile
+	 */
+	public void setKmerDebugFile(String kmerDebugFile) {
+		this.kmerDebugFile = kmerDebugFile;
+	}
+
+	/**
+	 * @return the name
+	 * @see #name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *          the name to set
+	 * @see #name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }
