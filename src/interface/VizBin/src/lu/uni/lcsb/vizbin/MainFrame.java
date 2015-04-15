@@ -826,7 +826,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	protected void saveProject() {
 		File output = getSelectedOutputFile(ZIP_FILTER);
-		if (output != null) {
+		if (output != null && !output.equals("")) {
 			Appender app = Logger.getRootLogger().getAppender("R");
 			String logFile = null;
 			if (app instanceof FileAppender && app != null) {
@@ -849,7 +849,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	protected void openProject() {
 		String input = getSelectedInputFile(ZIP_FILTER);
-		if (input != null) {
+		if (input != null && !input.equals("")) {
 			ZipProject zip;
 			try {
 				zip = new ZipProject(input);
