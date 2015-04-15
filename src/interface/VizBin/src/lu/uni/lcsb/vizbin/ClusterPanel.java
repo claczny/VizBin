@@ -130,6 +130,13 @@ public class ClusterPanel {
 				alpha = alpha * alpha;
 				colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
 			}
+			else // Either coverage OR GC content
+				if (sequence.getGc() != null) {
+					alpha = (sequence.getGc()).floatValue();
+					alpha = alpha * alpha;
+					colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
+				}
+
 			if (sequence.getMarker() != null && sequence.getMarker()) {
 				shapes[counter] = PointShape.STAR;
 			}
@@ -145,15 +152,15 @@ public class ClusterPanel {
 			counter++;
 		}
 
-		final NumberAxis domainAxis = new NumberAxis("X");
+		final NumberAxis domainAxis = new NumberAxis("");
 		domainAxis.setAutoRangeIncludesZero(false);
-		domainAxis.setTickMarksVisible(true);
-		domainAxis.setTickLabelsVisible(true);
+		domainAxis.setTickMarksVisible(false);
+		domainAxis.setTickLabelsVisible(false);
 
-		final NumberAxis rangeAxis = new NumberAxis("Y");
+		final NumberAxis rangeAxis = new NumberAxis("");
 		rangeAxis.setAutoRangeIncludesZero(false);
-		rangeAxis.setTickMarksVisible(true);
-		rangeAxis.setTickLabelsVisible(true);
+		rangeAxis.setTickMarksVisible(false);
+		rangeAxis.setTickLabelsVisible(false);
 
 		ExtendedFastScatterPlot plot = new ExtendedFastScatterPlot(data, domainAxis, rangeAxis, sizes, colors, shapes, polygon);
 		plot.setDomainGridlinesVisible(false);
