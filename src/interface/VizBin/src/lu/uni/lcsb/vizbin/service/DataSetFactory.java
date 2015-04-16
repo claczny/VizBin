@@ -196,9 +196,19 @@ public class DataSetFactory {
 
 		Collection<Integer> filteredSequences = filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen);
 
-		return createDataSetFromFastaFile(
-				new FileInputStream(filteredSequencesFileName), labelFileName.isEmpty() ? null : new FileInputStream(labelFileName), pointsFileName.isEmpty() ? null
-						: new FileInputStream(pointsFileName), log, filteredSequences);
+		FileInputStream sequencesFis = new FileInputStream(filteredSequencesFileName);
+
+		FileInputStream labelFis = null;
+		if (labelFileName != null) {
+			labelFis = new FileInputStream(labelFileName);
+		}
+
+		FileInputStream pointsFis = null;
+		if (pointsFileName != null) {
+			pointsFis = new FileInputStream(pointsFileName);
+		}
+
+		return createDataSetFromFastaFile(sequencesFis, labelFis, pointsFis, log, filteredSequences);
 
 	}
 

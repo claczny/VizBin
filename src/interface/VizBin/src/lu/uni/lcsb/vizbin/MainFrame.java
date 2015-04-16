@@ -69,18 +69,8 @@ public class MainFrame extends javax.swing.JFrame {
 	 */
 	private String																workspaceName						= null;
 
-	// Default values for number of threads, kmer length,
-	// pca columns, theta, perplexity, seed for random number generator and merge
-	private Integer																def_contigLen						= 1000;
-	private Integer																def_numThreads					= 1;
-	private Integer																def_kmer								= 5;
-	private Integer																def_pca									= 50;
-	private Double																def_theta								= 0.5;
-	private Boolean																def_merge								= true;
 	private Boolean																def_log									= true;
 	private Boolean																moreOpionsVisible				= false;
-	private Double																def_perplexity					= 30.;
-	private Integer																def_seed								= 0;
 	private Settings															settings								= null;
 
 	/**
@@ -119,18 +109,18 @@ public class MainFrame extends javax.swing.JFrame {
 
 		initComponents();
 		// set default values to the GUI
-		this.formatfield_contigLen.setText(Integer.toString(def_contigLen));
-		this.formatfield_numThreads.setText(Integer.toString(def_numThreads));
-		this.formatfield_kmer.setText(Integer.toString(def_kmer));
-		this.formatfield_pca.setText(Integer.toString(def_pca));
-		this.formatfield_theta.setText(Double.toString(def_theta));
-		this.formatfield_perplexity.setText(Double.toString(def_perplexity));
-		this.formatfield_seed.setText(Integer.toString(def_seed));
+		this.formatfield_contigLen.setText(Integer.toString(Config.DEFAULT_CONTIG_LENGTH));
+		this.formatfield_numThreads.setText(Integer.toString(Config.DEFAULT_THREAD_NUM));
+		this.formatfield_kmer.setText(Integer.toString(Config.DEFAULT_KMER_LENGTH));
+		this.formatfield_pca.setText(Integer.toString(Config.DEFAULT_PCA_COLUMNS));
+		this.formatfield_theta.setText(Double.toString(Config.DEFAULT_THETA));
+		this.formatfield_perplexity.setText(Double.toString(Config.DEFAULT_PERPLEXILITY));
+		this.formatfield_seed.setText(Integer.toString(Config.DEFAULT_SEED));
 		this.combobox_merge.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
 		this.combobox_log.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
 		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.MTJ.getName(), PcaType.EJML.getName() }));
 		this.combobox_pca.setSelectedIndex(0);
-		if (def_merge) {
+		if (Config.DEFAULT_MERGE) {
 			this.combobox_merge.setSelectedIndex(0);
 		} else {
 			this.combobox_merge.setSelectedIndex(1);
@@ -869,14 +859,14 @@ public class MainFrame extends javax.swing.JFrame {
 	}
 
 	private void button_processActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_processActionPerformed
-		Integer contigLen = def_contigLen;
-		Integer numThreads = def_numThreads;
-		Integer kmer = def_kmer;
-		Integer pca = def_pca;
-		Double theta = def_theta;
-		Double perplexity = def_perplexity;
-		Integer seed = def_seed;
-		Boolean merge = def_merge;
+		Integer contigLen = Config.DEFAULT_CONTIG_LENGTH;
+		Integer numThreads = Config.DEFAULT_THREAD_NUM;
+		Integer kmer = Config.DEFAULT_KMER_LENGTH;
+		Integer pca = Config.DEFAULT_PCA_COLUMNS;
+		Double theta = Config.DEFAULT_THETA;
+		Double perplexity = Config.DEFAULT_PERPLEXILITY;
+		Integer seed = Config.DEFAULT_SEED;
+		Boolean merge = Config.DEFAULT_MERGE;
 		Boolean log = def_log;
 
 		indatafile = this.textfield_file.getText();
@@ -949,39 +939,52 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 
 		if (processor == null || processor.getProcessEnded() == true) {
-			processor = new ProcessInput(
-					indatafile, contigLen, numThreads, inpointsfile, inlabelsfile, kmer, merge, pca, theta, perplexity, seed, this.label_status, this.progBar,
-					this.tabpanel, this, settings.binFile,
-					// this should be refactorized when fixed (access by property not the
-					// menu option)
-					// menu_options_drawaxes.isSelected(),
-					false, pcaType, log);
+			try {
+				ProcessParameters params = new ProcessParameters().inputFastaFile(indatafile).//
+				contigLength(contigLen).//
+						threads(numThreads).//
+						inputPointFile(inpointsfile).//
+						inputLabelFile(inlabelsfile).//
+						kMerLength(kmer).//
+						merge(merge).//
+						pcaColumns(pca).//
+						theta(theta).//
+						perplexity(perplexity).//
+						seed(seed).//
+						pcaAlgorithmType(pcaType).//
+						kmerDebugFile(kmerDataFile).//
+						extendedLogs(log)//
+				;
+				ProcessGuiParameters guiParams = new ProcessGuiParameters(this.label_status, this.progBar, this.tabpanel, this, false);
+				processor = new ProcessInput(params, guiParams, settings.binFile);
 
-			processor.setKmerDebugFile(kmerDataFile);
-			processor.setName(getWorkspaceName());
+				processor.setName(getWorkspaceName());
 
-			processor.addPropertyChangeListener(new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (ProcessInput.FINISHED_PROPERTY.equals(evt.getPropertyName())) {
-						boolean saveable = false;
-						if ((Boolean) evt.getNewValue() && processor.getProgressVal() == 100) {
-							saveable = true;
+				processor.addPropertyChangeListener(new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (ProcessInput.FINISHED_PROPERTY.equals(evt.getPropertyName())) {
+							boolean saveable = false;
+							if ((Boolean) evt.getNewValue() && processor.getProgressVal() == 100) {
+								saveable = true;
+							}
+							setSaveable(saveable);
 						}
-						setSaveable(saveable);
 					}
-				}
-			});
-			processor.addPropertyChangeListener(new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (ProcessInput.POINTS_FILE_PROPERTY.equals(evt.getPropertyName())) {
-						setInpointsfile((String) evt.getNewValue());
+				});
+				processor.addPropertyChangeListener(new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (ProcessInput.POINTS_FILE_PROPERTY.equals(evt.getPropertyName())) {
+							setInpointsfile((String) evt.getNewValue());
+						}
 					}
-				}
-			});
+				});
 
-			processor.doProcess();
+				processor.doProcess();
+			} catch (Exception e) {
+				logger.error("Problem with initializing compuatations...", e);
+			}
 		}
 	}// GEN-LAST:event_button_processActionPerformed
 
