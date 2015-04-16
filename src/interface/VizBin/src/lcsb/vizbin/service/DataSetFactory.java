@@ -15,27 +15,31 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
 
 import lcsb.vizbin.data.DataSet;
 import lcsb.vizbin.data.Sequence;
 
+import org.apache.log4j.Logger;
+
 public class DataSetFactory {
 	static Logger	logger	= Logger.getLogger(DataSetFactory.class);
 
-	public static DataSet createDataSetFromPointFile(String fileName, String labelFileName, double scale,boolean log) throws IOException, InvalidMetaFileException {
+	public static DataSet createDataSetFromPointFile(String fileName, String labelFileName, double scale, boolean log) throws IOException,
+			InvalidMetaFileException {
 		InputStream labelIS = null;
 		if (labelFileName != null) {
 			if (new File(labelFileName).exists()) {
 				labelIS = new FileInputStream(new File(labelFileName));
 			}
 		}
-		return createDataSetFromPointFile(new FileInputStream(fileName), labelIS, scale,log);
+		return createDataSetFromPointFile(new FileInputStream(fileName), labelIS, scale, log);
 	}
 
 	public static DataSet createDataSetFromPointFile(InputStream is, InputStream labelIS, double scale, boolean log) throws IOException,
@@ -207,11 +211,11 @@ public class DataSetFactory {
 	public static DataSet createDataSetFromFastaFile(String fileName, String filteredSequencesFileName, String labelFileName, String pointsFileName,
 			Integer contigLen, boolean log) throws IOException, InvalidMetaFileException {
 
-		filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen);
+		Collection<Integer> filteredSequences = filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen);
 
 		return createDataSetFromFastaFile(
 				new FileInputStream(filteredSequencesFileName), labelFileName.isEmpty() ? null : new FileInputStream(labelFileName), pointsFileName.isEmpty() ? null
-						: new FileInputStream(pointsFileName), log);
+						: new FileInputStream(pointsFileName), log, filteredSequences);
 
 	}
 
@@ -223,7 +227,21 @@ public class DataSetFactory {
 		return -1;
 	}
 
-	public static void filterSequences(InputStream is, OutputStream os, Integer contigLen) throws IOException {
+	/**
+	 * Filters input seuences based on contig length.
+	 * 
+	 * @param is
+	 *          input stream from which data is read
+	 * @param os
+	 *          output stream where the filtered data is saved
+	 * @param contigLen
+	 *          minimum conting length for sequences that should be saved
+	 * @return set of integers defining which sequences were skipped (0-based)
+	 * @throws IOException
+	 *           thrown when there is a problem with input/output stream
+	 */
+	public static Set<Integer> filterSequences(InputStream is, OutputStream os, Integer contigLen) throws IOException {
+		Set<Integer> filteresSequences = new HashSet<Integer>();
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
@@ -232,6 +250,7 @@ public class DataSetFactory {
 		StringBuilder dna = new StringBuilder();
 		int numShortContigs = 0, numContigs = 0;
 
+		int contigId = 0;
 		while (line != null) {
 			label = line;
 			line = "";
@@ -246,8 +265,10 @@ public class DataSetFactory {
 				numContigs++;
 			} else {
 				numShortContigs++;
+				filteresSequences.add(contigId);
 			}
 			dna = new StringBuilder();
+			contigId++;
 		}
 
 		if (numShortContigs > 0) {
@@ -257,10 +278,11 @@ public class DataSetFactory {
 
 		br.close();
 		bw.close();
+		return filteresSequences;
 	}
 
-	public static DataSet createDataSetFromFastaFile(InputStream is, InputStream labelIS, InputStream pointsIS, boolean log) throws IOException,
-			InvalidMetaFileException {
+	public static DataSet createDataSetFromFastaFile(InputStream is, InputStream labelIS, InputStream pointsIS, boolean log,
+			Collection<Integer> filteredSequences) throws IOException, InvalidMetaFileException {
 
 		String invalidCoverage = "";
 		DataSet result = new DataSet();
@@ -327,12 +349,17 @@ public class DataSetFactory {
 			if (gcColumn != null && coverageColumn != null) {
 				throw new InvalidMetaFileException("Either provide 'gc' or 'coverage' values!");
 			}
+			Integer labelSequenceId = 0;
 
 			while (line != null) {
 				sequence = new Sequence();
 				sequence.setId("Seq" + (numSequences++));
 				if (brLabels != null) {
 					String row = brLabels.readLine();
+					while (filteredSequences.contains(labelSequenceId)) {
+						labelSequenceId++;
+						row = brLabels.readLine();
+					}
 					String data[] = row.split(",");
 					if (data.length != columns) {
 						throw new InvalidMetaFileException("Line: \"" + row + "\" cotains invalid number of fields: " + columns + ", but " + data.length + " found.");
@@ -453,7 +480,8 @@ public class DataSetFactory {
 			}
 		}
 		if (!invalidCoverage.equals("")) {
-			JOptionPane.showMessageDialog(null, "WARNING: Unexpected coverage value of " + invalidCoverage + " found.\nWill take the minimum strictly positive input coverage value as default for now.\nPlease verify your input annotation file.");
+			JOptionPane.showMessageDialog(null, "WARNING: Unexpected coverage value of " + invalidCoverage
+					+ " found.\nWill take the minimum strictly positive input coverage value as default for now.\nPlease verify your input annotation file.");
 
 		}
 
