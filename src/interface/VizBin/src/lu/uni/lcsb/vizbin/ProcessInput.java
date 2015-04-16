@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import lcsb.vizbin.data.DataSet;
@@ -20,8 +17,8 @@ import lcsb.vizbin.graphics.PngGraphicsConverter;
 import lcsb.vizbin.service.DataSetFactory;
 import lcsb.vizbin.service.InvalidMetaFileException;
 import lcsb.vizbin.service.utils.DataSetUtils;
-import lcsb.vizbin.service.utils.PcaType;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,24 +35,10 @@ public class ProcessInput extends ObjectWithProperties {
 
 	private Logger								logger								= Logger.getLogger(ProcessInput.class.getName());
 
-	private String								indatafile;
-	private String								filteredSequencesFile;
-	private String								inpointsfile;
-	private String								inlabelsfile;
+	private String								filteredSequencesFile	= "filteredSequences.fa";
+	private String								pointsfile;
 
-	private String								kmerDebugFile;
-	private Integer								kMerLength, pcaColumns, contigLen, numThreads, seed;
-	private PcaType								pcaAlgorithmType;
-	private Double								theta, perplexity;
-	private Boolean								merge;
-
-	private volatile JLabel				label_status;
-	private JProgressBar					progBar;
-	private JTabbedPane						tabPane;
-	private JFrame								parentFrame;
 	private File									tsneCmd;
-	private boolean								drawAxes;
-	private boolean								log;
 
 	private DataSet								dataSet_orig					= null;
 	private DataSet								dataSet								= null;
@@ -64,31 +47,18 @@ public class ProcessInput extends ObjectWithProperties {
 
 	private Boolean								processEnded					= true;
 
-	ProcessInput(String _indatafile, Integer _contigLen, Integer _numThreads, String _inpointsfile, String _inlabelsfile, Integer _kmer, Boolean _merge,
-			Integer _pca, Double _theta, Double _perplexity, Integer _seed, JLabel _status, JProgressBar _progBar, JTabbedPane tabPane, JFrame _parentFrame,
-			File _tsneCmd, boolean _drawAxes, PcaType pcaType, boolean _log) {
+	private ProcessParameters			parameters;
+	private ProcessGuiParameters	guiParameters;
+
+	ProcessInput(ProcessParameters parameters, ProcessGuiParameters guiParams, File _tsneCmd) throws IOException {
 		logger.debug("Init of ProcessInput");
-		indatafile = _indatafile;
-		filteredSequencesFile = "filteredSequences.fa";
-		inpointsfile = _inpointsfile;
-		inlabelsfile = _inlabelsfile;
-		contigLen = _contigLen;
-		numThreads = _numThreads;
-		kMerLength = _kmer;
-		merge = _merge;
-		pcaColumns = _pca;
-		theta = _theta;
-		perplexity = _perplexity;
-		seed = _seed;
-		label_status = _status;
-		progBar = _progBar;
-		this.tabPane = tabPane;
-		parentFrame = _parentFrame;
+		this.parameters = parameters;
+		this.guiParameters = guiParams;
+		if (parameters.getInputPointFile() != null) {
+			setPointsfile(parameters.getInputPointFile());
+		}
 		tsneCmd = _tsneCmd;
-		drawAxes = _drawAxes;
 		progressVal = 0;
-		pcaAlgorithmType = pcaType;
-		log = _log;
 	}
 
 	void updateStatus(String message) {
@@ -106,8 +76,12 @@ public class ProcessInput extends ObjectWithProperties {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				label_status.setText(message);
-				progBar.setValue(value.get());
+				if (guiParameters != null) {
+					guiParameters.getStatusLabel().setText(message);
+					guiParameters.getProgessBar().setValue(value.get());
+				} else {
+					logger.debug("[PROGRESS BAR] " + message + " (" + value.get() + ")");
+				}
 			}
 		});
 
@@ -129,9 +103,11 @@ public class ProcessInput extends ObjectWithProperties {
 					String directory = myTempDir.getAbsolutePath();
 					filteredSequencesFile = directory + "/" + filteredSequencesFile;
 
-					logger.debug("Loading data from file.\nContig length treshold: " + contigLen);
-					updateStatus("Loading fasta file: " + indatafile, 5);
-					dataSet = DataSetFactory.createDataSetFromFastaFile(indatafile, filteredSequencesFile, inlabelsfile, inpointsfile, contigLen, log);
+					logger.debug("Loading data from file.\nContig length treshold: " + parameters.getContigLength());
+					updateStatus("Loading fasta file: " + parameters.getInputFastaFile(), 5);
+					dataSet = DataSetFactory.createDataSetFromFastaFile(
+							parameters.getInputFastaFile(), filteredSequencesFile, parameters.getInputLabelFile(), parameters.getInputPointFile(),
+							parameters.getContigLength(), parameters.getExtendedLogs());
 					if (dataSet == null) {
 						JOptionPane.showMessageDialog(null, "Error during loading data from given file! Check the logs.", "alert", JOptionPane.ERROR_MESSAGE);
 						updateStatus("", -100);
@@ -143,22 +119,23 @@ public class ProcessInput extends ObjectWithProperties {
 					updateStatus("DataSet loaded (" + dataSet.getSequences().size() + " sequences)");
 
 					// If points file is provided, no calculations are needed
-					if (inpointsfile.isEmpty()) {
-						updateStatus("Creating kmers (k=" + kMerLength + ", merge = " + merge + ")");
-						DataSetUtils.createKmers(dataSet, kMerLength, merge);
+					if (parameters.getInputPointFile() == null) {
+						updateStatus("Creating kmers (k=" + parameters.getkMerLength() + ", merge = " + parameters.getMerge() + ")");
+						DataSetUtils.createKmers(dataSet, parameters.getkMerLength(), parameters.getMerge());
 						updateStatus("Normalizing vectors...", 5);
-						DataSetUtils.normalizeDescVectors(dataSet, kMerLength);
+						DataSetUtils.normalizeDescVectors(dataSet, parameters.getkMerLength());
 						updateStatus("Clr normalization...", 5);
 						DataSetUtils.createClrData(dataSet);
-						logger.debug(kmerDebugFile);
-						if (kmerDebugFile != null) {
-							DataSetUtils.saveClrData(dataSet, kmerDebugFile);
+						if (parameters.getKmerDebugFile() != null) {
+							DataSetUtils.saveClrData(dataSet, parameters.getKmerDebugFile());
 						}
-						updateStatus("Running PCA... (" + pcaAlgorithmType.getName() + ")", 5);
-						DataSetUtils.computePca(dataSet, pcaColumns, pcaAlgorithmType);
+						updateStatus("Running PCA... (" + parameters.getPcaAlgorithmType().getName() + ")", 5);
+						DataSetUtils.computePca(dataSet, parameters.getPcaColumns(), parameters.getPcaAlgorithmType());
 						updateStatus("Running T-SNE...", 15);
-						DataSetUtils.runTsneAndPutResultsToDir(dataSet, numThreads, directory, theta, perplexity, seed, label_status, progBar, tsneCmd);
-						progressVal = progBar.getValue();
+						DataSetUtils.runTsneAndPutResultsToDir(
+								dataSet, parameters.getThreads(), directory, parameters.getTheta(), parameters.getPerplexity(), parameters.getSeed(), tsneCmd, guiParameters);
+
+						// progressVal = progBar.getValue();
 						File f = new File(directory + "/points.txt");
 						if (f.exists() && !f.isDirectory()) {
 							updateStatus("Points created."); // 90% progress up
@@ -167,14 +144,15 @@ public class ProcessInput extends ObjectWithProperties {
 							throw new FileNotFoundException("points.txt file not found. Probably bh_tsne binaries execution failed.");
 						}
 
-						setInpointsfile(directory + "/points.txt");
+						setPointsfile(directory + "/points.txt");
+
 					}
 
 					File flabels = null;
 					FileInputStream labelsIS = null;
-					if (!inlabelsfile.equals("")) {
+					if (parameters.getInputLabelFile() != null) {
 						try {
-							flabels = new File(inlabelsfile);
+							flabels = new File(parameters.getInputLabelFile());
 							labelsIS = new FileInputStream(flabels);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -188,7 +166,7 @@ public class ProcessInput extends ObjectWithProperties {
 					// meaningful int-coordinates form double points.
 					// TODO: Refactor such that this is done internally in
 					// ClusterFactory.createClusterFromPolygon()
-					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(inpointsfile), labelsIS, scale, log);
+					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(pointsfile), labelsIS, scale, parameters.getExtendedLogs());
 					updateStatus("Creating png files....", 5);
 					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
 					converter.createPngDirectory(directory + "/images/", 2);
@@ -204,38 +182,57 @@ public class ProcessInput extends ObjectWithProperties {
 					DataSetUtils.setDataSet(dataSet);
 					DataSetUtils.setIsDataSetCreated(true);
 
-					ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, parentFrame, drawAxes);
-					tabPane.setComponentAt(1, cp.getChartPanel());
-					// NotificationCenter.addObserver(cp);
-					// Show data points
-					JFrame frame = new JFrame("Cluster " + name);
-					DataSetUtils.setDrawingFrame(frame);
-					// frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-					ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, parentFrame, drawAxes);
-					// NotificationCenter.addObserver(cpPopOut);
-					// frame.getContentPane().add(cpPopOut);
+					if (guiParameters != null) {
+						ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame(), guiParameters.isDrawAxes());
+						guiParameters.getTabPane().setComponentAt(1, cp.getChartPanel());
+						// NotificationCenter.addObserver(cp);
+						// Show data points
+						JFrame frame = new JFrame("Cluster " + name);
+						DataSetUtils.setDrawingFrame(frame);
+						// frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+						ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame(), guiParameters.isDrawAxes());
+						// NotificationCenter.addObserver(cpPopOut);
+						// frame.getContentPane().add(cpPopOut);
 
-					frame.setSize(800, 600);
-					JScrollPane scrPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-					scrPane.getViewport().add(cpPopOut.getChartPanel());
-					frame.setContentPane(scrPane);
-					frame.setVisible(true);
+						frame.setSize(800, 600);
+						JScrollPane scrPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+						scrPane.getViewport().add(cpPopOut.getChartPanel());
+						frame.setContentPane(scrPane);
+						frame.setVisible(true);
+					}
 
 				} catch (OutOfMemoryError e) {
-					JOptionPane.showMessageDialog(parentFrame, "Error! Java machine ran out of memmory.\n" + "Check input file size, or increase java heap size.\n"
+					showMessageDialog("Error! Java machine ran out of memmory.\n" + "Check input file size, or increase java heap size.\n"
 							+ "Application will now restart.");
 					e.printStackTrace();
 					restartApplication();
 				} catch (InvalidMetaFileException e) {
 					logger.error(e.getMessage(), e);
 					updateStatus("Error! Check the logs.");
-					JOptionPane.showMessageDialog(parentFrame, e.getMessage(), "Label file error", JOptionPane.ERROR_MESSAGE);
+					showMessageDialog(e.getMessage(), "Label file error", JOptionPane.ERROR_MESSAGE);
 				} catch (Exception e) {
 					e.printStackTrace();
 					updateStatus("Error! Check the logs.");
 					logger.error(e.getMessage(), e);
 				}
 				setProcessEnded(true);
+			}
+
+			private void showMessageDialog(String message, String title, int errorMessage) {
+				if (guiParameters != null) {
+					JOptionPane.showMessageDialog(guiParameters.getParentFrame(), message, title, errorMessage);
+				} else {
+					logger.fatal("[" + title + "][" + errorMessage + "] " + message);
+				}
+			}
+
+			private void showMessageDialog(String message) {
+				if (guiParameters != null) {
+					JOptionPane.showMessageDialog(guiParameters.getParentFrame(), message);
+				} else {
+					logger.info(message);
+				}
+
 			}
 		}.start();
 	}
@@ -271,23 +268,6 @@ public class ProcessInput extends ObjectWithProperties {
 	}
 
 	/**
-	 * @return the pcaAlgorithmType
-	 * @see #pcaAlgorithmType
-	 */
-	public PcaType getPcaAlgorithmType() {
-		return pcaAlgorithmType;
-	}
-
-	/**
-	 * @param pcaAlgorithmType
-	 *          the pcaAlgorithmType to set
-	 * @see #pcaAlgorithmType
-	 */
-	public void setPcaAlgorithmType(PcaType pcaAlgorithmType) {
-		this.pcaAlgorithmType = pcaAlgorithmType;
-	}
-
-	/**
 	 * @param processEnded
 	 *          the processEnded to set
 	 * @see #processEnded
@@ -316,38 +296,26 @@ public class ProcessInput extends ObjectWithProperties {
 
 	/**
 	 * @return the inpointsfile
-	 * @see #inpointsfile
+	 * @see #pointsfile
 	 */
 	public String getInpointsfile() {
-		return inpointsfile;
+		return pointsfile;
 	}
 
 	/**
 	 * @param inpointsfile
 	 *          the inpointsfile to set
-	 * @see #inpointsfile
+	 * @throws IOException
+	 * @see #pointsfile
 	 */
-	public void setInpointsfile(String inpointsfile) {
-		String oldValue = this.inpointsfile;
-		this.inpointsfile = inpointsfile;
+	public void setPointsfile(String inpointsfile) throws IOException {
+		String oldValue = this.pointsfile;
+		this.pointsfile = inpointsfile;
 		firePropertyChange(POINTS_FILE_PROPERTY, oldValue, inpointsfile);
-	}
+		if (parameters.getOutputFile() != null) {
+			FileUtils.copyFile(new File(pointsfile), new File(parameters.getOutputFile()));
+		}
 
-	/**
-	 * @return the kmerDebugFile
-	 * @see #kmerDebugFile
-	 */
-	public String getKmerDebugFile() {
-		return kmerDebugFile;
-	}
-
-	/**
-	 * @param kmerDebugFile
-	 *          the kmerDebugFile to set
-	 * @see #kmerDebugFile
-	 */
-	public void setKmerDebugFile(String kmerDebugFile) {
-		this.kmerDebugFile = kmerDebugFile;
 	}
 
 	/**

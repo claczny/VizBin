@@ -22,6 +22,7 @@
 	<classpathentry kind="lib" path="lib/orsonpdf-1.6-eval.jar"/>
 	<classpathentry kind="lib" path="lib/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/swtgraphics2d.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar" sourcepath="C:/Users/piotr.gawron/.m2/repository/commons-cli/commons-cli/1.2/commons-cli-1.2-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="build/classes"/>

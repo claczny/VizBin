@@ -2,16 +2,12 @@ package lcsb.vizbin.service.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 
 import lcsb.vizbin.InvalidArgumentException;
 import lcsb.vizbin.UnhandledOSException;
@@ -21,6 +17,7 @@ import lcsb.vizbin.service.DataSetFactory;
 import lcsb.vizbin.service.utils.pca.IPrincipleComponentAnalysis;
 import lcsb.vizbin.service.utils.pca.PrincipleComponentAnalysisEJML;
 import lcsb.vizbin.service.utils.pca.PrincipleComponentAnalysisMtj;
+import lu.uni.lcsb.vizbin.ProcessGuiParameters;
 import no.uib.cipr.matrix.NotConvergedException;
 
 import org.apache.log4j.Logger;
@@ -259,14 +256,14 @@ public class DataSetUtils {
 		logger.debug("DONE: Projected from sample to eigen space.");
 	}
 
-	public static void runTsneAndPutResultsToDir(DataSet dataSet, int numThreads, String dir, double theta, double perplexity, int seed, JLabel label_status,
-			JProgressBar progBar, File tsneCmd) throws UnhandledOSException, IOException, InterruptedException {
+	public static void runTsneAndPutResultsToDir(DataSet dataSet, int numThreads, String dir, double theta, double perplexity, int seed, File tsneCmd,
+			ProcessGuiParameters guiParameters) throws UnhandledOSException, IOException, InterruptedException {
 
 		DataSetFactory.saveToPcaFile(dataSet, dir + "/data.dat", numThreads, theta, perplexity, seed);
 
 		logger.debug("Running command: \"" + tsneCmd + "\" in directory: " + dir + "\n" + "Number of threads: " + numThreads + "\n" + "Seed: " + seed);
 
-		TSNERunner tsne = new TSNERunner(tsneCmd, dir, label_status, progBar);
+		TSNERunner tsne = new TSNERunner(tsneCmd, dir, guiParameters);
 		Thread tr = new Thread(tsne, "TSNERunner");
 		tr.start();
 		tr.join();
@@ -275,14 +272,12 @@ public class DataSetUtils {
 	static class TSNERunner implements Runnable {
 		private File					command;
 		private String				dir;
-		private JLabel				label_status;
-		private JProgressBar	progBar;
+		ProcessGuiParameters	guiParameters;
 
-		public TSNERunner(File _command, String _dir, JLabel _status, JProgressBar _progBar) {
-			command = _command;
-			dir = _dir;
-			label_status = _status;
-			progBar = _progBar;
+		public TSNERunner(File _command, String _dir, ProcessGuiParameters guiParameters) {
+			this.command = _command;
+			this.dir = _dir;
+			this.guiParameters = guiParameters;
 		}
 
 		public void run() {
@@ -311,11 +306,22 @@ public class DataSetUtils {
 					if (line.startsWith("Iteration")) { // there are 20
 						// iterations
 						newProgress = 2; // add 2% progress per iteration
-						label_status.setText("T-SNE: " + line.substring(0, line.indexOf(':')) + "/1000");
+						String logEntry = "T-SNE: " + line.substring(0, line.indexOf(':')) + "/1000";
+						if (guiParameters != null) {
+							guiParameters.getStatusLabel().setText(logEntry);
+						} else {
+							logger.debug("[PROGRESS BAR] " + logEntry);
+						}
 					}
-					if (line.contains("Wrote the"))
+					if (line.contains("Wrote the")) {
 						newProgress = 5; // 90%
-					progBar.setValue(progBar.getValue() + newProgress);
+					}
+					if (guiParameters != null) {
+						guiParameters.getProgessBar().setValue(guiParameters.getProgessBar().getValue() + newProgress);
+					} else {
+//						logger.debug("[PROGRESS BAR] " + "next " + newProgress + "% ");
+
+					}
 					line = reader.readLine();
 				}
 				reader.close();
@@ -414,9 +420,9 @@ public class DataSetUtils {
 	public static void saveClrData(DataSet dataSet, String kmerDebugFile) throws IOException {
 		PrintWriter writer = new PrintWriter(kmerDebugFile, "UTF-8");
 		for (Sequence sequence : dataSet.getSequences()) {
-			double []data = sequence.getClrVector();
+			double[] data = sequence.getClrVector();
 			for (double d : data) {
-				writer.print(d+"\t");
+				writer.print(d + "\t");
 			}
 			writer.println();
 		}
