@@ -840,6 +840,7 @@ public class MainFrame extends javax.swing.JFrame {
 					new File(output.getCanonicalPath()).delete();
 				}
 				zp.saveTo(output.getCanonicalPath());
+				JOptionPane.showMessageDialog(this, "File saved successfully", "Info", JOptionPane.INFORMATION_MESSAGE);
 			} catch (IOException e) {
 				logger.error(e, e);
 				JOptionPane.showMessageDialog(this, e.getMessage(), "Problem with file", JOptionPane.ERROR_MESSAGE);
