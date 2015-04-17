@@ -25,7 +25,6 @@ public class Main {
 		settings = new Settings();
 		logger = Logger.getLogger(Main.class);
 
-		logger.debug(settings.binFile);
 		try {
 			CommandLineOptions clo = new CommandLineOptions(args);
 
