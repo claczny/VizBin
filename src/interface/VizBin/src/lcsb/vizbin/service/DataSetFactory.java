@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 
 import lcsb.vizbin.data.DataSet;
 import lcsb.vizbin.data.Sequence;
+import lu.uni.lcsb.vizbin.ProcessGuiParameters;
 
 import org.apache.log4j.Logger;
 
@@ -209,9 +210,9 @@ public class DataSetFactory {
 	}
 
 	public static DataSet createDataSetFromFastaFile(String fileName, String filteredSequencesFileName, String labelFileName, String pointsFileName,
-			Integer contigLen, boolean log) throws IOException, InvalidMetaFileException {
+			Integer contigLen, boolean log, ProcessGuiParameters guiParameters) throws IOException, InvalidMetaFileException {
 
-		Collection<Integer> filteredSequences = filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen);
+		Collection<Integer> filteredSequences = filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen, guiParameters);
 
 		FileInputStream sequencesFis = new FileInputStream(filteredSequencesFileName);
 
@@ -250,7 +251,7 @@ public class DataSetFactory {
 	 * @throws IOException
 	 *           thrown when there is a problem with input/output stream
 	 */
-	public static Set<Integer> filterSequences(InputStream is, OutputStream os, Integer contigLen) throws IOException {
+	public static Set<Integer> filterSequences(InputStream is, OutputStream os, Integer contigLen, ProcessGuiParameters guiParameters) throws IOException {
 		Set<Integer> filteresSequences = new HashSet<Integer>();
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -282,8 +283,13 @@ public class DataSetFactory {
 		}
 
 		if (numShortContigs > 0) {
-			JOptionPane.showMessageDialog(null, "Number of contigs longer or equal then " + contigLen + ": " + numContigs + "\n" + "Number of contigs shorter then "
-					+ contigLen + ": " + numShortContigs);
+			String message = "Number of contigs longer or equal then " + contigLen + ": " + numContigs + "\n" + "Number of contigs shorter then " + contigLen + ": "
+					+ numShortContigs;
+			if (guiParameters != null) {
+				JOptionPane.showMessageDialog(null, message);
+			} else {
+				logger.info(message);
+			}
 		}
 
 		br.close();

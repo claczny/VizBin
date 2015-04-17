@@ -107,7 +107,7 @@ public class ProcessInput extends ObjectWithProperties {
 					updateStatus("Loading fasta file: " + parameters.getInputFastaFile(), 5);
 					dataSet = DataSetFactory.createDataSetFromFastaFile(
 							parameters.getInputFastaFile(), filteredSequencesFile, parameters.getInputLabelFile(), parameters.getInputPointFile(),
-							parameters.getContigLength(), parameters.getExtendedLogs());
+							parameters.getContigLength(), parameters.getExtendedLogs(), guiParameters);
 					if (dataSet == null) {
 						JOptionPane.showMessageDialog(null, "Error during loading data from given file! Check the logs.", "alert", JOptionPane.ERROR_MESSAGE);
 						updateStatus("", -100);
@@ -121,7 +121,7 @@ public class ProcessInput extends ObjectWithProperties {
 					// If points file is provided, no calculations are needed
 					if (parameters.getInputPointFile() == null) {
 						updateStatus("Creating kmers (k=" + parameters.getkMerLength() + ", merge = " + parameters.getMerge() + ")");
-						DataSetUtils.createKmers(dataSet, parameters.getkMerLength(), parameters.getMerge());
+						DataSetUtils.createKmers(dataSet, parameters.getkMerLength(), parameters.getMerge(), guiParameters);
 						updateStatus("Normalizing vectors...", 5);
 						DataSetUtils.normalizeDescVectors(dataSet, parameters.getkMerLength());
 						updateStatus("Clr normalization...", 5);
