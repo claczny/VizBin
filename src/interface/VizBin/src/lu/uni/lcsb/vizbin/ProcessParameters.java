@@ -36,47 +36,47 @@ public class ProcessParameters {
 	/**
 	 * Length of the k-mer.
 	 */
-	private Integer	kMerLength		= Config.DEFAULT_KMER_LENGTH;
+	private Integer	kMerLength				= Config.DEFAULT_KMER_LENGTH;
 	/**
 	 * Minimum contig length.
 	 */
-	private Integer	contigLength	= Config.DEFAULT_CONTIG_LENGTH;
+	private Integer	contigLength			= Config.DEFAULT_CONTIG_LENGTH;
 	/**
 	 * Number of threads to use.
 	 */
-	private Integer	threads				= Config.DEFAULT_THREAD_NUM;
+	private Integer	threads						= Config.DEFAULT_THREAD_NUM;
 
 	/**
 	 * Pca columns.
 	 */
-	private Integer	pcaColumns = Config.DEFAULT_PCA_COLUMNS;
+	private Integer	pcaColumns				= Config.DEFAULT_PCA_COLUMNS;
 
 	/**
 	 * Random seed.
 	 */
-	private Integer	seed= Config.DEFAULT_SEED;
+	private Integer	seed							= Config.DEFAULT_SEED;
 
 	/**
 	 * Pca algorithm {@link PcaType type}.
 	 */
-	private PcaType	pcaAlgorithmType =Config.DEFAULT_PCA_TYPE;
+	private PcaType	pcaAlgorithmType	= Config.DEFAULT_PCA_TYPE;
 
 	/**
 	 * Theta value.
 	 */
-	private Double	theta = Config.DEFAULT_THETA;
+	private Double	theta							= Config.DEFAULT_THETA;
 
 	/**
 	 * Perplexity.
 	 */
-	private Double	perplexity = Config.DEFAULT_PERPLEXILITY;
+	private Double	perplexity				= Config.DEFAULT_PERPLEXILITY;
 
 	/**
 	 * Should the k-mers and reverse k-mers be merged.
 	 */
-	private Boolean	merge = Config.DEFAULT_MERGE;
+	private Boolean	merge							= Config.DEFAULT_MERGE;
 
-	private Boolean	extendedLogs	= false;
+	private Boolean	extendedLogs			= false;
 
 	/**
 	 * Default constructor that creates a copy of the {@link ProcessParameters}
@@ -88,7 +88,9 @@ public class ProcessParameters {
 	public ProcessParameters(ProcessParameters original) {
 		this.inputFastaFile = original.inputFastaFile;
 		this.inputPointFile = original.inputPointFile;
+		this.inputLabelFile = original.inputLabelFile;
 		this.outputFile = original.outputFile;
+		this.kmerDebugFile = original.kmerDebugFile;
 		this.kMerLength = original.kMerLength;
 		this.contigLength = original.contigLength;
 		this.threads = original.threads;
@@ -98,6 +100,7 @@ public class ProcessParameters {
 		this.theta = original.theta;
 		this.perplexity = original.perplexity;
 		this.merge = original.merge;
+		this.extendedLogs = original.extendedLogs;
 	}
 
 	/**
