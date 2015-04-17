@@ -34,7 +34,7 @@ public class DataSetUtils {
 	// private static List<Point2D> polygonPoints = null;
 	private static JFrame		drawingFrame			= null;
 
-	public static void createKmers(DataSet dataSet, int k, boolean mergeRevComp) throws InvalidArgumentException {
+	public static void createKmers(DataSet dataSet, int k, boolean mergeRevComp, ProcessGuiParameters guiParams) throws InvalidArgumentException {
 		int totalKmers = 0;
 		Integer totalKmersIgnored = 0;
 		for (Sequence sequence : dataSet.getSequences()) {
@@ -47,9 +47,13 @@ public class DataSetUtils {
 			}
 		}
 		if (totalKmersIgnored > 0) {
-			JOptionPane.showMessageDialog(
-					null, "Total number of kmers: " + totalKmers + ".\n" + totalKmersIgnored + " (" + Math.round(totalKmersIgnored * 10000.0 / totalKmers) / 100.0
-							+ "%) kmers ignored since containing unknown letters.");
+			String message = "Total number of kmers: " + totalKmers + ".\n" + totalKmersIgnored + " (" + Math.round(totalKmersIgnored * 10000.0 / totalKmers)
+					/ 100.0 + "%) kmers ignored since containing unknown letters.";
+			if (guiParams != null) {
+				JOptionPane.showMessageDialog(null, message);
+			} else {
+				logger.info(message);
+			}
 		}
 	}
 
@@ -311,7 +315,7 @@ public class DataSetUtils {
 					if (guiParameters != null) {
 						guiParameters.getProgessBar().setValue(guiParameters.getProgessBar().getValue() + newProgress);
 					} else {
-//						logger.debug("[PROGRESS BAR] " + "next " + newProgress + "% ");
+						// logger.debug("[PROGRESS BAR] " + "next " + newProgress + "% ");
 
 					}
 					line = reader.readLine();
