@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;

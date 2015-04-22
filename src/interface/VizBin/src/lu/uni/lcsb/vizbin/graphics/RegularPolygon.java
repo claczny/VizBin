@@ -1,6 +1,6 @@
-package lcsb.vizbin.graphics.sl.shapes;
+package lu.uni.lcsb.vizbin.graphics;
 
-import java.awt.*;
+import java.awt.Polygon;
 
 public class RegularPolygon extends Polygon {
 	/**

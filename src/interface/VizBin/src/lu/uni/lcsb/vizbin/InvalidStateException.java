@@ -1,4 +1,4 @@
-package lcsb.vizbin;
+package lu.uni.lcsb.vizbin;
 
 public class InvalidStateException extends RuntimeException {
 

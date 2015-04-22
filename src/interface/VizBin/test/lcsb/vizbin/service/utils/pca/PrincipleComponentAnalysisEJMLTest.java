@@ -1,6 +1,8 @@
 package lcsb.vizbin.service.utils.pca;
 
 import static org.junit.Assert.assertTrue;
+import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
+import lu.uni.lcsb.vizbin.pca.PrincipleComponentAnalysisEJML;
 
 import org.apache.log4j.Logger;
 import org.junit.After;

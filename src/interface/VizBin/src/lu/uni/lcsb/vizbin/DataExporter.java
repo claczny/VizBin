@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 // import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import lcsb.vizbin.data.Sequence;
+import lu.uni.lcsb.vizbin.data.Sequence;
 
 /**
  * 
@@ -29,6 +29,13 @@ import lcsb.vizbin.data.Sequence;
  *         Plugaru</a>
  */
 public class DataExporter {
+
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private DataExporter() {
+
+	}
 
 	public static File exportCluster(JFrame parentFrame, String inFileName, List<Sequence> sequenceList) {
 		File outFile = null;
@@ -110,35 +117,25 @@ public class DataExporter {
 		return outFile;
 	}
 
-	private static int seqPosition(List<Sequence> sequenceList, int inID) {
-		int seqID;
-		for (int i = 0; i < sequenceList.size(); i++) {
-			// for some reason, the sequence ID is in the 'Seq##' format
-			// so we need to retrieve only the ##
-			seqID = Integer.parseInt(sequenceList.get(i).getId().split("Seq")[1]);
-			if (seqID == inID)
-				return i;
-		}
-		return -1;
-	}
-
 	private static File getSelectedFile() {
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
 		int returnVal = fc.showSaveDialog(null);
-		if (fc.getSelectedFile() == null)
+		if (fc.getSelectedFile() == null) {
 			return null;
-		else {
+		} else {
 			if (fc.getSelectedFile().exists()) {
 				returnVal = JOptionPane.showConfirmDialog(
 						null, "The file you specified already exists, do you wish to overwrite it?", "Confirm overwrite", JOptionPane.YES_NO_OPTION);
-				if (returnVal != JOptionPane.YES_OPTION)
+				if (returnVal != JOptionPane.YES_OPTION) {
 					return null;
-				else
+				} else {
 					return fc.getSelectedFile();
-			} else
+				}
+			} else {
 				return fc.getSelectedFile();
+			}
 		}
 	}
 

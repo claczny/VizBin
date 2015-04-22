@@ -1,4 +1,4 @@
-package lcsb.vizbin.service.utils;
+package lu.uni.lcsb.vizbin.service.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,29 +9,36 @@ import java.io.PrintWriter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import lcsb.vizbin.InvalidArgumentException;
-import lcsb.vizbin.UnhandledOSException;
-import lcsb.vizbin.data.DataSet;
-import lcsb.vizbin.data.Sequence;
-import lcsb.vizbin.service.DataSetFactory;
-import lcsb.vizbin.service.utils.pca.IPrincipleComponentAnalysis;
-import lcsb.vizbin.service.utils.pca.PrincipleComponentAnalysisEJML;
-import lcsb.vizbin.service.utils.pca.PrincipleComponentAnalysisMtj;
+import lu.uni.lcsb.vizbin.InvalidArgumentException;
 import lu.uni.lcsb.vizbin.ProcessGuiParameters;
+import lu.uni.lcsb.vizbin.UnhandledOSException;
+import lu.uni.lcsb.vizbin.data.DataSet;
+import lu.uni.lcsb.vizbin.data.Sequence;
+import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
+import lu.uni.lcsb.vizbin.pca.PcaType;
+import lu.uni.lcsb.vizbin.service.DataSetFactory;
 import no.uib.cipr.matrix.NotConvergedException;
 
 import org.apache.log4j.Logger;
 
 public class DataSetUtils {
-	static Logger						logger						= Logger.getLogger(DataSetUtils.class);
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private DataSetUtils() {
 
-	static String						tsneComand				= "./bh_tsne";
+	}
 
-	static Integer					usedVal[][]				= new Integer[256][];
+	/**
+	 * Default class logger.
+	 */
+	private static Logger		logger						= Logger.getLogger(DataSetUtils.class);
 
-	static int							alphabetSize			= 4;
+	private static Integer	usedVal[][]				= new Integer[256][];
 
-	static boolean					isDataSetCreated	= false;
+	private static int			alphabetSize			= 4;
+
+	private static boolean	isDataSetCreated	= false;
 
 	private static DataSet	dataSet						= null;
 
@@ -42,12 +49,12 @@ public class DataSetUtils {
 	// private static List<Point2D> polygonPoints = null;
 	private static JFrame		drawingFrame			= null;
 
-	public static void createKmers(DataSet dataSet, int k, boolean mergeRevComp, ProcessGuiParameters guiParams) throws InvalidArgumentException {
+	public static void createKmers(DataSet dataSet, int k, boolean mergeRevComp, ProcessGuiParameters guiParams) {
 		int totalKmers = 0;
 		Integer totalKmersIgnored = 0;
 		for (Sequence sequence : dataSet.getSequences()) {
 			if (sequence.getKmers(k) == null) {
-				kmersResult res = createKmers(sequence, k, mergeRevComp, totalKmersIgnored);
+				KmersResult res = createKmers(sequence, k, mergeRevComp, totalKmersIgnored);
 				Integer result[] = res.getResult();
 				totalKmersIgnored = res.getNumKmersRemoved();
 				totalKmers += sequence.getDna().length() + 1 - k;
@@ -104,7 +111,7 @@ public class DataSetUtils {
 	 * 
 	 * @kmersRemoved Number of k-mers containing unknown letters
 	 */
-	public static kmersResult createKmers(Sequence sequence, int k, boolean mergeRevComp, Integer kmersRemoved) throws InvalidArgumentException {
+	public static KmersResult createKmers(Sequence sequence, int k, boolean mergeRevComp, Integer kmersRemoved) {
 		if (usedVal[k] == null) {
 			createMergedKmerTabl(k);
 		}
@@ -160,15 +167,15 @@ public class DataSetUtils {
 				if (result[j] != null)
 					mergedResult[l++] = result[j];
 			}
-			kmersResult res = new kmersResult(mergedResult, kmersRemoved);
+			KmersResult res = new KmersResult(mergedResult, kmersRemoved);
 			return res;
 		} else {
-			kmersResult res = new kmersResult(result, kmersRemoved);
+			KmersResult res = new KmersResult(result, kmersRemoved);
 			return res;
 		}
 	}
 
-	private static int nucleotideVal(char charAt) throws InvalidArgumentException {
+	private static int nucleotideVal(char charAt) {
 		switch (charAt) {
 			case ('A'):
 				return 0;
@@ -202,7 +209,7 @@ public class DataSetUtils {
 
 		int maxVal = map.length;
 
-		double descVector[] = new double[maxVal];
+		double[] descVector = new double[maxVal];
 		sequence.setDescVector(descVector);
 
 		double counter = 0;
@@ -217,32 +224,28 @@ public class DataSetUtils {
 
 	public static void createClrData(DataSet dataSet) {
 		int vectorLength = dataSet.getSequences().get(0).getDescVector().length;
-		double meanLn[] = new double[vectorLength];
+		double[] meanLn = new double[vectorLength];
 		for (Sequence sequence : dataSet.getSequences()) {
-			for (int i = 0; i < vectorLength; i++)
+			for (int i = 0; i < vectorLength; i++) {
 				meanLn[i] += Math.log(sequence.getDescVector()[i]);
+			}
 		}
-		for (int i = 0; i < vectorLength; i++)
+		for (int i = 0; i < vectorLength; i++) {
 			meanLn[i] /= dataSet.getSequences().size();
+		}
 
 		for (Sequence sequence : dataSet.getSequences()) {
-			double clrVector[] = new double[vectorLength];
-			for (int i = 0; i < vectorLength; i++)
+			double[] clrVector = new double[vectorLength];
+			for (int i = 0; i < vectorLength; i++) {
 				clrVector[i] = Math.log(sequence.getDescVector()[i]) - meanLn[i];
+			}
 			sequence.setClrVector(clrVector);
 		}
 
 	}
 
-	public static void computePca(DataSet dataSet, int columns, PcaType pcaType) throws InvalidArgumentException {
-		IPrincipleComponentAnalysis pca = null;
-		if (pcaType.equals(PcaType.MTJ)) {
-			pca = new PrincipleComponentAnalysisMtj();
-		} else if (pcaType.equals(PcaType.EJML)) {
-			pca = new PrincipleComponentAnalysisEJML();
-		} else {
-			throw new InvalidArgumentException("Unknown pca type: " + pcaType);
-		}
+	public static void computePca(DataSet dataSet, int columns, PcaType pcaType) {
+		IPrincipleComponentAnalysis pca = pcaType.getInstance();
 
 		pca.setup(dataSet.getSequences().size(), dataSet.getSequences().get(0).getClrVector().length);
 		for (Sequence sequence : dataSet.getSequences()) {
@@ -274,13 +277,13 @@ public class DataSetUtils {
 	}
 
 	static class TSNERunner implements Runnable {
-		private File					command;
-		private String				dir;
-		ProcessGuiParameters	guiParameters;
+		private File									command;
+		private String								dir;
+		private ProcessGuiParameters	guiParameters;
 
-		public TSNERunner(File _command, String _dir, ProcessGuiParameters guiParameters) {
-			this.command = _command;
-			this.dir = _dir;
+		public TSNERunner(File command, String dir, ProcessGuiParameters guiParameters) {
+			this.command = command;
+			this.dir = dir;
 			this.guiParameters = guiParameters;
 		}
 

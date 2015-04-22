@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin;
+package lu.uni.lcsb.vizbin.clustering;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -23,10 +23,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
-import lcsb.vizbin.data.Cluster;
-import lcsb.vizbin.data.DataSet;
-import lcsb.vizbin.data.Sequence;
-import lcsb.vizbin.service.ClusterFactory;
+import lu.uni.lcsb.vizbin.DataExporter;
+import lu.uni.lcsb.vizbin.ExtendedFastScatterPlot;
+import lu.uni.lcsb.vizbin.LegendFrame;
+import lu.uni.lcsb.vizbin.PointShape;
+import lu.uni.lcsb.vizbin.ShapePrinter;
+import lu.uni.lcsb.vizbin.data.Cluster;
+import lu.uni.lcsb.vizbin.data.DataSet;
+import lu.uni.lcsb.vizbin.data.Sequence;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
@@ -38,25 +42,28 @@ import org.jfree.chart.plot.FastScatterPlot;
 import org.jfree.ui.RectangleEdge;
 
 public class ClusterPanel {
-	Logger							logger	= Logger.getLogger(ClusterPanel.class);
-	int									COUNT		= -1;
-	float[][]						data;
-	int[]								sizes;
-	Color[]							colors;
-	PointShape[]				shapes;
+	/**
+	 * Default class logger.
+	 */
+	private Logger							logger	= Logger.getLogger(ClusterPanel.class);
+	private int									count		= -1;
+	private float[][]						data;
+	private int[]								sizes;
+	private Color[]							colors;
+	private PointShape[]				shapes;
 	private ChartPanel	panel;
-	List<Point2D>				polygon	= new ArrayList<Point2D>();
+	private List<Point2D>				polygon	= new ArrayList<Point2D>();
 
-	DataSet							dataSet;
+	private DataSet							dataSet;
 
-	JFrame							frame;
+	private JFrame							frame;
 	private String			filename;
 	private LegendFrame	legendFrame;
 
 	private final class MouseMarker extends MouseAdapter {
 		private final JFreeChart	chart;
 		private final ChartPanel	panel;
-		List<Point2D>							polygon;
+		private List<Point2D>							polygon;
 
 		public MouseMarker(ChartPanel panel, List<Point2D> polygon) {
 			this.panel = panel;
@@ -92,24 +99,24 @@ public class ClusterPanel {
 		}
 	}
 
-	public ClusterPanel(DataSet ds, String _inFileName, JFrame _parentFrame, boolean _drawAxes) {
+	public ClusterPanel(DataSet ds, String inFileName, JFrame parentFrame, boolean drawAxes) {
 
 		this.dataSet = ds;
-		this.frame = _parentFrame;
-		this.filename = _inFileName;
-		ArrayList<Sequence> pointList = (ArrayList<Sequence>) ds.getSequences();// seqs;//points;
-		COUNT = pointList.size();
+		this.frame = parentFrame;
+		this.filename = inFileName;
+		ArrayList<Sequence> pointList = (ArrayList<Sequence>) ds.getSequences();
+		count = pointList.size();
 
-		int min_size = 4;
+		int minSize = 4;
 		// If there is additional length information provided use a smaller default
 		// minimum size
 		if ((double) 0 < ds.getMinSequenceLength()) {
-			min_size = 2;
+			minSize = 2;
 		}
-		data = new float[2][COUNT];
-		sizes = new int[COUNT];
-		colors = new Color[COUNT];
-		shapes = new PointShape[COUNT];
+		data = new float[2][count];
+		sizes = new int[count];
+		colors = new Color[count];
+		shapes = new PointShape[count];
 
 		int counter = 0;
 		float alpha = 0f;
@@ -129,19 +136,18 @@ public class ClusterPanel {
 				alpha = (sequence.getCoverage()).floatValue();
 				alpha = alpha * alpha;
 				colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
+			} else // Either coverage OR GC content
+			if (sequence.getGc() != null) {
+				alpha = (sequence.getGc()).floatValue();
+				alpha = alpha * alpha;
+				colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
 			}
-			else // Either coverage OR GC content
-				if (sequence.getGc() != null) {
-					alpha = (sequence.getGc()).floatValue();
-					alpha = alpha * alpha;
-					colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
-				}
 
 			if (sequence.getMarker() != null && sequence.getMarker()) {
 				shapes[counter] = PointShape.STAR;
 			}
 			// Use a minimum size
-			sizes[counter] = min_size;
+			sizes[counter] = minSize;
 			// Adjust the size if additional length information is given
 			if (sequence.getLength() != null) {
 				double magnification = (sequence.getLength()).doubleValue() - ds.getMinSequenceLength();
@@ -180,7 +186,7 @@ public class ClusterPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Cluster selectedCluster = ClusterFactory.createClusterFromPolygon(dataSet, polygon);
+				Cluster selectedCluster = new ClusterFactory().createClusterFromPolygon(dataSet, polygon);
 				if (selectedCluster.getElements().size() > 0) {
 					int option;
 					option = JOptionPane

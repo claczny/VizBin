@@ -1,6 +1,6 @@
 package lu.uni.lcsb.vizbin;
 
-import lcsb.vizbin.service.utils.PcaType;
+import lu.uni.lcsb.vizbin.pca.PcaType;
 
 /**
  * This immutable class defines parameters for computations.

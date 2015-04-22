@@ -12,11 +12,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import lcsb.vizbin.data.DataSet;
-import lcsb.vizbin.graphics.PngGraphicsConverter;
-import lcsb.vizbin.service.DataSetFactory;
-import lcsb.vizbin.service.InvalidMetaFileException;
-import lcsb.vizbin.service.utils.DataSetUtils;
+import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
+import lu.uni.lcsb.vizbin.data.DataSet;
+import lu.uni.lcsb.vizbin.service.DataSetFactory;
+import lu.uni.lcsb.vizbin.service.InvalidMetaFileException;
+import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -27,20 +27,29 @@ import org.apache.log4j.Logger;
  *         Plugaru</a>
  */
 public class ProcessInput extends ObjectWithProperties {
+
+	/**
+	 * Maximum value for {@link #progressVal} progress bar.
+	 */
+	private static final int			MAX_PROGRESS_VALUE		= 100;
+
 	public final static String		FINISHED_PROPERTY			= "FINISHED";
 
 	protected static final String	POINTS_FILE_PROPERTY	= "POINTS_FILE";
 
 	private String								name;
 
-	private Logger								logger								= Logger.getLogger(ProcessInput.class.getName());
+	/**
+	 * Default class logger.
+	 */
+	private final Logger					logger								= Logger.getLogger(ProcessInput.class.getName());
 
 	private String								filteredSequencesFile	= "filteredSequences.fa";
 	private String								pointsfile;
 
 	private File									tsneCmd;
 
-	private DataSet								dataSet_orig					= null;
+	private DataSet								dataSetOrig						= null;
 	private DataSet								dataSet								= null;
 
 	private volatile Integer			progressVal;
@@ -50,15 +59,15 @@ public class ProcessInput extends ObjectWithProperties {
 	private ProcessParameters			parameters;
 	private ProcessGuiParameters	guiParameters;
 
-	ProcessInput(ProcessParameters parameters, ProcessGuiParameters guiParams, File _tsneCmd) throws IOException {
+	ProcessInput(ProcessParameters parameters, ProcessGuiParameters guiParams, File tsneCmd) throws IOException {
 		logger.debug("Init of ProcessInput");
 		this.parameters = parameters;
 		this.guiParameters = guiParams;
 		if (parameters.getInputPointFile() != null) {
 			setPointsfile(parameters.getInputPointFile());
 		}
-		tsneCmd = _tsneCmd;
-		progressVal = 0;
+		this.tsneCmd = tsneCmd;
+		this.progressVal = 0;
 	}
 
 	void updateStatus(String message) {
@@ -68,10 +77,12 @@ public class ProcessInput extends ObjectWithProperties {
 	void updateStatus(final String message, int amount) {
 		logger.debug(message);
 		progressVal += amount;
-		if (progressVal > 100)
+		if (progressVal > MAX_PROGRESS_VALUE) {
 			progressVal = 100;
-		if (progressVal < 0)
+		}
+		if (progressVal < 0) {
 			progressVal = 0;
+		}
 		final AtomicInteger value = new AtomicInteger(progressVal);
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -89,7 +100,7 @@ public class ProcessInput extends ObjectWithProperties {
 	}
 
 	public void doProcess() {
-		new Thread() {
+		Thread thread = new Thread() {
 			public void run() {
 
 				setProcessEnded(false);
@@ -110,7 +121,7 @@ public class ProcessInput extends ObjectWithProperties {
 							parameters.getContigLength(), parameters.getExtendedLogs(), guiParameters);
 					if (dataSet == null) {
 						JOptionPane.showMessageDialog(null, "Error during loading data from given file! Check the logs.", "alert", JOptionPane.ERROR_MESSAGE);
-						updateStatus("", -100);
+						updateStatus("", -MAX_PROGRESS_VALUE);
 						setProcessEnded(true);
 						return;
 					}
@@ -159,7 +170,7 @@ public class ProcessInput extends ObjectWithProperties {
 						}
 					}
 
-					dataSet_orig = dataSet;
+					dataSetOrig = dataSet;
 					int scale = 10; // Scaling is needed since AWT.Polygon() requires
 													// int-coordinates for the polygon vertices.
 					// Scaling by a factor of ten allows to zoom in and still get
@@ -167,16 +178,13 @@ public class ProcessInput extends ObjectWithProperties {
 					// TODO: Refactor such that this is done internally in
 					// ClusterFactory.createClusterFromPolygon()
 					dataSet = DataSetFactory.createDataSetFromPointFile(new FileInputStream(pointsfile), labelsIS, scale, parameters.getExtendedLogs());
-					updateStatus("Creating png files....", 5);
-					PngGraphicsConverter converter = new PngGraphicsConverter(dataSet);
-					converter.createPngDirectory(directory + "/images/", 2);
 					updateStatus("Done.", 100); // 100% progress, make sure
 					// progress bar is at 100
 
 					// add label ID and name from initial dataset
 					for (int i = 0; i < dataSet.getSequences().size(); i++) {
-						dataSet.getSequences().get(i).setLabelId(dataSet_orig.getSequences().get(i).getLabelId());
-						dataSet.getSequences().get(i).setLabelName(dataSet_orig.getSequences().get(i).getLabelName());
+						dataSet.getSequences().get(i).setLabelId(dataSetOrig.getSequences().get(i).getLabelId());
+						dataSet.getSequences().get(i).setLabelName(dataSetOrig.getSequences().get(i).getLabelName());
 					}
 
 					DataSetUtils.setDataSet(dataSet);
@@ -234,7 +242,8 @@ public class ProcessInput extends ObjectWithProperties {
 				}
 
 			}
-		}.start();
+		};
+		thread.start();
 	}
 
 	public void restartApplication() {

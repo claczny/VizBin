@@ -34,10 +34,10 @@ public class CommandLineOptions {
 
 	private final static String	HEADER						= "";
 	private final static String	FOOTER						= "";
-	Options											options;
-	CommandLine									cmd;
+	private Options							options;
+	private CommandLine					cmd;
 
-	boolean											ok;
+	private boolean							ok;
 
 	/**
 	 * Default constructor.

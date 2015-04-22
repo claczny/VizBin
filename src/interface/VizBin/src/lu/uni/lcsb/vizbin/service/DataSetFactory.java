@@ -1,4 +1,4 @@
-package lcsb.vizbin.service;
+package lu.uni.lcsb.vizbin.service;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
@@ -23,14 +23,24 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import lcsb.vizbin.data.DataSet;
-import lcsb.vizbin.data.Sequence;
 import lu.uni.lcsb.vizbin.ProcessGuiParameters;
+import lu.uni.lcsb.vizbin.data.DataSet;
+import lu.uni.lcsb.vizbin.data.Sequence;
 
 import org.apache.log4j.Logger;
 
 public class DataSetFactory {
-	static Logger	logger	= Logger.getLogger(DataSetFactory.class);
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private DataSetFactory() {
+
+	}
+
+	/**
+	 * Default class logger.
+	 */
+	private static Logger	logger	= Logger.getLogger(DataSetFactory.class);
 
 	public static DataSet createDataSetFromPointFile(String fileName, String labelFileName, double scale, boolean log) throws IOException,
 			InvalidMetaFileException {
@@ -212,7 +222,8 @@ public class DataSetFactory {
 	public static DataSet createDataSetFromFastaFile(String fileName, String filteredSequencesFileName, String labelFileName, String pointsFileName,
 			Integer contigLen, boolean log, ProcessGuiParameters guiParameters) throws IOException, InvalidMetaFileException {
 
-		Collection<Integer> filteredSequences = filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen, guiParameters);
+		Collection<Integer> filteredSequences = filterSequences(
+				new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen, guiParameters);
 
 		FileInputStream sequencesFis = new FileInputStream(filteredSequencesFileName);
 
