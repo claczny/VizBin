@@ -8,7 +8,7 @@ import lu.uni.lcsb.vizbin.pca.PcaType;
  * @author Piotr Gawron
  * 
  */
-public class Config {
+public final class Config {
 
 	/**
 	 * Default constructor for utility class. Prevents instatiation.

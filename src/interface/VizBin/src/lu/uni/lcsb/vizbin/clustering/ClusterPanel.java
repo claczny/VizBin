@@ -26,11 +26,11 @@ import javax.swing.SwingUtilities;
 import lu.uni.lcsb.vizbin.DataExporter;
 import lu.uni.lcsb.vizbin.ExtendedFastScatterPlot;
 import lu.uni.lcsb.vizbin.LegendFrame;
-import lu.uni.lcsb.vizbin.PointShape;
 import lu.uni.lcsb.vizbin.ShapePrinter;
 import lu.uni.lcsb.vizbin.data.Cluster;
 import lu.uni.lcsb.vizbin.data.DataSet;
 import lu.uni.lcsb.vizbin.data.Sequence;
+import lu.uni.lcsb.vizbin.graphics.PointShape;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;

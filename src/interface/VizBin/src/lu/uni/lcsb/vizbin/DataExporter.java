@@ -73,7 +73,7 @@ public class DataExporter {
 					int exportedCount = 0;
 					boolean addHeaderLine;
 
-					int lookupTable[] = new int[sequenceList.size()];
+					int[] lookupTable = new int[sequenceList.size()];
 					for (int i = 0; i < sequenceList.size(); i++) {
 						// for some reason, the sequence ID is in the 'Seq##' format
 						// so we need to retrieve only the ##
@@ -95,10 +95,12 @@ public class DataExporter {
 									line = br.readLine();
 								}
 								dpb.setValue(++exportedCount);
-							} else
+							} else {
 								line = br.readLine();
-						} else
+							}
+						} else {
 							line = br.readLine();
+						}
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
