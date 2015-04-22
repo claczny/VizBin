@@ -13,12 +13,41 @@ import javax.swing.JTabbedPane;
  * 
  */
 public class ProcessGuiParameters {
+	/**
+	 * {@link JLabel} where the status is displayed.
+	 */
 	private JLabel				status;
+	/**
+	 * {@link JProgressBar} where the progress is displayed.
+	 */
 	private JProgressBar	progBar;
+	/**
+	 * {@link JTabbedPane} where the chart will be displayed.
+	 */
 	private JTabbedPane		tabPane;
+	/**
+	 * Frame of the program.
+	 */
 	private JFrame				parentFrame;
+	/**
+	 * TODO not used.
+	 */
 	private boolean				drawAxes;
 
+	/**
+	 * Default constructor.
+	 * 
+	 * @param status
+	 *          {@link #status}
+	 * @param progBar
+	 *          {@link #progBar}
+	 * @param tabPane
+	 *          {@link #tabPane}
+	 * @param parentFrame
+	 *          {@link #parentFrame}
+	 * @param drawAxes
+	 *          {@link #drawAxes}
+	 */
 	public ProcessGuiParameters(JLabel status, JProgressBar progBar, JTabbedPane tabPane, JFrame parentFrame, boolean drawAxes) {
 		this.status = status;
 		this.progBar = progBar;
@@ -68,7 +97,8 @@ public class ProcessGuiParameters {
 	}
 
 	/**
-	 * @param drawAxes the drawAxes to set
+	 * @param drawAxes
+	 *          the drawAxes to set
 	 * @see #drawAxes
 	 */
 	public void setDrawAxes(boolean drawAxes) {

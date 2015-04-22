@@ -8,6 +8,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import lu.uni.lcsb.vizbin.graphics.PointShape;
+
 import org.apache.log4j.Logger;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CrosshairState;

@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import lu.uni.lcsb.vizbin.graphics.PointShape;
+
 public class LegendFrame extends javax.swing.JFrame {
 
 	private Map<Integer, String>	labels		= new HashMap<Integer, String>();

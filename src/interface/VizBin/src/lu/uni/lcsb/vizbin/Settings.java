@@ -16,17 +16,21 @@ import javax.swing.JOptionPane;
  *         Plugaru</a>
  */
 public class Settings {
-	private String			settingsDirName		= ".vizbin";
-	private String			settingsFileName	= "config";
-	private String			pluginDirName			= "plugins";
-	private File				settingsPath;
-	private File				settingsFile;
-	private File				binFile;
-	private File				pluginPath;
+	/**
+	 * How big should be the buffer when reading file.
+	 */
+	private static final int	READ_BUFFER_SIZE	= 1024;
+	private String						settingsDirName		= ".vizbin";
+	private String						settingsFileName	= "config";
+	private String						pluginDirName			= "plugins";
+	private File							settingsPath;
+	private File							settingsFile;
+	private File							binFile;
+	private File							pluginPath;
 
-	private PluginUtils	pluginUtils;
+	private PluginUtils				pluginUtils;
 
-	private Properties	prop							= null;
+	private Properties				prop							= null;
 
 	public Settings() {
 		settingsPath = new File(System.getProperty("user.home"), settingsDirName);
@@ -41,12 +45,15 @@ public class Settings {
 
 	public String getTSNEBinName() {
 		String os = System.getProperty("os.name");
-		if (os.toUpperCase().contains("WINDOWS"))
+		if (os.toUpperCase().contains("WINDOWS")) {
 			return "pbh_tsne.exe";
-		if (os.toUpperCase().contains("LINUX"))
+		}
+		if (os.toUpperCase().contains("LINUX")) {
 			return "pbh_tsne";
-		if (os.toUpperCase().contains("OS X"))
+		}
+		if (os.toUpperCase().contains("OS X")) {
 			return "pbh_tsne_osx";
+		}
 		return "";
 	}
 
@@ -71,19 +78,21 @@ public class Settings {
 			binFile = new File(settingsPath, binName);
 			InputStream instream = null;
 			OutputStream outstream = null;
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[READ_BUFFER_SIZE];
 			int count = 0;
 			try {
 				instream = this.getClass().getClassLoader().getResourceAsStream("tsne/" + binName);
 				outstream = new FileOutputStream(binFile);
-				while ((count = instream.read(buf)) >= 0)
+				while ((count = instream.read(buf)) >= 0) {
 					outstream.write(buf, 0, count);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
 				try {
-					if (instream != null)
+					if (instream != null) {
 						instream.close();
+					}
 					if (outstream != null) {
 						outstream.flush();
 						outstream.close();
@@ -118,7 +127,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param settingsDirName the settingsDirName to set
+	 * @param settingsDirName
+	 *          the settingsDirName to set
 	 * @see #settingsDirName
 	 */
 	public void setSettingsDirName(String settingsDirName) {
@@ -134,7 +144,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param settingsFileName the settingsFileName to set
+	 * @param settingsFileName
+	 *          the settingsFileName to set
 	 * @see #settingsFileName
 	 */
 	public void setSettingsFileName(String settingsFileName) {
@@ -150,7 +161,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param pluginDirName the pluginDirName to set
+	 * @param pluginDirName
+	 *          the pluginDirName to set
 	 * @see #pluginDirName
 	 */
 	public void setPluginDirName(String pluginDirName) {
@@ -166,7 +178,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param settingsPath the settingsPath to set
+	 * @param settingsPath
+	 *          the settingsPath to set
 	 * @see #settingsPath
 	 */
 	public void setSettingsPath(File settingsPath) {
@@ -182,7 +195,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param settingsFile the settingsFile to set
+	 * @param settingsFile
+	 *          the settingsFile to set
 	 * @see #settingsFile
 	 */
 	public void setSettingsFile(File settingsFile) {
@@ -198,7 +212,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param binFile the binFile to set
+	 * @param binFile
+	 *          the binFile to set
 	 * @see #binFile
 	 */
 	public void setBinFile(File binFile) {
@@ -214,7 +229,8 @@ public class Settings {
 	}
 
 	/**
-	 * @param pluginUtils the pluginUtils to set
+	 * @param pluginUtils
+	 *          the pluginUtils to set
 	 * @see #pluginUtils
 	 */
 	public void setPluginUtils(PluginUtils pluginUtils) {

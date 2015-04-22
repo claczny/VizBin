@@ -22,6 +22,7 @@ import org.jfree.ui.RectangleEdge;
 
 import lu.uni.lcsb.vizbin.*;
 import lu.uni.lcsb.vizbin.data.*;
+import lu.uni.lcsb.vizbin.graphics.PointShape;
 
 public class ClusterPanel {
 	/**

@@ -76,6 +76,9 @@ public class ProcessParameters {
 	 */
 	private Boolean	merge							= Config.DEFAULT_MERGE;
 
+	/**
+	 * Extra information in logs.
+	 */
 	private Boolean	extendedLogs			= false;
 
 	/**
@@ -122,6 +125,7 @@ public class ProcessParameters {
 	 * @param inputFastaFile
 	 *          the inputFastaFile to set
 	 * @see #inputFastaFile
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters inputFastaFile(String inputFastaFile) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -145,6 +149,7 @@ public class ProcessParameters {
 	 * @param inputPointFile
 	 *          the inputPointFile to set
 	 * @see #inputPointFile
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters inputPointFile(String inputPointFile) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -168,6 +173,7 @@ public class ProcessParameters {
 	 * @param outputFile
 	 *          the outputFile to set
 	 * @see #outputFile
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters outputFile(String outputFile) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -191,6 +197,7 @@ public class ProcessParameters {
 	 * @param kMerLength
 	 *          the kMerLength to set
 	 * @see #kMerLength
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters kMerLength(Integer kMerLength) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -210,6 +217,7 @@ public class ProcessParameters {
 	 * @param contigLength
 	 *          the contigLength to set
 	 * @see #contigLength
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters contigLength(Integer contigLength) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -229,6 +237,7 @@ public class ProcessParameters {
 	 * @param threads
 	 *          the threads to set
 	 * @see #threads
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters threads(Integer threads) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -248,6 +257,7 @@ public class ProcessParameters {
 	 * @param inputLabelFile
 	 *          the inputLabelFile to set
 	 * @see #inputLabelFile
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters inputLabelFile(String inputLabelFile) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -271,6 +281,7 @@ public class ProcessParameters {
 	 * @param kmerDebugFile
 	 *          the kmerDebugFile to set
 	 * @see #kmerDebugFile
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters kmerDebugFile(String kmerDebugFile) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -294,6 +305,7 @@ public class ProcessParameters {
 	 * @param pcaColumns
 	 *          the pcaColumns to set
 	 * @see #pcaColumns
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters pcaColumns(Integer pcaColumns) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -313,6 +325,7 @@ public class ProcessParameters {
 	 * @param seed
 	 *          the seed to set
 	 * @see #seed
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters seed(Integer seed) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -332,6 +345,7 @@ public class ProcessParameters {
 	 * @param pcaAlgorithmType
 	 *          the pcaAlgorithmType to set
 	 * @see #pcaAlgorithmType
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters pcaAlgorithmType(PcaType pcaAlgorithmType) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -351,6 +365,7 @@ public class ProcessParameters {
 	 * @param theta
 	 *          the theta to set
 	 * @see #theta
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters theta(Double theta) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -370,6 +385,7 @@ public class ProcessParameters {
 	 * @param perplexity
 	 *          the perplexity to set
 	 * @see #perplexity
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters perplexity(Double perplexity) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -389,6 +405,7 @@ public class ProcessParameters {
 	 * @param merge
 	 *          the merge to set
 	 * @see #merge
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters merge(Boolean merge) {
 		ProcessParameters result = new ProcessParameters(this);
@@ -408,6 +425,7 @@ public class ProcessParameters {
 	 * @param extendedLogs
 	 *          the extendedLogs to set
 	 * @see #extendedLogs
+	 * @return new {@link ProcessParameters} object with the parameter set
 	 */
 	public ProcessParameters extendedLogs(Boolean extendedLogs) {
 		ProcessParameters result = new ProcessParameters(this);
