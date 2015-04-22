@@ -13,7 +13,17 @@ import lu.uni.lcsb.vizbin.data.DataSet;
 import lu.uni.lcsb.vizbin.data.Sequence;
 
 public class DataSetFactory {
-	static Logger	logger	= Logger.getLogger(DataSetFactory.class);
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private DataSetFactory() {
+
+	}
+
+	/**
+	 * Default class logger.
+	 */
+	private static Logger	logger	= Logger.getLogger(DataSetFactory.class);
 
 	public static DataSet createDataSetFromPointFile(String fileName, String labelFileName, double scale, boolean log) throws IOException,
 			InvalidMetaFileException {
@@ -195,7 +205,8 @@ public class DataSetFactory {
 	public static DataSet createDataSetFromFastaFile(String fileName, String filteredSequencesFileName, String labelFileName, String pointsFileName,
 			Integer contigLen, boolean log, ProcessGuiParameters guiParameters) throws IOException, InvalidMetaFileException {
 
-		Collection<Integer> filteredSequences = filterSequences(new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen, guiParameters);
+		Collection<Integer> filteredSequences = filterSequences(
+				new FileInputStream(fileName), new FileOutputStream(filteredSequencesFileName), contigLen, guiParameters);
 
 		FileInputStream sequencesFis = new FileInputStream(filteredSequencesFileName);
 

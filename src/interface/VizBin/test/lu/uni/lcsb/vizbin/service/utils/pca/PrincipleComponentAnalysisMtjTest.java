@@ -3,12 +3,10 @@ package lu.uni.lcsb.vizbin.service.utils.pca;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-import lu.uni.lcsb.vizbin.service.utils.pca.IPrincipleComponentAnalysis;
-import lu.uni.lcsb.vizbin.service.utils.pca.PrincipleComponentAnalysisMtj;
+import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
+import lu.uni.lcsb.vizbin.pca.PrincipleComponentAnalysisMtj;
 
 public class PrincipleComponentAnalysisMtjTest {
 	Logger											logger	= Logger.getLogger(PrincipleComponentAnalysisMtjTest.class);

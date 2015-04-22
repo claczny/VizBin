@@ -1,14 +1,21 @@
 package lu.uni.lcsb.vizbin;
 
-import lu.uni.lcsb.vizbin.service.utils.PcaType;
+import lu.uni.lcsb.vizbin.pca.PcaType;
 
 /**
  * Class with config parameters.
- * 
+ *
  * @author Piotr Gawron
- * 
+ *
  */
 public class Config {
+
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private Config() {
+
+	}
 
 	/**
 	 * Default minimum contig length.

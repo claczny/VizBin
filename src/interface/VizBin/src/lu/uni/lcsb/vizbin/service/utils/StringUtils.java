@@ -1,11 +1,23 @@
 package lu.uni.lcsb.vizbin.service.utils;
 
-import org.apache.log4j.Logger;
-
 import lu.uni.lcsb.vizbin.InvalidArgumentException;
 
+import org.apache.log4j.Logger;
+
 public class StringUtils {
-	static Logger	logger	= Logger.getLogger(StringUtils.class);
+
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private StringUtils() {
+
+	}
+
+	/**
+	 * Default class logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger	logger	= Logger.getLogger(StringUtils.class);
 
 	public static String nextString(String current) {
 		if (current.equals("Z") || current.length() == 0) {
@@ -14,10 +26,11 @@ public class StringUtils {
 
 		if (current.endsWith("Z")) {
 			String result = nextString(current.substring(0, current.length() - 1));
-			if (result == null)
+			if (result == null) {
 				return null;
-			else
+			} else {
 				return result + "A";
+			}
 		} else {
 			int charValue = current.charAt(current.length() - 1);
 			String next = String.valueOf((char) (charValue + 1));
@@ -35,10 +48,11 @@ public class StringUtils {
 
 		if (current.endsWith(lastLetter)) {
 			String result = nextOverAlphabet(current.substring(0, current.length() - 1), alphabet);
-			if (result == null)
+			if (result == null) {
 				return null;
-			else
+			} else {
 				return result + alphabet.substring(0, 1);
+			}
 		} else {
 			String currentLetter = current.substring(current.length() - 1, current.length());
 			int index = alphabet.indexOf(currentLetter);
@@ -50,7 +64,7 @@ public class StringUtils {
 
 	}
 
-	public static String reverseDnaSequence(String sequence) throws InvalidArgumentException {
+	public static String reverseDnaSequence(String sequence) {
 		String result = "";
 		for (int i = sequence.length() - 1; i >= 0; i--) {
 			Character ch = sequence.charAt(i);

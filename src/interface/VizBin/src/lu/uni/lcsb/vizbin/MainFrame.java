@@ -1,12 +1,7 @@
 package lu.uni.lcsb.vizbin;
 
-import java.awt.Container;
-import java.awt.Desktop;
-import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,28 +10,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.JPopupMenu.Separator;
-import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 
+import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
+import lu.uni.lcsb.vizbin.pca.PcaType;
 import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
-import lu.uni.lcsb.vizbin.service.utils.PcaType;
 
 /**
- * 
+ *
  * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
  *         Plugaru</a>
  */
@@ -45,7 +30,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private static final FileNameExtensionFilter	TEXT_FILTER							= new FileNameExtensionFilter("text files", "txt");
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long											serialVersionUID				= 1L;
 
@@ -69,7 +54,7 @@ public class MainFrame extends javax.swing.JFrame {
 	 */
 	private String																workspaceName						= null;
 
-	private Boolean																def_log									= true;
+	private Boolean																defLog									= true;
 	private Boolean																moreOpionsVisible				= false;
 	private Settings															settings								= null;
 
@@ -92,7 +77,10 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private PcaType																pcaType									= PcaType.EJML;
 
-	private Logger																logger									= Logger.getLogger(MainFrame.class.getName());
+	/**
+	 * Default class logger.
+	 */
+	private final Logger													logger									= Logger.getLogger(MainFrame.class.getName());
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public MainFrame() {
@@ -109,27 +97,27 @@ public class MainFrame extends javax.swing.JFrame {
 
 		initComponents();
 		// set default values to the GUI
-		this.formatfield_contigLen.setText(Integer.toString(Config.DEFAULT_CONTIG_LENGTH));
-		this.formatfield_numThreads.setText(Integer.toString(Config.DEFAULT_THREAD_NUM));
-		this.formatfield_kmer.setText(Integer.toString(Config.DEFAULT_KMER_LENGTH));
-		this.formatfield_pca.setText(Integer.toString(Config.DEFAULT_PCA_COLUMNS));
-		this.formatfield_theta.setText(Double.toString(Config.DEFAULT_THETA));
-		this.formatfield_perplexity.setText(Double.toString(Config.DEFAULT_PERPLEXILITY));
-		this.formatfield_seed.setText(Integer.toString(Config.DEFAULT_SEED));
-		this.combobox_merge.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
-		this.combobox_log.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
-		this.combobox_pca.setModel(new DefaultComboBoxModel(new String[] { PcaType.MTJ.getName(), PcaType.EJML.getName() }));
-		this.combobox_pca.setSelectedIndex(0);
+		this.formatfieldContigLen.setText(Integer.toString(Config.DEFAULT_CONTIG_LENGTH));
+		this.formatfieldNumThreads.setText(Integer.toString(Config.DEFAULT_THREAD_NUM));
+		this.formatfieldKmer.setText(Integer.toString(Config.DEFAULT_KMER_LENGTH));
+		this.formatfieldPca.setText(Integer.toString(Config.DEFAULT_PCA_COLUMNS));
+		this.formatfieldTheta.setText(Double.toString(Config.DEFAULT_THETA));
+		this.formatfieldPerplexity.setText(Double.toString(Config.DEFAULT_PERPLEXILITY));
+		this.formatfieldSeed.setText(Integer.toString(Config.DEFAULT_SEED));
+		this.comboboxMerge.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
+		this.comboboxLog.setModel(new DefaultComboBoxModel(new String[] { "Yes", "No" }));
+		this.comboboxPca.setModel(new DefaultComboBoxModel(new String[] { PcaType.MTJ.getName(), PcaType.EJML.getName() }));
+		this.comboboxPca.setSelectedIndex(0);
 		if (Config.DEFAULT_MERGE) {
-			this.combobox_merge.setSelectedIndex(0);
+			this.comboboxMerge.setSelectedIndex(0);
 		} else {
-			this.combobox_merge.setSelectedIndex(1);
+			this.comboboxMerge.setSelectedIndex(1);
 		}
 
-		if (def_log) {
-			this.combobox_log.setSelectedIndex(0);
+		if (defLog) {
+			this.comboboxLog.setSelectedIndex(0);
 		} else {
-			this.combobox_log.setSelectedIndex(1);
+			this.comboboxLog.setSelectedIndex(1);
 		}
 
 		// for easy debugging, pre-set input file selector:
@@ -140,8 +128,8 @@ public class MainFrame extends javax.swing.JFrame {
 		// this.textfield_labels.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.loglength.ann");
 	}
 
-	void setSettings(Settings _settings) {
-		settings = _settings;
+	void setSettings(Settings settings) {
+		this.settings = settings;
 	}
 
 	@SuppressWarnings({ "rawtypes" })
@@ -152,50 +140,50 @@ public class MainFrame extends javax.swing.JFrame {
 
 		jMenuItem1 = new javax.swing.JMenuItem();
 		tabpanel = new javax.swing.JTabbedPane();
-		tab_panel_main = new javax.swing.JPanel();
-		label_file = new javax.swing.JLabel();
-		label_contigLen = new javax.swing.JLabel();
-		label_numThreads = new javax.swing.JLabel();
-		label_points_file = new javax.swing.JLabel();
-		label_labels = new javax.swing.JLabel();
-		label_kmer = new javax.swing.JLabel();
-		label_merge = new javax.swing.JLabel();
-		label_pca_dimensions = new javax.swing.JLabel();
-		label_theta = new javax.swing.JLabel();
-		label_perplexity = new javax.swing.JLabel();
-		label_seed = new javax.swing.JLabel();
-		label_pca_library = new javax.swing.JLabel();
-		label_log = new javax.swing.JLabel();
-		textfield_file = new javax.swing.JTextField();
-		textfield_points_file = new javax.swing.JTextField();
-		textfield_labels = new javax.swing.JTextField();
-		formatfield_kmer = new javax.swing.JFormattedTextField();
-		combobox_merge = new javax.swing.JComboBox();
-		combobox_log = new javax.swing.JComboBox();
-		combobox_pca = new javax.swing.JComboBox();
-		formatfield_contigLen = new javax.swing.JFormattedTextField();
-		formatfield_numThreads = new javax.swing.JFormattedTextField();
-		formatfield_pca = new javax.swing.JFormattedTextField();
-		formatfield_theta = new javax.swing.JFormattedTextField();
-		formatfield_perplexity = new javax.swing.JFormattedTextField();
-		formatfield_seed = new javax.swing.JFormattedTextField();
-		button_file = new javax.swing.JButton();
-		button_points_file = new javax.swing.JButton();
-		button_labels = new javax.swing.JButton();
-		button_more_options = new javax.swing.JButton();
-		button_process = new javax.swing.JButton();
-		tab_panel_vis = new javax.swing.JPanel();
-		tab_panel_plugins = new javax.swing.JPanel();
+		tabPanelMain = new javax.swing.JPanel();
+		labelFile = new javax.swing.JLabel();
+		labelContigLen = new javax.swing.JLabel();
+		labelNumThreads = new javax.swing.JLabel();
+		labelPointsFile = new javax.swing.JLabel();
+		labelLabels = new javax.swing.JLabel();
+		labelKmer = new javax.swing.JLabel();
+		labelMerge = new javax.swing.JLabel();
+		labelPcaDimensions = new javax.swing.JLabel();
+		labelTheta = new javax.swing.JLabel();
+		labelPerplexity = new javax.swing.JLabel();
+		labelSeed = new javax.swing.JLabel();
+		labelPcaLibrary = new javax.swing.JLabel();
+		labelLog = new javax.swing.JLabel();
+		textfieldFile = new javax.swing.JTextField();
+		textfieldPointsFile = new javax.swing.JTextField();
+		textfieldLabels = new javax.swing.JTextField();
+		formatfieldKmer = new javax.swing.JFormattedTextField();
+		comboboxMerge = new javax.swing.JComboBox();
+		comboboxLog = new javax.swing.JComboBox();
+		comboboxPca = new javax.swing.JComboBox();
+		formatfieldContigLen = new javax.swing.JFormattedTextField();
+		formatfieldNumThreads = new javax.swing.JFormattedTextField();
+		formatfieldPca = new javax.swing.JFormattedTextField();
+		formatfieldTheta = new javax.swing.JFormattedTextField();
+		formatfieldPerplexity = new javax.swing.JFormattedTextField();
+		formatfieldSeed = new javax.swing.JFormattedTextField();
+		buttonFile = new javax.swing.JButton();
+		buttonPointsFile = new javax.swing.JButton();
+		buttonLabels = new javax.swing.JButton();
+		buttonMoreOptions = new javax.swing.JButton();
+		buttonProcess = new javax.swing.JButton();
+		tabPanelVis = new javax.swing.JPanel();
+		tabPanelPlugins = new javax.swing.JPanel();
 		jScrollPane1 = new javax.swing.JScrollPane();
-		plugin_list = new javax.swing.JList();
-		button_reload_plugins = new javax.swing.JButton();
-		button_load_plugin = new javax.swing.JButton();
+		pluginList = new javax.swing.JList();
+		buttonReloadPlugins = new javax.swing.JButton();
+		buttonLoadPlugin = new javax.swing.JButton();
 		filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-		panel_plugin_options = new javax.swing.JPanel();
-		label_plugin_list = new javax.swing.JLabel();
-		label_plugin_opts = new javax.swing.JLabel();
+		panelPluginOptions = new javax.swing.JPanel();
+		labelPluginList = new javax.swing.JLabel();
+		labelPluginOpts = new javax.swing.JLabel();
 		statuspanel = new javax.swing.JPanel();
-		label_status = new javax.swing.JLabel();
+		labelStatus = new javax.swing.JLabel();
 		progBar = new javax.swing.JProgressBar();
 
 		jMenuItem1.setText("jMenuItem1");
@@ -203,124 +191,124 @@ public class MainFrame extends javax.swing.JFrame {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 
-		tab_panel_main.setName("tab_panel_main"); // NOI18N
-		tab_panel_main.setLayout(new java.awt.GridBagLayout());
+		tabPanelMain.setName("tab_panel_main"); // NOI18N
+		tabPanelMain.setLayout(new java.awt.GridBagLayout());
 
-		label_file.setText("File to visualise:");
+		labelFile.setText("File to visualise:");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_file, gridBagConstraints);
+		tabPanelMain.add(labelFile, gridBagConstraints);
 
-		label_contigLen.setText("Minimal contig length:");
-		label_contigLen.setVisible(true);
+		labelContigLen.setText("Minimal contig length:");
+		labelContigLen.setVisible(true);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_contigLen, gridBagConstraints);
+		tabPanelMain.add(labelContigLen, gridBagConstraints);
 
-		label_numThreads.setText("Number of threads:");
-		label_numThreads.setVisible(true);
+		labelNumThreads.setText("Number of threads:");
+		labelNumThreads.setVisible(true);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_numThreads, gridBagConstraints);
+		tabPanelMain.add(labelNumThreads, gridBagConstraints);
 
-		label_points_file.setText("Point file (optional):");
-		label_points_file.setVisible(false);
+		labelPointsFile.setText("Point file (optional):");
+		labelPointsFile.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 4;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_points_file, gridBagConstraints);
+		tabPanelMain.add(labelPointsFile, gridBagConstraints);
 
-		label_labels.setText("Annotation file (optional):");
-		label_labels.setVisible(false);
+		labelLabels.setText("Annotation file (optional):");
+		labelLabels.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 5;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_labels, gridBagConstraints);
+		tabPanelMain.add(labelLabels, gridBagConstraints);
 
-		label_kmer.setText("Kmer length:");
-		label_kmer.setVisible(false);
+		labelKmer.setText("Kmer length:");
+		labelKmer.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 6;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_kmer, gridBagConstraints);
+		tabPanelMain.add(labelKmer, gridBagConstraints);
 
-		label_merge.setText("Merge rev compl:");
-		label_merge.setVisible(false);
+		labelMerge.setText("Merge rev compl:");
+		labelMerge.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 7;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_merge, gridBagConstraints);
+		tabPanelMain.add(labelMerge, gridBagConstraints);
 
-		label_pca_dimensions.setText("Intermediate dimensions:");
-		label_pca_dimensions.setVisible(false);
+		labelPcaDimensions.setText("Intermediate dimensions:");
+		labelPcaDimensions.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 8;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_pca_dimensions, gridBagConstraints);
+		tabPanelMain.add(labelPcaDimensions, gridBagConstraints);
 
-		label_theta.setText("Theta:");
-		label_theta.setVisible(false);
+		labelTheta.setText("Theta:");
+		labelTheta.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 9;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_theta, gridBagConstraints);
+		tabPanelMain.add(labelTheta, gridBagConstraints);
 
-		label_perplexity.setText("Perplexity:");
-		label_perplexity.setVisible(false);
+		labelPerplexity.setText("Perplexity:");
+		labelPerplexity.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 10;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_perplexity, gridBagConstraints);
+		tabPanelMain.add(labelPerplexity, gridBagConstraints);
 
-		label_seed.setText("Seed:");
-		label_seed.setVisible(false);
+		labelSeed.setText("Seed:");
+		labelSeed.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 11;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_seed, gridBagConstraints);
+		tabPanelMain.add(labelSeed, gridBagConstraints);
 
-		label_pca_library.setText("PCA library:");
-		label_pca_library.setVisible(false);
+		labelPcaLibrary.setText("PCA library:");
+		labelPcaLibrary.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 12;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_pca_library, gridBagConstraints);
+		tabPanelMain.add(labelPcaLibrary, gridBagConstraints);
 
-		textfield_file.setMinimumSize(new java.awt.Dimension(4, 7));
-		textfield_file.setPreferredSize(new java.awt.Dimension(140, 15));
-		textfield_file.addMouseListener(new java.awt.event.MouseAdapter() {
+		textfieldFile.setMinimumSize(new java.awt.Dimension(4, 7));
+		textfieldFile.setPreferredSize(new java.awt.Dimension(140, 15));
+		textfieldFile.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				textfield_fileMouseClicked(evt);
+				textfieldFileMouseClicked(evt);
 			}
 		});
-		label_log.setText("Take logarithm of coverage & length?");
-		label_log.setVisible(false);
+		labelLog.setText("Take logarithm of coverage & length?");
+		labelLog.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 13;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-		tab_panel_main.add(label_log, gridBagConstraints);
+		tabPanelMain.add(labelLog, gridBagConstraints);
 
-		textfield_file.setMinimumSize(new java.awt.Dimension(4, 7));
-		textfield_file.setPreferredSize(new java.awt.Dimension(140, 15));
-		textfield_file.addMouseListener(new java.awt.event.MouseAdapter() {
+		textfieldFile.setMinimumSize(new java.awt.Dimension(4, 7));
+		textfieldFile.setPreferredSize(new java.awt.Dimension(140, 15));
+		textfieldFile.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				textfield_fileMouseClicked(evt);
+				textfieldFileMouseClicked(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -330,45 +318,45 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.ipadx = 136;
 		gridBagConstraints.ipady = 12;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(textfield_file, gridBagConstraints);
+		tabPanelMain.add(textfieldFile, gridBagConstraints);
 
-		formatfield_contigLen.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_contigLen.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_contigLen.setVisible(true);
+		formatfieldContigLen.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldContigLen.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldContigLen.setVisible(true);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_contigLen, gridBagConstraints);
+		tabPanelMain.add(formatfieldContigLen, gridBagConstraints);
 
-		formatfield_numThreads.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_numThreads.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_numThreads.setVisible(true);
+		formatfieldNumThreads.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldNumThreads.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldNumThreads.setVisible(true);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_numThreads, gridBagConstraints);
+		tabPanelMain.add(formatfieldNumThreads, gridBagConstraints);
 
-		button_more_options.setText("Show additional options");
-		button_more_options.addActionListener(new java.awt.event.ActionListener() {
+		buttonMoreOptions.setText("Show additional options");
+		buttonMoreOptions.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_more_optionsActionPerformed(evt);
+				buttonMoreOptionsActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 3;
-		tab_panel_main.add(button_more_options, gridBagConstraints);
+		tabPanelMain.add(buttonMoreOptions, gridBagConstraints);
 
-		textfield_points_file.setVisible(false);
-		textfield_points_file.setMinimumSize(new java.awt.Dimension(4, 7));
-		textfield_points_file.setPreferredSize(new java.awt.Dimension(140, 15));
-		textfield_points_file.addMouseListener(new java.awt.event.MouseAdapter() {
+		textfieldPointsFile.setVisible(false);
+		textfieldPointsFile.setMinimumSize(new java.awt.Dimension(4, 7));
+		textfieldPointsFile.setPreferredSize(new java.awt.Dimension(140, 15));
+		textfieldPointsFile.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				textfield_points_fileMouseClicked(evt);
+				textfieldPointsFileMouseClicked(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -378,14 +366,14 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.ipadx = 136;
 		gridBagConstraints.ipady = 12;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(textfield_points_file, gridBagConstraints);
+		tabPanelMain.add(textfieldPointsFile, gridBagConstraints);
 
-		textfield_labels.setVisible(false);
-		textfield_labels.setMinimumSize(new java.awt.Dimension(4, 7));
-		textfield_labels.setPreferredSize(new java.awt.Dimension(140, 15));
-		textfield_labels.addMouseListener(new java.awt.event.MouseAdapter() {
+		textfieldLabels.setVisible(false);
+		textfieldLabels.setMinimumSize(new java.awt.Dimension(4, 7));
+		textfieldLabels.setPreferredSize(new java.awt.Dimension(140, 15));
+		textfieldLabels.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				textfield_labelsMouseClicked(evt);
+				textfieldLabelsMouseClicked(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -395,149 +383,149 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.ipadx = 136;
 		gridBagConstraints.ipady = 12;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(textfield_labels, gridBagConstraints);
+		tabPanelMain.add(textfieldLabels, gridBagConstraints);
 
-		formatfield_kmer.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_kmer.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_kmer.setVisible(false);
+		formatfieldKmer.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldKmer.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldKmer.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 6;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_kmer, gridBagConstraints);
+		tabPanelMain.add(formatfieldKmer, gridBagConstraints);
 
-		combobox_merge.setPreferredSize(new java.awt.Dimension(140, 24));
-		combobox_merge.setVisible(false);
+		comboboxMerge.setPreferredSize(new java.awt.Dimension(140, 24));
+		comboboxMerge.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 7;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.ipadx = 69;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(combobox_merge, gridBagConstraints);
+		tabPanelMain.add(comboboxMerge, gridBagConstraints);
 
-		formatfield_pca.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_pca.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_pca.setVisible(false);
+		formatfieldPca.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldPca.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldPca.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 8;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_pca, gridBagConstraints);
+		tabPanelMain.add(formatfieldPca, gridBagConstraints);
 
-		formatfield_theta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_theta.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_theta.setVisible(false);
+		formatfieldTheta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldTheta.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldTheta.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 9;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_theta, gridBagConstraints);
+		tabPanelMain.add(formatfieldTheta, gridBagConstraints);
 
-		formatfield_perplexity.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_perplexity.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_perplexity.setVisible(false);
+		formatfieldPerplexity.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldPerplexity.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldPerplexity.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 10;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_perplexity, gridBagConstraints);
+		tabPanelMain.add(formatfieldPerplexity, gridBagConstraints);
 
-		formatfield_seed.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-		formatfield_seed.setPreferredSize(new java.awt.Dimension(140, 29));
-		formatfield_seed.setVisible(false);
+		formatfieldSeed.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+		formatfieldSeed.setPreferredSize(new java.awt.Dimension(140, 29));
+		formatfieldSeed.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 11;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(formatfield_seed, gridBagConstraints);
+		tabPanelMain.add(formatfieldSeed, gridBagConstraints);
 
-		combobox_pca.setPreferredSize(new java.awt.Dimension(140, 24));
-		combobox_pca.setVisible(false);
+		comboboxPca.setPreferredSize(new java.awt.Dimension(140, 24));
+		comboboxPca.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 12;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.ipadx = 69;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(combobox_pca, gridBagConstraints);
+		tabPanelMain.add(comboboxPca, gridBagConstraints);
 
-		combobox_log.setPreferredSize(new java.awt.Dimension(140, 24));
-		combobox_log.setVisible(false);
+		comboboxLog.setPreferredSize(new java.awt.Dimension(140, 24));
+		comboboxLog.setVisible(false);
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 13;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.ipadx = 69;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_main.add(combobox_log, gridBagConstraints);
+		tabPanelMain.add(comboboxLog, gridBagConstraints);
 
-		button_file.setText("Choose...");
-		button_file.addActionListener(new java.awt.event.ActionListener() {
+		buttonFile.setText("Choose...");
+		buttonFile.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_fileActionPerformed(evt);
+				buttonFileActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 0;
-		tab_panel_main.add(button_file, gridBagConstraints);
+		tabPanelMain.add(buttonFile, gridBagConstraints);
 
-		button_points_file.setVisible(false);
-		button_points_file.setText("Choose...");
-		button_points_file.addActionListener(new java.awt.event.ActionListener() {
+		buttonPointsFile.setVisible(false);
+		buttonPointsFile.setText("Choose...");
+		buttonPointsFile.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_points_fileActionPerformed(evt);
+				buttonPointsFileActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 4;
-		tab_panel_main.add(button_points_file, gridBagConstraints);
+		tabPanelMain.add(buttonPointsFile, gridBagConstraints);
 
-		button_labels.setVisible(false);
-		button_labels.setText("Choose...");
-		button_labels.addActionListener(new java.awt.event.ActionListener() {
+		buttonLabels.setVisible(false);
+		buttonLabels.setText("Choose...");
+		buttonLabels.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_labelsActionPerformed(evt);
+				buttonLabelsActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 5;
-		tab_panel_main.add(button_labels, gridBagConstraints);
+		tabPanelMain.add(buttonLabels, gridBagConstraints);
 
-		button_process.setText("Start");
-		button_process.addActionListener(new java.awt.event.ActionListener() {
+		buttonProcess.setText("Start");
+		buttonProcess.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_processActionPerformed(evt);
+				buttonProcessActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 7;
-		tab_panel_main.add(button_process, gridBagConstraints);
+		tabPanelMain.add(buttonProcess, gridBagConstraints);
 
-		tabpanel.addTab("Main", tab_panel_main);
-		tab_panel_main.getAccessibleContext().setAccessibleName("Main");
+		tabpanel.addTab("Main", tabPanelMain);
+		tabPanelMain.getAccessibleContext().setAccessibleName("Main");
 
-		javax.swing.GroupLayout tab_panel_visLayout = new javax.swing.GroupLayout(tab_panel_vis);
-		tab_panel_vis.setLayout(tab_panel_visLayout);
-		tab_panel_visLayout.setHorizontalGroup(tab_panel_visLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 625, Short.MAX_VALUE));
-		tab_panel_visLayout.setVerticalGroup(tab_panel_visLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 300, Short.MAX_VALUE));
+		javax.swing.GroupLayout tabPanelVisLayout = new javax.swing.GroupLayout(tabPanelVis);
+		tabPanelVis.setLayout(tabPanelVisLayout);
+		tabPanelVisLayout.setHorizontalGroup(tabPanelVisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 625, Short.MAX_VALUE));
+		tabPanelVisLayout.setVerticalGroup(tabPanelVisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(0, 300, Short.MAX_VALUE));
 
-		tabpanel.addTab("Visualisation", tab_panel_vis);
-		tab_panel_vis.getAccessibleContext().setAccessibleName("Visualisation");
+		tabpanel.addTab("Visualisation", tabPanelVis);
+		tabPanelVis.getAccessibleContext().setAccessibleName("Visualisation");
 
-		tab_panel_plugins.setLayout(new java.awt.GridBagLayout());
+		tabPanelPlugins.setLayout(new java.awt.GridBagLayout());
 
-		plugin_list.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-		jScrollPane1.setViewportView(plugin_list);
+		pluginList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		jScrollPane1.setViewportView(pluginList);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
@@ -547,41 +535,39 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.weightx = 0.25;
 		gridBagConstraints.weighty = 1.0;
-		tab_panel_plugins.add(jScrollPane1, gridBagConstraints);
+		tabPanelPlugins.add(jScrollPane1, gridBagConstraints);
 
-		button_reload_plugins.setText("Reload list");
-		button_reload_plugins.addActionListener(new java.awt.event.ActionListener() {
+		buttonReloadPlugins.setText("Reload list");
+		buttonReloadPlugins.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_reload_pluginsActionPerformed(evt);
+				buttonReloadPluginsActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-		tab_panel_plugins.add(button_reload_plugins, gridBagConstraints);
+		tabPanelPlugins.add(buttonReloadPlugins, gridBagConstraints);
 
-		button_load_plugin.setText("Load plugin");
-		button_load_plugin.addActionListener(new java.awt.event.ActionListener() {
+		buttonLoadPlugin.setText("Load plugin");
+		buttonLoadPlugin.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button_load_pluginActionPerformed(evt);
+				buttonLoadPluginActionPerformed(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
-		tab_panel_plugins.add(button_load_plugin, gridBagConstraints);
-		tab_panel_plugins.add(filler1, new java.awt.GridBagConstraints());
+		tabPanelPlugins.add(buttonLoadPlugin, gridBagConstraints);
+		tabPanelPlugins.add(filler1, new java.awt.GridBagConstraints());
 
-		panel_plugin_options.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+		panelPluginOptions.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-		javax.swing.GroupLayout panel_plugin_optionsLayout = new javax.swing.GroupLayout(panel_plugin_options);
-		panel_plugin_options.setLayout(panel_plugin_optionsLayout);
-		panel_plugin_optionsLayout.setHorizontalGroup(panel_plugin_optionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(
-				0, 360, Short.MAX_VALUE));
-		panel_plugin_optionsLayout.setVerticalGroup(panel_plugin_optionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGap(
-				0, 256, Short.MAX_VALUE));
+		GroupLayout panelPluginOptionsLayout = new GroupLayout(panelPluginOptions);
+		panelPluginOptions.setLayout(panelPluginOptionsLayout);
+		panelPluginOptionsLayout.setHorizontalGroup(panelPluginOptionsLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 360, Short.MAX_VALUE));
+		panelPluginOptionsLayout.setVerticalGroup(panelPluginOptionsLayout.createParallelGroup(GroupLayout.Alignment.LEADING).addGap(0, 256, Short.MAX_VALUE));
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
@@ -589,20 +575,20 @@ public class MainFrame extends javax.swing.JFrame {
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 0.75;
 		gridBagConstraints.weighty = 1.0;
-		tab_panel_plugins.add(panel_plugin_options, gridBagConstraints);
+		tabPanelPlugins.add(panelPluginOptions, gridBagConstraints);
 
-		label_plugin_list.setText("Plugin list:");
+		labelPluginList.setText("Plugin list:");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.gridwidth = 2;
-		tab_panel_plugins.add(label_plugin_list, gridBagConstraints);
+		tabPanelPlugins.add(labelPluginList, gridBagConstraints);
 
-		label_plugin_opts.setText("Plugin options:");
+		labelPluginOpts.setText("Plugin options:");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 0;
-		tab_panel_plugins.add(label_plugin_opts, gridBagConstraints);
+		tabPanelPlugins.add(labelPluginOpts, gridBagConstraints);
 
 		/*
 		 * Commented out - plugins are not used for now
@@ -624,20 +610,20 @@ public class MainFrame extends javax.swing.JFrame {
 		statuspanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 		statuspanel.setLayout(new java.awt.GridBagLayout());
 
-		label_status.setToolTipText("Double click this status bar to open the application's log file.");
-		label_status.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-		label_status.setMinimumSize(new java.awt.Dimension(4, 20));
-		label_status.setPreferredSize(new java.awt.Dimension(20, 20));
-		label_status.addMouseListener(new java.awt.event.MouseAdapter() {
+		labelStatus.setToolTipText("Double click this status bar to open the application's log file.");
+		labelStatus.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+		labelStatus.setMinimumSize(new java.awt.Dimension(4, 20));
+		labelStatus.setPreferredSize(new java.awt.Dimension(20, 20));
+		labelStatus.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				label_statusMouseClicked(evt);
+				labelStatusMouseClicked(evt);
 			}
 		});
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
 		gridBagConstraints.weightx = 0.5;
-		statuspanel.add(label_status, gridBagConstraints);
+		statuspanel.add(labelStatus, gridBagConstraints);
 		statuspanel.add(progBar, new java.awt.GridBagConstraints());
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -651,38 +637,38 @@ public class MainFrame extends javax.swing.JFrame {
 		setJMenuBar(createMenu());
 
 		pack();
-	}// </editor-fold>//GEN-END:initComponents
+	}
 
 	/**
 	 * This method creates menu for the main form.
-	 * 
+	 *
 	 * @return menu
 	 */
 	protected JMenuBar createMenu() {
 
 		final JMenuBar menu = new JMenuBar();
-		JMenu menu_file = new JMenu();
-		JMenuItem menu_file_reinitialize = new JMenuItem();
-		Separator menu_file_sep1 = new Separator();
-		JMenuItem menu_file_exit = new JMenuItem();
-		JMenu menu_options = new JMenu();
-		JMenuItem menu_options_extvis = new JMenuItem();
+		JMenu menuFile = new JMenu();
+		JMenuItem menuFileReinitialize = new JMenuItem();
+		Separator menuFileSep1 = new Separator();
+		JMenuItem menuFileExit = new JMenuItem();
+		JMenu menuOptions = new JMenu();
+		JMenuItem menuOptionsExtVis = new JMenuItem();
 		// menu_options_drawaxes = new javax.swing.JCheckBoxMenuItem();
-		JMenuItem menu_options_plottopng = new JMenuItem();
-		JMenu menu_about = new JMenu();
-		JMenuItem menu_options_showlog = new JMenuItem();
+		JMenuItem menuOptionsPlotToPng = new JMenuItem();
+		JMenu menuAbout = new JMenu();
+		JMenuItem menuOptionsShowlog = new JMenuItem();
 
-		menu_file.setMnemonic('F');
-		menu_file.setText("File");
+		menuFile.setMnemonic('F');
+		menuFile.setText("File");
 
-		menu_file_reinitialize.setMnemonic('r');
-		menu_file_reinitialize.setText("Reinitialize settings");
-		menu_file_reinitialize.addActionListener(new java.awt.event.ActionListener() {
+		menuFileReinitialize.setMnemonic('r');
+		menuFileReinitialize.setText("Reinitialize settings");
+		menuFileReinitialize.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menu_file_reinitializeActionPerformed(evt);
+				menuFileReinitializeActionPerformed(evt);
 			}
 		});
-		menu_file.add(menu_file_reinitialize);
+		menuFile.add(menuFileReinitialize);
 
 		final JMenuItem saveProject = new JMenuItem();
 		saveProject.setText("Save workspace");
@@ -708,7 +694,7 @@ public class MainFrame extends javax.swing.JFrame {
 			}
 		});
 
-		menu_file.add(saveProject);
+		menuFile.add(saveProject);
 
 		final JMenuItem openProject = new JMenuItem();
 		openProject.setText("Open workspace");
@@ -722,32 +708,32 @@ public class MainFrame extends javax.swing.JFrame {
 		openProject.setEnabled(true);
 		openProject.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 
-		menu_file.add(openProject);
+		menuFile.add(openProject);
 
-		menu_file.add(menu_file_sep1);
+		menuFile.add(menuFileSep1);
 
-		menu_file_exit.setMnemonic('x');
-		menu_file_exit.setText("Exit");
-		menu_file_exit.addActionListener(new java.awt.event.ActionListener() {
+		menuFileExit.setMnemonic('x');
+		menuFileExit.setText("Exit");
+		menuFileExit.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menu_file_exitActionPerformed(evt);
+				menuFileExitActionPerformed(evt);
 			}
 		});
-		menu_file.add(menu_file_exit);
+		menuFile.add(menuFileExit);
 
-		menu.add(menu_file);
+		menu.add(menuFile);
 
-		menu_options.setMnemonic('o');
-		menu_options.setText("Options");
+		menuOptions.setMnemonic('o');
+		menuOptions.setText("Options");
 
-		menu_options_extvis.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-		menu_options_extvis.setText("Create external visualisation window");
-		menu_options_extvis.addActionListener(new java.awt.event.ActionListener() {
+		menuOptionsExtVis.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+		menuOptionsExtVis.setText("Create external visualisation window");
+		menuOptionsExtVis.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				popOutVisWindow(evt);
 			}
 		});
-		menu_options.add(menu_options_extvis);
+		menuOptions.add(menuOptionsExtVis);
 
 		// menu_options_drawaxes.setText("Draw plot axes");
 		/*
@@ -755,14 +741,14 @@ public class MainFrame extends javax.swing.JFrame {
 		 */
 		// menu_options.add(menu_options_drawaxes);
 
-		menu_options_plottopng.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
-		menu_options_plottopng.setText("Export plot to PNG");
-		menu_options_plottopng.addActionListener(new java.awt.event.ActionListener() {
+		menuOptionsPlotToPng.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+		menuOptionsPlotToPng.setText("Export plot to PNG");
+		menuOptionsPlotToPng.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				exportVisToFile(evt);
 			}
 		});
-		menu_options.add(menu_options_plottopng);
+		menuOptions.add(menuOptionsPlotToPng);
 
 		JMenu debugMenu = new JMenu();
 		debugMenu.setText("Debug");
@@ -794,23 +780,23 @@ public class MainFrame extends javax.swing.JFrame {
 		});
 		debugMenu.add(kmerDataMenu);
 
-		menu_options.add(debugMenu);
+		menuOptions.add(debugMenu);
 
-		menu.add(menu_options);
+		menu.add(menuOptions);
 
-		menu_about.setMnemonic('A');
-		menu_about.setText("About");
+		menuAbout.setMnemonic('A');
+		menuAbout.setText("About");
 
-		menu_options_showlog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
-		menu_options_showlog.setText("Show application log");
-		menu_options_showlog.addActionListener(new java.awt.event.ActionListener() {
+		menuOptionsShowlog.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+		menuOptionsShowlog.setText("Show application log");
+		menuOptionsShowlog.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menu_options_showlogActionPerformed(evt);
+				menuOptionsShowlogActionPerformed(evt);
 			}
 		});
-		menu_about.add(menu_options_showlog);
+		menuAbout.add(menuOptionsShowlog);
 
-		menu.add(menu_about);
+		menu.add(menuAbout);
 		return menu;
 	}
 
@@ -844,11 +830,11 @@ public class MainFrame extends javax.swing.JFrame {
 			ZipProject zip;
 			try {
 				zip = new ZipProject(input);
-				this.textfield_file.setText(zip.getDataInputFile());
+				this.textfieldFile.setText(zip.getDataInputFile());
 				if (zip.getLabelInputFile() != null) {
-					this.textfield_labels.setText(zip.getLabelInputFile());
+					this.textfieldLabels.setText(zip.getLabelInputFile());
 				}
-				this.textfield_points_file.setText(zip.getPointInputFile());
+				this.textfieldPointsFile.setText(zip.getPointInputFile());
 				File f = new File(input);
 				setWorkspaceName(f.getName());
 			} catch (IOException e) {
@@ -858,7 +844,7 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 	}
 
-	private void button_processActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_processActionPerformed
+	private void buttonProcessActionPerformed(java.awt.event.ActionEvent evt) {
 		Integer contigLen = Config.DEFAULT_CONTIG_LENGTH;
 		Integer numThreads = Config.DEFAULT_THREAD_NUM;
 		Integer kmer = Config.DEFAULT_KMER_LENGTH;
@@ -867,75 +853,75 @@ public class MainFrame extends javax.swing.JFrame {
 		Double perplexity = Config.DEFAULT_PERPLEXILITY;
 		Integer seed = Config.DEFAULT_SEED;
 		Boolean merge = Config.DEFAULT_MERGE;
-		Boolean log = def_log;
+		Boolean log = defLog;
 
-		indatafile = this.textfield_file.getText();
+		indatafile = this.textfieldFile.getText();
 		if (indatafile.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "You must specify an input Fasta file!");
 			return;
 		}
 
 		try {
-			contigLen = Integer.parseInt(this.formatfield_contigLen.getText().replaceAll(",", ""));
+			contigLen = Integer.parseInt(this.formatfieldContigLen.getText().replaceAll(",", ""));
 			if (contigLen < 0) {
-				throw new NumberFormatException(this.formatfield_contigLen.getText());
+				throw new NumberFormatException(this.formatfieldContigLen.getText());
 			}
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid minimal contig length value: " + this.formatfield_contigLen.getText() + ". Using value: " + contigLen);
+			logger.warn("Invalid minimal contig length value: " + this.formatfieldContigLen.getText() + ". Using value: " + contigLen);
 		}
 
 		try {
-			numThreads = Integer.parseInt(this.formatfield_numThreads.getText());
+			numThreads = Integer.parseInt(this.formatfieldNumThreads.getText());
 
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid numThreads value: " + this.formatfield_numThreads.getText().replaceAll(",", "") + ". Using value: " + numThreads);
+			logger.warn("Invalid numThreads value: " + this.formatfieldNumThreads.getText().replaceAll(",", "") + ". Using value: " + numThreads);
 		}
 
-		inpointsfile = this.textfield_points_file.getText();
-		inlabelsfile = this.textfield_labels.getText();
+		inpointsfile = this.textfieldPointsFile.getText();
+		inlabelsfile = this.textfieldLabels.getText();
 		try {
-			kmer = Integer.parseInt(this.formatfield_kmer.getText());
+			kmer = Integer.parseInt(this.formatfieldKmer.getText());
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid kmer value: " + this.formatfield_kmer.getText() + ". Using value: " + kmer);
+			logger.warn("Invalid kmer value: " + this.formatfieldKmer.getText() + ". Using value: " + kmer);
 		}
 
-		merge = ((String) this.combobox_merge.getSelectedItem()).equals("Yes");
+		merge = ((String) this.comboboxMerge.getSelectedItem()).equals("Yes");
 
-		log = ((String) this.combobox_log.getSelectedItem()).equals("Yes");
+		log = ((String) this.comboboxLog.getSelectedItem()).equals("Yes");
 
 		pcaType = null;
 		for (PcaType type : PcaType.values()) {
-			if (((String) this.combobox_pca.getSelectedItem()).equals(type.getName())) {
+			if (((String) this.comboboxPca.getSelectedItem()).equals(type.getName())) {
 				pcaType = type;
 			}
 		}
 		if (pcaType == null) {
-			logger.warn("Invalid PCA type: " + this.combobox_pca.getSelectedItem() + ".");
+			logger.warn("Invalid PCA type: " + this.comboboxPca.getSelectedItem() + ".");
 			pcaType = PcaType.EJML;
 		}
 
 		try {
-			pca = Integer.parseInt(this.formatfield_pca.getText());
+			pca = Integer.parseInt(this.formatfieldPca.getText());
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid PCA value: " + this.formatfield_pca.getText() + ". Using value: " + pca);
+			logger.warn("Invalid PCA value: " + this.formatfieldPca.getText() + ". Using value: " + pca);
 		}
 
 		try {
-			theta = Double.parseDouble(this.formatfield_theta.getText());
+			theta = Double.parseDouble(this.formatfieldTheta.getText());
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid theta value: " + this.formatfield_theta.getText() + ". Using value: " + theta);
+			logger.warn("Invalid theta value: " + this.formatfieldTheta.getText() + ". Using value: " + theta);
 		}
 
 		try {
-			perplexity = Double.parseDouble(this.formatfield_perplexity.getText());
+			perplexity = Double.parseDouble(this.formatfieldPerplexity.getText());
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid perplexity value: " + this.formatfield_perplexity.getText() + ". Using value: " + perplexity);
+			logger.warn("Invalid perplexity value: " + this.formatfieldPerplexity.getText() + ". Using value: " + perplexity);
 		}
 
 		try {
-			seed = Integer.parseInt(this.formatfield_seed.getText());
+			seed = Integer.parseInt(this.formatfieldSeed.getText());
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid seed value: " + this.formatfield_seed.getText() + ". Using value: " + seed);
+			logger.warn("Invalid seed value: " + this.formatfieldSeed.getText() + ". Using value: " + seed);
 		}
 
 		if (processor == null || processor.getProcessEnded() == true) {
@@ -953,10 +939,10 @@ public class MainFrame extends javax.swing.JFrame {
 						seed(seed).//
 						pcaAlgorithmType(pcaType).//
 						kmerDebugFile(kmerDataFile).//
-						extendedLogs(log)//
-				;
-				ProcessGuiParameters guiParams = new ProcessGuiParameters(this.label_status, this.progBar, this.tabpanel, this, false);
-				processor = new ProcessInput(params, guiParams, settings.binFile);
+						extendedLogs(log);
+
+				ProcessGuiParameters guiParams = new ProcessGuiParameters(this.labelStatus, this.progBar, this.tabpanel, this, false);
+				processor = new ProcessInput(params, guiParams, settings.getBinFile());
 
 				processor.setName(getWorkspaceName());
 
@@ -986,7 +972,7 @@ public class MainFrame extends javax.swing.JFrame {
 				logger.error("Problem with initializing compuatations...", e);
 			}
 		}
-	}// GEN-LAST:event_button_processActionPerformed
+	}
 
 	private String getSelectedInputFile(FileNameExtensionFilter filter) {
 		final JFileChooser fc = new JFileChooser();
@@ -1018,152 +1004,155 @@ public class MainFrame extends javax.swing.JFrame {
 		}
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
-		if (lastOpenPath != null)
+		if (lastOpenPath != null) {
 			fc.setCurrentDirectory(lastOpenPath);
+		}
 		int returnVal = fc.showSaveDialog(null);
-		if (fc.getSelectedFile() == null)
+		if (fc.getSelectedFile() == null) {
 			return null;
-		else {
+		} else {
 			lastOpenPath = fc.getSelectedFile();
 			if (fc.getSelectedFile().exists()) {
 				returnVal = JOptionPane.showConfirmDialog(
 						null, "The file you specified already exists, do you wish to overwrite it?", "Confirm overwrite", JOptionPane.YES_NO_OPTION);
-				if (returnVal != JOptionPane.YES_OPTION)
+				if (returnVal != JOptionPane.YES_OPTION) {
 					return null;
-				else
+				} else {
 					return fc.getSelectedFile();
-			} else
+				}
+			} else {
 				return fc.getSelectedFile();
+			}
 		}
 	}
 
-	private void button_fileActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_fileActionPerformed
-		this.textfield_file.setText(getSelectedInputFile(null));
+	private void buttonFileActionPerformed(java.awt.event.ActionEvent evt) {
+		this.textfieldFile.setText(getSelectedInputFile(null));
 		setSaveable(false);
-		File f = new File(this.textfield_file.getText());
+		File f = new File(this.textfieldFile.getText());
 		setWorkspaceName(f.getName());
 
-	}// GEN-LAST:event_button_fileActionPerformed
+	}
 
-	private void textfield_fileMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_textfield_fileMouseClicked
-		this.textfield_file.setText(getSelectedInputFile(null));
+	private void textfieldFileMouseClicked(java.awt.event.MouseEvent evt) {
+		this.textfieldFile.setText(getSelectedInputFile(null));
 		setSaveable(false);
-		File f = new File(this.textfield_file.getText());
+		File f = new File(this.textfieldFile.getText());
 		setWorkspaceName(f.getName());
-	}// GEN-LAST:event_textfield_fileMouseClicked
+	}
 
-	private void button_points_fileActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_points_fileActionPerformed
-		this.textfield_points_file.setText(getSelectedInputFile(null));
+	private void buttonPointsFileActionPerformed(java.awt.event.ActionEvent evt) {
+		this.textfieldPointsFile.setText(getSelectedInputFile(null));
 		setSaveable(false);
-	}// GEN-LAST:event_button_points_fileActionPerformed
+	}
 
-	private void textfield_points_fileMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_textfield_points_fileMouseClicked
-		this.textfield_points_file.setText(getSelectedInputFile(null));
+	private void textfieldPointsFileMouseClicked(java.awt.event.MouseEvent evt) {
+		this.textfieldPointsFile.setText(getSelectedInputFile(null));
 		setSaveable(false);
-	}// GEN-LAST:event_textfield_points_fileMouseClicked
+	}
 
-	private void button_labelsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_labelsActionPerformed
-		this.textfield_labels.setText(getSelectedInputFile(null));
+	private void buttonLabelsActionPerformed(java.awt.event.ActionEvent evt) {
+		this.textfieldLabels.setText(getSelectedInputFile(null));
 		setSaveable(false);
-	}// GEN-LAST:event_button_labelsActionPerformed
+	}
 
-	private void button_more_optionsActionPerformed(ActionEvent evt) {
+	private void buttonMoreOptionsActionPerformed(ActionEvent evt) {
 		if (moreOpionsVisible) {
-			label_points_file.setVisible(false);
-			label_labels.setVisible(false);
-			label_kmer.setVisible(false);
-			label_merge.setVisible(false);
-			label_pca_dimensions.setVisible(false);
-			label_theta.setVisible(false);
-			label_perplexity.setVisible(false);
-			label_seed.setVisible(false);
-			label_pca_library.setVisible(false);
-			label_log.setVisible(false);
-			textfield_labels.setVisible(false);
-			textfield_points_file.setVisible(false);
-			formatfield_kmer.setVisible(false);
-			formatfield_pca.setVisible(false);
-			formatfield_perplexity.setVisible(false);
-			formatfield_seed.setVisible(false);
-			formatfield_theta.setVisible(false);
-			combobox_merge.setVisible(false);
-			combobox_pca.setVisible(false);
-			combobox_log.setVisible(false);
-			button_more_options.setText("Show additional options");
+			labelPointsFile.setVisible(false);
+			labelLabels.setVisible(false);
+			labelKmer.setVisible(false);
+			labelMerge.setVisible(false);
+			labelPcaDimensions.setVisible(false);
+			labelTheta.setVisible(false);
+			labelPerplexity.setVisible(false);
+			labelSeed.setVisible(false);
+			labelPcaLibrary.setVisible(false);
+			labelLog.setVisible(false);
+			textfieldLabels.setVisible(false);
+			textfieldPointsFile.setVisible(false);
+			formatfieldKmer.setVisible(false);
+			formatfieldPca.setVisible(false);
+			formatfieldPerplexity.setVisible(false);
+			formatfieldSeed.setVisible(false);
+			formatfieldTheta.setVisible(false);
+			comboboxMerge.setVisible(false);
+			comboboxPca.setVisible(false);
+			comboboxLog.setVisible(false);
+			buttonMoreOptions.setText("Show additional options");
 			moreOpionsVisible = false;
-			button_labels.setVisible(false);
-			button_points_file.setVisible(false);
+			buttonLabels.setVisible(false);
+			buttonPointsFile.setVisible(false);
 			repaint();
 		} else {
-			label_points_file.setVisible(true);
-			label_labels.setVisible(true);
-			label_kmer.setVisible(true);
-			label_merge.setVisible(true);
-			label_pca_dimensions.setVisible(true);
-			label_theta.setVisible(true);
-			label_perplexity.setVisible(true);
-			label_seed.setVisible(true);
-			label_pca_library.setVisible(true);
-			label_log.setVisible(true);
-			textfield_labels.setVisible(true);
-			textfield_points_file.setVisible(true);
-			formatfield_kmer.setVisible(true);
-			formatfield_pca.setVisible(true);
-			formatfield_perplexity.setVisible(true);
-			formatfield_seed.setVisible(true);
-			formatfield_theta.setVisible(true);
-			combobox_merge.setVisible(true);
-			combobox_pca.setVisible(true);
-			combobox_log.setVisible(true);
-			button_more_options.setText("Hide additional options");
+			labelPointsFile.setVisible(true);
+			labelLabels.setVisible(true);
+			labelKmer.setVisible(true);
+			labelMerge.setVisible(true);
+			labelPcaDimensions.setVisible(true);
+			labelTheta.setVisible(true);
+			labelPerplexity.setVisible(true);
+			labelSeed.setVisible(true);
+			labelPcaLibrary.setVisible(true);
+			labelLog.setVisible(true);
+			textfieldLabels.setVisible(true);
+			textfieldPointsFile.setVisible(true);
+			formatfieldKmer.setVisible(true);
+			formatfieldPca.setVisible(true);
+			formatfieldPerplexity.setVisible(true);
+			formatfieldSeed.setVisible(true);
+			formatfieldTheta.setVisible(true);
+			comboboxMerge.setVisible(true);
+			comboboxPca.setVisible(true);
+			comboboxLog.setVisible(true);
+			buttonMoreOptions.setText("Hide additional options");
 			moreOpionsVisible = true;
-			button_labels.setVisible(true);
-			button_points_file.setVisible(true);
+			buttonLabels.setVisible(true);
+			buttonPointsFile.setVisible(true);
 			pack();
 			repaint();
 		}
 	}
 
-	private void textfield_labelsMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_textfield_labelsMouseClicked
-		this.textfield_labels.setText(getSelectedInputFile(null));
+	private void textfieldLabelsMouseClicked(java.awt.event.MouseEvent evt) {
+		this.textfieldLabels.setText(getSelectedInputFile(null));
 		setSaveable(false);
-	}// GEN-LAST:event_textfield_labelsMouseClicked
+	}
 
-	private void menu_file_exitActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menu_file_exitActionPerformed
+	private void menuFileExitActionPerformed(java.awt.event.ActionEvent evt) {
 		System.exit(0);
-	}// GEN-LAST:event_menu_file_exitActionPerformed
+	}
 
-	private void menu_file_reinitializeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menu_file_reinitializeActionPerformed
+	private void menuFileReinitializeActionPerformed(java.awt.event.ActionEvent evt) {
 		Integer option = JOptionPane.showConfirmDialog(this, "Are you sure you want to reinitialize the settings?\n"
 				+ "This will recreate the config file and redeploy the OS-specific TSNE application.", "Confirm reinitialization", JOptionPane.YES_NO_OPTION);
 		if (option == JOptionPane.YES_OPTION) {
 			settings.createSettings();
 			settings.extractTSNEBin();
 		}
-	}// GEN-LAST:event_menu_file_reinitializeActionPerformed
+	}
 
-	private void label_statusMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_label_statusMouseClicked
+	private void labelStatusMouseClicked(java.awt.event.MouseEvent evt) {
 		if (evt.getClickCount() == 2) {
 			openLogs();
 		}
-	}// GEN-LAST:event_label_statusMouseClicked
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void button_reload_pluginsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_reload_pluginsActionPerformed
+	private void buttonReloadPluginsActionPerformed(java.awt.event.ActionEvent evt) {
 		DefaultListModel pluginListModel = new DefaultListModel();
-		ArrayList<String> pluginList = settings.pluginUtils.listPlugins();
-		for (int i = 0; i < pluginList.size(); i++) {
-			pluginListModel.addElement(pluginList.get(i));
+		ArrayList<String> plugins = settings.getPluginUtils().listPlugins();
+		for (int i = 0; i < plugins.size(); i++) {
+			pluginListModel.addElement(plugins.get(i));
 		}
-		plugin_list.setModel(pluginListModel);
-	}// GEN-LAST:event_button_reload_pluginsActionPerformed
+		pluginList.setModel(pluginListModel);
+	}
 
-	private void button_load_pluginActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_button_load_pluginActionPerformed
+	private void buttonLoadPluginActionPerformed(java.awt.event.ActionEvent evt) {
 		PluginUtils.PLUGINSTATE pluginState;
-		if (plugin_list.getSelectedIndex() != -1) {
-			settings.pluginUtils.setParentOptionsPanel(panel_plugin_options);
-			settings.pluginUtils.loadPlugin((String) plugin_list.getSelectedValue());
-			pluginState = settings.pluginUtils.getPluginState();
+		if (pluginList.getSelectedIndex() != -1) {
+			settings.getPluginUtils().setParentOptionsPanel(panelPluginOptions);
+			settings.getPluginUtils().loadPlugin((String) pluginList.getSelectedValue());
+			pluginState = settings.getPluginUtils().getPluginState();
 			if (pluginState == PluginUtils.PLUGINSTATE.CANNOTLOAD) {
 				JOptionPane.showMessageDialog(this, "The plugin could not be loaded.");
 			} else if (pluginState == PluginUtils.PLUGINSTATE.NOTVALID) {
@@ -1172,12 +1161,13 @@ public class MainFrame extends javax.swing.JFrame {
 				JOptionPane.showMessageDialog(this, "The plugin's version is not supported!");
 			} else {
 				// perform action if plugin is valid
+				return;
 			}
 		}
 
-	}// GEN-LAST:event_button_load_pluginActionPerformed
+	}
 
-	private void popOutVisWindow(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_popOutVisWindow
+	private void popOutVisWindow(java.awt.event.ActionEvent evt) {
 		if (DataSetUtils.isIsDataSetCreated()) {
 			JFrame frame = new JFrame("Visualisation");
 			ClusterPanel panel = new ClusterPanel(DataSetUtils.getDataSet(), indatafile, this,
@@ -1192,11 +1182,11 @@ public class MainFrame extends javax.swing.JFrame {
 		} else {
 			JOptionPane.showMessageDialog(null, "No data set available!\nPlease process a data file first.", "Missing dataset", JOptionPane.WARNING_MESSAGE);
 		}
-	}// GEN-LAST:event_popOutVisWindow
+	}
 
-	private void menu_options_showlogActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menu_options_showlogActionPerformed
+	private void menuOptionsShowlogActionPerformed(java.awt.event.ActionEvent evt) {
 		openLogs();
-	}// GEN-LAST:event_menu_options_showlogActionPerformed
+	}
 
 	private void openLogs() {
 		try {
@@ -1206,12 +1196,12 @@ public class MainFrame extends javax.swing.JFrame {
 			try {
 				Desktop.getDesktop().edit(new File(((FileAppender) Logger.getRootLogger().getAppender("R")).getFile()));
 			} catch (IOException e1) {
-				logger.error(e1,e1);
+				logger.error(e1, e1);
 			}
 		}
 	}
 
-	private void exportVisToFile(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportVisToFile
+	private void exportVisToFile(java.awt.event.ActionEvent evt) {
 		if (DataSetUtils.isIsDataSetCreated()) {
 			Container contentPane = DataSetUtils.getDrawingFrame().getContentPane();
 			BufferedImage bufferedImage = new BufferedImage(contentPane.getWidth(), contentPane.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -1228,7 +1218,7 @@ public class MainFrame extends javax.swing.JFrame {
 		} else {
 			JOptionPane.showMessageDialog(null, "No data set available!\nPlease process a data file first.", "Missing dataset", JOptionPane.WARNING_MESSAGE);
 		}
-	}// GEN-LAST:event_exportVisToFile
+	}
 
 	/**
 	 * @param args
@@ -1345,58 +1335,58 @@ public class MainFrame extends javax.swing.JFrame {
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton							button_file;
-	private javax.swing.JButton							button_points_file;
-	private javax.swing.JButton							button_labels;
-	private javax.swing.JButton							button_more_options;
-	private javax.swing.JButton							button_load_plugin;
-	private javax.swing.JButton							button_process;
-	private javax.swing.JButton							button_reload_plugins;
+	private javax.swing.JButton							buttonFile;
+	private javax.swing.JButton							buttonPointsFile;
+	private javax.swing.JButton							buttonLabels;
+	private javax.swing.JButton							buttonMoreOptions;
+	private javax.swing.JButton							buttonLoadPlugin;
+	private javax.swing.JButton							buttonProcess;
+	private javax.swing.JButton							buttonReloadPlugins;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JComboBox						combobox_merge;
+	private javax.swing.JComboBox						comboboxMerge;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JComboBox						combobox_log;
+	private javax.swing.JComboBox						comboboxLog;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JComboBox						combobox_pca;
+	private javax.swing.JComboBox						comboboxPca;
 	private javax.swing.Box.Filler					filler1;
-	private javax.swing.JFormattedTextField	formatfield_contigLen;
-	private javax.swing.JFormattedTextField	formatfield_numThreads;
-	private javax.swing.JFormattedTextField	formatfield_kmer;
-	private javax.swing.JFormattedTextField	formatfield_pca;
-	private javax.swing.JFormattedTextField	formatfield_perplexity;
-	private javax.swing.JFormattedTextField	formatfield_seed;
-	private javax.swing.JFormattedTextField	formatfield_theta;
+	private javax.swing.JFormattedTextField	formatfieldContigLen;
+	private javax.swing.JFormattedTextField	formatfieldNumThreads;
+	private javax.swing.JFormattedTextField	formatfieldKmer;
+	private javax.swing.JFormattedTextField	formatfieldPca;
+	private javax.swing.JFormattedTextField	formatfieldPerplexity;
+	private javax.swing.JFormattedTextField	formatfieldSeed;
+	private javax.swing.JFormattedTextField	formatfieldTheta;
 	private javax.swing.JMenuItem						jMenuItem1;
 	private javax.swing.JScrollPane					jScrollPane1;
-	private javax.swing.JLabel							label_contigLen;
-	private javax.swing.JLabel							label_numThreads;
-	private javax.swing.JLabel							label_file;
-	private javax.swing.JLabel							label_points_file;
-	private javax.swing.JLabel							label_kmer;
-	private javax.swing.JLabel							label_labels;
-	private javax.swing.JLabel							label_merge;
-	private javax.swing.JLabel							label_pca_dimensions;
-	private javax.swing.JLabel							label_perplexity;
-	private javax.swing.JLabel							label_seed;
-	private javax.swing.JLabel							label_pca_library;
-	private javax.swing.JLabel							label_log;
-	private javax.swing.JLabel							label_plugin_list;
-	private javax.swing.JLabel							label_plugin_opts;
-	private javax.swing.JLabel							label_status;
-	private javax.swing.JLabel							label_theta;
+	private javax.swing.JLabel							labelContigLen;
+	private javax.swing.JLabel							labelNumThreads;
+	private javax.swing.JLabel							labelFile;
+	private javax.swing.JLabel							labelPointsFile;
+	private javax.swing.JLabel							labelKmer;
+	private javax.swing.JLabel							labelLabels;
+	private javax.swing.JLabel							labelMerge;
+	private javax.swing.JLabel							labelPcaDimensions;
+	private javax.swing.JLabel							labelPerplexity;
+	private javax.swing.JLabel							labelSeed;
+	private javax.swing.JLabel							labelPcaLibrary;
+	private javax.swing.JLabel							labelLog;
+	private javax.swing.JLabel							labelPluginList;
+	private javax.swing.JLabel							labelPluginOpts;
+	private javax.swing.JLabel							labelStatus;
+	private javax.swing.JLabel							labelTheta;
 	// private javax.swing.JCheckBoxMenuItem menu_options_drawaxes;
-	private javax.swing.JPanel							panel_plugin_options;
+	private javax.swing.JPanel							panelPluginOptions;
 	@SuppressWarnings("rawtypes")
-	private javax.swing.JList								plugin_list;
+	private javax.swing.JList								pluginList;
 	private javax.swing.JProgressBar				progBar;
 	private javax.swing.JPanel							statuspanel;
-	private javax.swing.JPanel							tab_panel_main;
-	private javax.swing.JPanel							tab_panel_plugins;
-	private javax.swing.JPanel							tab_panel_vis;
+	private javax.swing.JPanel							tabPanelMain;
+	private javax.swing.JPanel							tabPanelPlugins;
+	private javax.swing.JPanel							tabPanelVis;
 	private javax.swing.JTabbedPane					tabpanel;
-	private javax.swing.JTextField					textfield_file;
-	private javax.swing.JTextField					textfield_points_file;
-	private javax.swing.JTextField					textfield_labels;
+	private javax.swing.JTextField					textfieldFile;
+	private javax.swing.JTextField					textfieldPointsFile;
+	private javax.swing.JTextField					textfieldLabels;
 
 	// End of variables declaration//GEN-END:variables
 

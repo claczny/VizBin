@@ -1,10 +1,10 @@
 package lu.uni.lcsb.vizbin;
 
-import lu.uni.lcsb.vizbin.service.utils.PcaType;
+import lu.uni.lcsb.vizbin.pca.PcaType;
 
 /**
  * This immutable class defines parameters for computations.
- * 
+ *
  * @author Piotr Gawron
  * 
  */
@@ -81,7 +81,7 @@ public class ProcessParameters {
 	/**
 	 * Default constructor that creates a copy of the {@link ProcessParameters}
 	 * object.
-	 * 
+	 *
 	 * @param original
 	 *          original parameter object
 	 */

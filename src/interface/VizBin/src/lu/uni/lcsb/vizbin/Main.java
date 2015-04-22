@@ -18,8 +18,19 @@ import org.apache.log4j.Logger;
  * 
  */
 public class Main {
-	static Logger		logger		= null;
-	static Settings	settings	= null;
+
+	/**
+	 * Default constructor for utility class. Prevents instatiation.
+	 */
+	private Main() {
+
+	}
+
+	/**
+	 * Default class logger.
+	 */
+	private static Logger		logger		= null;
+	private static Settings	settings	= null;
 
 	public static void main(String[] args) {
 		settings = new Settings();
@@ -32,9 +43,9 @@ public class Main {
 				logger.debug("Running command line...");
 				settings.loadSettings();
 				ProcessParameters params = clo.getParameters();
-				ProcessInput process = new ProcessInput(params, null, settings.binFile);
+				ProcessInput process = new ProcessInput(params, null, settings.getBinFile());
 				process.doProcess();
-				
+
 			} else {
 				clo.printHelp();
 				MainFrame mframe = new MainFrame();
@@ -43,11 +54,12 @@ public class Main {
 
 				if (!settings.settingsExist()) {
 					JOptionPane.showMessageDialog(mframe, "Application settings not found, they will be created for you now.\n" + "Configuration file: "
-							+ settings.settingsFile.toString());
+							+ settings.getSettingsFile().toString());
 					settings.createSettings();
 					settings.extractTSNEBin();
-				} else
+				} else {
 					settings.loadSettings();
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e, e);

@@ -14,7 +14,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public class ZipProject {
-	Logger											logger					= Logger.getLogger(ZipProject.class);
+	/**
+	 * Default class logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger				logger					= Logger.getLogger(ZipProject.class);
 
 	private static final String	DATA_FILE_NAME	= "data.fa";
 	private static final String	LABEL_FILE_NAME	= "label.txt";
