@@ -1144,11 +1144,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private void label_statusMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_label_statusMouseClicked
 		if (evt.getClickCount() == 2) {
-			try {
-				Desktop.getDesktop().open(new File(((FileAppender) Logger.getRootLogger().getAppender("R")).getFile()));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			openLogs();
 		}
 	}// GEN-LAST:event_label_statusMouseClicked
 
@@ -1199,12 +1195,21 @@ public class MainFrame extends javax.swing.JFrame {
 	}// GEN-LAST:event_popOutVisWindow
 
 	private void menu_options_showlogActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_menu_options_showlogActionPerformed
+		openLogs();
+	}// GEN-LAST:event_menu_options_showlogActionPerformed
+
+	private void openLogs() {
 		try {
 			Desktop.getDesktop().open(new File(((FileAppender) Logger.getRootLogger().getAppender("R")).getFile()));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("Failed to open log file. Trying to edit it...");
+			try {
+				Desktop.getDesktop().edit(new File(((FileAppender) Logger.getRootLogger().getAppender("R")).getFile()));
+			} catch (IOException e1) {
+				logger.error(e1,e1);
+			}
 		}
-	}// GEN-LAST:event_menu_options_showlogActionPerformed
+	}
 
 	private void exportVisToFile(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exportVisToFile
 		if (DataSetUtils.isIsDataSetCreated()) {
