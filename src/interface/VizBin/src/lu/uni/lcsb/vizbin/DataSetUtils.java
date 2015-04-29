@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service.utils;
+package lu.uni.lcsb.vizbin;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,14 +9,10 @@ import java.io.PrintWriter;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import lu.uni.lcsb.vizbin.InvalidArgumentException;
-import lu.uni.lcsb.vizbin.ProcessGuiParameters;
-import lu.uni.lcsb.vizbin.UnhandledOSException;
 import lu.uni.lcsb.vizbin.data.DataSet;
 import lu.uni.lcsb.vizbin.data.Sequence;
 import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
 import lu.uni.lcsb.vizbin.pca.PcaType;
-import lu.uni.lcsb.vizbin.service.DataSetFactory;
 import no.uib.cipr.matrix.NotConvergedException;
 
 import org.apache.log4j.Logger;

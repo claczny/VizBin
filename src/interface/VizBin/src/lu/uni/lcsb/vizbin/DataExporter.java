@@ -25,10 +25,11 @@ import lu.uni.lcsb.vizbin.data.Sequence;
 
 /**
  * 
+ * 
  * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
  *         Plugaru</a>
  */
-public class DataExporter {
+public final class DataExporter {
 
 	/**
 	 * Default constructor for utility class. Prevents instatiation.
@@ -37,6 +38,14 @@ public class DataExporter {
 
 	}
 
+	/**
+	 * Export list of sequences into a file.
+	 *  
+	 * @param parentFrame
+	 * @param inFileName
+	 * @param sequenceList
+	 * @return
+	 */
 	public static File exportCluster(JFrame parentFrame, String inFileName, List<Sequence> sequenceList) {
 		File outFile = null;
 		File inFile = new File(inFileName);

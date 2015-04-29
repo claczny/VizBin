@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service;
+package lu.uni.lcsb.vizbin;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import lu.uni.lcsb.vizbin.ProcessGuiParameters;
 import lu.uni.lcsb.vizbin.data.DataSet;
 import lu.uni.lcsb.vizbin.data.Sequence;
 

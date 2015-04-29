@@ -14,9 +14,6 @@ import javax.swing.SwingUtilities;
 
 import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
 import lu.uni.lcsb.vizbin.data.DataSet;
-import lu.uni.lcsb.vizbin.service.DataSetFactory;
-import lu.uni.lcsb.vizbin.service.InvalidMetaFileException;
-import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -191,14 +188,14 @@ public class ProcessInput extends ObjectWithProperties {
 					DataSetUtils.setIsDataSetCreated(true);
 
 					if (guiParameters != null) {
-						ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame(), guiParameters.isDrawAxes());
+						ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame());
 						guiParameters.getTabPane().setComponentAt(1, cp.getChartPanel());
 						// NotificationCenter.addObserver(cp);
 						// Show data points
 						JFrame frame = new JFrame("Cluster " + name);
 						DataSetUtils.setDrawingFrame(frame);
 						// frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-						ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame(), guiParameters.isDrawAxes());
+						ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame());
 						// NotificationCenter.addObserver(cpPopOut);
 						// frame.getContentPane().add(cpPopOut);
 

@@ -41,30 +41,85 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.FastScatterPlot;
 import org.jfree.ui.RectangleEdge;
 
+/**
+ * This class creates and manages {@link ChartPanel} that has informations about
+ * clusters (in fact it's responsible for the visualization of the results of
+ * the system).
+ * 
+ * @author Piotr Gawron
+ * 
+ */
 public class ClusterPanel {
+	/**
+	 * Maximum alpha value.
+	 */
+	private static final int	MAX_ALPHA_VALUE						= 255;
+	/**
+	 * What size should be used when information about sequence length is missing.
+	 */
+	private static final int	DEFAULT_MIN_SEQUENCE_SIZE	= 4;
 	/**
 	 * Default class logger.
 	 */
-	private Logger							logger	= Logger.getLogger(ClusterPanel.class);
-	private int									count		= -1;
-	private float[][]						data;
-	private int[]								sizes;
-	private Color[]							colors;
-	private PointShape[]				shapes;
-	private ChartPanel	panel;
-	private List<Point2D>				polygon	= new ArrayList<Point2D>();
+	private Logger						logger										= Logger.getLogger(ClusterPanel.class);
+	/**
+	 * Panel where the data is visualized.
+	 */
+	private ChartPanel				panel;
+	/**
+	 * Currently selected polygon on the {@link #panel}.
+	 */
+	private List<Point2D>			polygon										= new ArrayList<Point2D>();
 
-	private DataSet							dataSet;
+	/**
+	 * Dataset that is visualized.
+	 */
+	private DataSet						dataSet;
 
-	private JFrame							frame;
-	private String			filename;
-	private LegendFrame	legendFrame;
+	/**
+	 * Parent {@link JFrame} where the {@link #panel} is located.
+	 */
+	private JFrame						frame;
 
+	/**
+	 * Name of the file that is visualized.
+	 */
+	private String						filename;
+
+	/**
+	 * Frame with the legend about visualized data.
+	 */
+	private LegendFrame				legendFrame;
+
+	/**
+	 * Class that extends {@link MouseAdapter} and will allow to select polygon on
+	 * the {@link MouseMarker#chart chart}.
+	 * 
+	 * @author Piotr Gawron
+	 * 
+	 */
 	private final class MouseMarker extends MouseAdapter {
+		/**
+		 * Chart where we edit polygon.
+		 */
 		private final JFreeChart	chart;
+		/**
+		 * Panel with the {@link #chart}.
+		 */
 		private final ChartPanel	panel;
-		private List<Point2D>							polygon;
+		/**
+		 * Structure where the polygon is stored.
+		 */
+		private List<Point2D>			polygon;
 
+		/**
+		 * Default constructor.
+		 * 
+		 * @param panel
+		 *          {@link #panel}
+		 * @param polygon
+		 *          {@link #polygon}
+		 */
 		public MouseMarker(ChartPanel panel, List<Point2D> polygon) {
 			this.panel = panel;
 			this.chart = panel.getChart();
@@ -74,6 +129,7 @@ public class ClusterPanel {
 
 		}
 
+		@Override
 		public void mouseClicked(MouseEvent e) {
 			// Put edges of the polygon for selecting a set of points in 2D
 			if (SwingUtilities.isLeftMouseButton(e)) {
@@ -99,24 +155,34 @@ public class ClusterPanel {
 		}
 	}
 
-	public ClusterPanel(DataSet ds, String inFileName, JFrame parentFrame, boolean drawAxes) {
+	/**
+	 * Default constructor.
+	 * 
+	 * @param ds
+	 *          {@link ClusterPanel#dataSet}
+	 * @param inFileName
+	 *          {@link ClusterPanel#filename}
+	 * @param parentFrame
+	 *          {@link ClusterPanel#frame}
+	 */
+	public ClusterPanel(DataSet ds, String inFileName, JFrame parentFrame) {
 
 		this.dataSet = ds;
 		this.frame = parentFrame;
 		this.filename = inFileName;
 		ArrayList<Sequence> pointList = (ArrayList<Sequence>) ds.getSequences();
-		count = pointList.size();
+		int count = pointList.size();
 
-		int minSize = 4;
+		int minSize = DEFAULT_MIN_SEQUENCE_SIZE;
 		// If there is additional length information provided use a smaller default
 		// minimum size
 		if ((double) 0 < ds.getMinSequenceLength()) {
 			minSize = 2;
 		}
-		data = new float[2][count];
-		sizes = new int[count];
-		colors = new Color[count];
-		shapes = new PointShape[count];
+		float[][] data = new float[2][count];
+		int[] sizes = new int[count];
+		Color[] colors = new Color[count];
+		PointShape[] shapes = new PointShape[count];
 
 		int counter = 0;
 		float alpha = 0f;
@@ -135,12 +201,14 @@ public class ClusterPanel {
 			if (sequence.getCoverage() != null) {
 				alpha = (sequence.getCoverage()).floatValue();
 				alpha = alpha * alpha;
-				colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
+				colors[counter] = new Color(
+						(int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * MAX_ALPHA_VALUE));
 			} else // Either coverage OR GC content
 			if (sequence.getGc() != null) {
 				alpha = (sequence.getGc()).floatValue();
 				alpha = alpha * alpha;
-				colors[counter] = new Color((int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * 255));
+				colors[counter] = new Color(
+						(int) colors[counter].getRed(), (int) colors[counter].getGreen(), (int) colors[counter].getBlue(), (int) (alpha * MAX_ALPHA_VALUE));
 			}
 
 			if (sequence.getMarker() != null && sequence.getMarker()) {
@@ -246,6 +314,11 @@ public class ClusterPanel {
 
 	}
 
+	/**
+	 * Returns {@link #panel}.
+	 * 
+	 * @return {@link #panel}
+	 */
 	public ChartPanel getChartPanel() {
 		return panel;
 	}

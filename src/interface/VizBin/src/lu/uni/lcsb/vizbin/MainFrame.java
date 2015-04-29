@@ -31,7 +31,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
 import lu.uni.lcsb.vizbin.pca.PcaType;
-import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
@@ -1187,11 +1186,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private void popOutVisWindow(java.awt.event.ActionEvent evt) {
 		if (DataSetUtils.isIsDataSetCreated()) {
 			JFrame frame = new JFrame("Visualisation");
-			ClusterPanel panel = new ClusterPanel(DataSetUtils.getDataSet(), indatafile, this,
-			// this should be refactorized when fixed (access by property not the
-			// menu option)
-			// menu_options_drawaxes.isSelected(),
-					false);
+			ClusterPanel panel = new ClusterPanel(DataSetUtils.getDataSet(), indatafile, this);
 			frame.getContentPane().add(panel.getChartPanel());
 			frame.pack();
 			frame.setVisible(true);

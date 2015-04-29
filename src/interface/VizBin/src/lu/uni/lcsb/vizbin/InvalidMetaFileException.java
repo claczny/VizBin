@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service;
+package lu.uni.lcsb.vizbin;
 
 public class InvalidMetaFileException extends Exception {
 

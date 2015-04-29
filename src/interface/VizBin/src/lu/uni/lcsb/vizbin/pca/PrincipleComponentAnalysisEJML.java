@@ -1,8 +1,5 @@
 package lu.uni.lcsb.vizbin.pca;
 
-// import java.util.ArrayList;
-// import java.util.List;
-
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
 import org.ejml.factory.SingularValueDecomposition;
