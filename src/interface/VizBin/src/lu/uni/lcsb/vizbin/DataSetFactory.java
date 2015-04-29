@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service;
+package lu.uni.lcsb.vizbin;
 
 import java.awt.geom.Point2D;
 import java.io.*;

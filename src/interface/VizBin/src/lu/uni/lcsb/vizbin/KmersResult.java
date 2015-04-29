@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service.utils;
+package lu.uni.lcsb.vizbin;
 
 // Structure used in DatasSetUtils class to hold return values of createKmers
 // function

@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service.utils;
+package lu.uni.lcsb.vizbin.utils;
 
 import lu.uni.lcsb.vizbin.InvalidArgumentException;
 

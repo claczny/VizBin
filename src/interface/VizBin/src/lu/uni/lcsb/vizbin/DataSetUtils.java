@@ -1,4 +1,4 @@
-package lu.uni.lcsb.vizbin.service.utils;
+package lu.uni.lcsb.vizbin;
 
 import java.io.*;
 
@@ -12,7 +12,6 @@ import lu.uni.lcsb.vizbin.data.DataSet;
 import lu.uni.lcsb.vizbin.data.Sequence;
 import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
 import lu.uni.lcsb.vizbin.pca.PcaType;
-import lu.uni.lcsb.vizbin.service.DataSetFactory;
 import no.uib.cipr.matrix.NotConvergedException;
 
 public class DataSetUtils {

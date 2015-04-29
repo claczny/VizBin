@@ -185,14 +185,14 @@ public class ProcessInput extends ObjectWithProperties {
 					DataSetUtils.setIsDataSetCreated(true);
 
 					if (guiParameters != null) {
-						ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame(), guiParameters.isDrawAxes());
+						ClusterPanel cp = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame());
 						guiParameters.getTabPane().setComponentAt(1, cp.getChartPanel());
 						// NotificationCenter.addObserver(cp);
 						// Show data points
 						JFrame frame = new JFrame("Cluster " + name);
 						DataSetUtils.setDrawingFrame(frame);
 						// frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-						ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame(), guiParameters.isDrawAxes());
+						ClusterPanel cpPopOut = new ClusterPanel(dataSet, filteredSequencesFile, guiParameters.getParentFrame());
 						// NotificationCenter.addObserver(cpPopOut);
 						// frame.getContentPane().add(cpPopOut);
 

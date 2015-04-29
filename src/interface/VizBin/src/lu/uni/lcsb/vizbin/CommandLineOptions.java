@@ -22,21 +22,56 @@ public class CommandLineOptions {
 	 * Default class logger.
 	 */
 	private final Logger				logger						= Logger.getLogger(CommandLineOptions.class);
+	/**
+	 * One letter option name in command line for setting number of threads.
+	 */
 	private static final String	THREAD_PARAM			= "t";
 
+	/**
+	 * One letter option name in command line for setting kmer length.
+	 */
 	private static final String	K_MER_PARAM				= "k";
 
+	/**
+	 * One letter option name in command line for setting sequence length
+	 * filtering cutoff.
+	 */
 	private static final String	CUTOFF_PARAM			= "c";
 
+	/**
+	 * One letter option name in command line for setting name of output file.
+	 */
 	private static final String	OUTPUT_FILE_PARAM	= "o";
 
+	/**
+	 * One letter option name in command line for setting name of input file.
+	 */
 	private static final String	INPUT_FILE_PARAM	= "i";
 
-	private final static String	HEADER						= "";
-	private final static String	FOOTER						= "";
+	/**
+	 * Header that should be printed in {@link CommandLineOptions#printHelp()}
+	 * method.
+	 */
+	private static final String	HEADER						= "";
+	/**
+	 * Footer that should be printed in {@link CommandLineOptions#printHelp()}
+	 * method.
+	 */
+	private static final String	FOOTER						= "";
+
+	/**
+	 * This object contains structure of the parameters.
+	 */
 	private Options							options;
+
+	/**
+	 * This object contains processed input data.
+	 */
 	private CommandLine					cmd;
 
+	/**
+	 * Was the input data provided to this class valid or not.
+	 */
 	private boolean							ok;
 
 	/**
@@ -66,6 +101,23 @@ public class CommandLineOptions {
 
 	}
 
+	/**
+	 * Creates {@link Option} object.
+	 * 
+	 * @param arg
+	 *          has the {@link Option} argument
+	 * @param required
+	 *          is the {@link Option} required
+	 * @param abbreviation
+	 *          abbreviation of the {@link Option}
+	 * @param name
+	 *          long name of the {@link Option}
+	 * @param description
+	 *          description of the {@link Option}
+	 * @param paramName
+	 *          what should be the name of argument
+	 * @return {@link Option} created from input data
+	 */
 	private Option createOption(boolean arg, boolean required, String abbreviation, String name, String description, String paramName) {
 		OptionBuilder.hasArg(arg);
 		OptionBuilder.isRequired(required);
@@ -80,10 +132,17 @@ public class CommandLineOptions {
 		return option;
 	}
 
+	/**
+	 * 
+	 * @return {@link #ok}
+	 */
 	public boolean isValid() {
 		return ok;
 	}
 
+	/**
+	 * Print help about command line (information how to pass arguments into it).
+	 */
 	public void printHelp() {
 		HelpFormatter formatter = new HelpFormatter();
 		System.out.println("Console usage: ");
@@ -92,6 +151,11 @@ public class CommandLineOptions {
 
 	}
 
+	/**
+	 * Create {@link ProcessParameters} object from the input data.
+	 * 
+	 * @return {@link ProcessParameters} object from the input data
+	 */
 	public ProcessParameters getParameters() {
 		ProcessParameters params = new ProcessParameters();
 		if (cmd.getOptionValue(INPUT_FILE_PARAM) != null) {

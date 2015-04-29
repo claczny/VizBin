@@ -29,11 +29,31 @@ public final class Config {
 	 * Default k-mer length.
 	 */
 	public static final Integer	DEFAULT_KMER_LENGTH		= 5;
-	public final static Integer	DEFAULT_PCA_COLUMNS		= 50;
-	public final static Double	DEFAULT_THETA					= 0.5;
-	public final static Boolean	DEFAULT_MERGE					= true;
-	public final static Double	DEFAULT_PERPLEXILITY	= 30.;
-	public final static Integer	DEFAULT_SEED					= 0;
+	/**
+	 * Default number of columns to which
+	 * {@link lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis} should reduce
+	 * input data.
+	 */
+	public static final Integer	DEFAULT_PCA_COLUMNS		= 50;
+	/**
+	 * Default theta value used by tsne algorithm.
+	 */
+	public static final Double	DEFAULT_THETA					= 0.5;
+	/**
+	 * Should the kmers and "reversed and complementary kmers" be merged into one.
+	 */
+	public static final Boolean	DEFAULT_MERGE					= true;
+	/**
+	 * Default perplexity value used by tsne algorithm.
+	 */
+	public static final Double	DEFAULT_PERPLEXILITY	= 30.;
+	/**
+	 * Default seed for random function.
+	 */
+	public static final Integer	DEFAULT_SEED					= 0;
+	/**
+	 * Default {@link PcaType PCA} algorithm to be used.
+	 */
 	public static final PcaType	DEFAULT_PCA_TYPE			= PcaType.MTJ;
 
 }
