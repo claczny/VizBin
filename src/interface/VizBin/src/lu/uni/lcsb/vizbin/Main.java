@@ -43,7 +43,11 @@ public class Main {
 
 			if (clo.isValid()) {
 				logger.debug("Running command line...");
+				if (!settings.settingsExist()) {
+					settings.createSettings();
+				}
 				settings.loadSettings();
+				settings.extractTSNEBin();
 				ProcessParameters params = clo.getParameters();
 				ProcessInput process = new ProcessInput(params, null, settings.getBinFile());
 				process.doProcess();
