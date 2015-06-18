@@ -8,10 +8,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 import javax.swing.JOptionPane;
+import java.awt.GraphicsEnvironment;
 
 /**
- * 
- * 
+ *
+ *
  * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
  *         Plugaru</a>
  */
@@ -67,7 +68,11 @@ public class Settings {
 			prop.setProperty("PluginDir", pluginPath.toString());
 			prop.store(new FileOutputStream(settingsFile), null);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Error creating settings!");
+			if(!GraphicsEnvironment.isHeadless()){
+				JOptionPane.showMessageDialog(null, "Error creating settings!");
+			} else {
+				System.err.println("Error creating settings!");
+			}
 		}
 	}
 
