@@ -101,7 +101,7 @@ public class CommandLineOptions {
 		options.addOption(createOption(true, false, K_MER_PARAM, "k-mer", "k-mer length [default=" + Config.DEFAULT_KMER_LENGTH + "]", "length"));
 		options.addOption(createOption(true, false, THREAD_PARAM, "thread", "number of threads [default=" + Config.DEFAULT_THREAD_NUM + "]", "number"));
 		options.addOption(createOption(true, false, PERPLEXITY_PARAM, "perplexity", "perplexity parameter [default=" + Config.DEFAULT_PERPLEXILITY + "]", "number"));
-		options.addOption(createOption(true, false, PCA_COLUMNS_PARAM, "pca columns", "number of PCA columns [default=" + Config.DEFAULT_PCA_COLUMNS + "]", "number"));
+		options.addOption(createOption(true, false, PCA_COLUMNS_PARAM, "pca", "number of PCA columns [default=" + Config.DEFAULT_PCA_COLUMNS + "]", "number"));
 
 		CommandLineParser parser = new BasicParser();
 		try {
