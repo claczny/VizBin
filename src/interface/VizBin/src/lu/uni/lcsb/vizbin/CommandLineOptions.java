@@ -54,6 +54,11 @@ public class CommandLineOptions {
 	private static final String	PERPLEXITY_PARAM	= "p";
 
 	/**
+	 * One letter option name in command line for setting number of PCA columns.
+	 */
+	private static final String	PCA_COLUMNS_PARAM	= "a";
+
+	/**
 	 * Header that should be printed in {@link CommandLineOptions#printHelp()}
 	 * method.
 	 */
@@ -96,6 +101,7 @@ public class CommandLineOptions {
 		options.addOption(createOption(true, false, K_MER_PARAM, "k-mer", "k-mer length [default=" + Config.DEFAULT_KMER_LENGTH + "]", "length"));
 		options.addOption(createOption(true, false, THREAD_PARAM, "thread", "number of threads [default=" + Config.DEFAULT_THREAD_NUM + "]", "number"));
 		options.addOption(createOption(true, false, PERPLEXITY_PARAM, "perplexity", "perplexity parameter [default=" + Config.DEFAULT_PERPLEXILITY + "]", "number"));
+		options.addOption(createOption(true, false, PCA_COLUMNS_PARAM, "pca columns", "number of PCA columns [default=" + Config.DEFAULT_PCA_COLUMNS + "]", "number"));
 
 		CommandLineParser parser = new BasicParser();
 		try {
@@ -200,6 +206,14 @@ public class CommandLineOptions {
 				params = params.perplexity(d);
 			} catch (NumberFormatException e) {
 				logger.warn("Problem with parameter: " + cmd.getOptionValue(PERPLEXITY_PARAM) + ". Double value expected. Using default.");
+			}
+		}
+		if (cmd.getOptionValue(PCA_COLUMNS_PARAM) != null) {
+			try {
+				Integer i = Integer.valueOf(cmd.getOptionValue(PCA_COLUMNS_PARAM));
+				params = params.pcaColumns(i);
+			} catch (NumberFormatException e) {
+				logger.warn("Problem with parameter: " + cmd.getOptionValue(PCA_COLUMNS_PARAM) + ". Integer value expected. Using default.");
 			}
 		}
 		return params;
