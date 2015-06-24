@@ -46,8 +46,9 @@ public class Main {
 				if (!settings.settingsExist()) {
 					settings.createSettings();
 					settings.extractTSNEBin();
+				} else {
+					settings.loadSettings();
 				}
-				settings.loadSettings();
 				ProcessParameters params = clo.getParameters();
 				ProcessInput process = new ProcessInput(params, null, settings.getBinFile());
 				process.doProcess();
