@@ -13,9 +13,9 @@ import org.apache.log4j.Logger;
 
 /**
  * This class is used for processing command line options.
- * 
+ *
  * @author Piotr Gawron
- * 
+ *
  */
 public class CommandLineOptions {
 	/**
@@ -49,6 +49,16 @@ public class CommandLineOptions {
 	private static final String	INPUT_FILE_PARAM	= "i";
 
 	/**
+	 * One letter option name in command line for setting preplexity parameter.
+	 */
+	private static final String	PERPLEXITY_PARAM	= "p";
+
+	/**
+	 * One letter option name in command line for setting number of PCA columns.
+	 */
+	private static final String	PCA_COLUMNS_PARAM	= "a";
+
+	/**
 	 * Header that should be printed in {@link CommandLineOptions#printHelp()}
 	 * method.
 	 */
@@ -76,7 +86,7 @@ public class CommandLineOptions {
 
 	/**
 	 * Default constructor.
-	 * 
+	 *
 	 * @param args
 	 *          parameters passed to the program
 	 * @throws ParseException
@@ -90,6 +100,8 @@ public class CommandLineOptions {
 		options.addOption(createOption(true, false, CUTOFF_PARAM, "cut-off", "minimum conting length [default=" + Config.DEFAULT_CONTIG_LENGTH + "]", "cut-off"));
 		options.addOption(createOption(true, false, K_MER_PARAM, "k-mer", "k-mer length [default=" + Config.DEFAULT_KMER_LENGTH + "]", "length"));
 		options.addOption(createOption(true, false, THREAD_PARAM, "thread", "number of threads [default=" + Config.DEFAULT_THREAD_NUM + "]", "number"));
+		options.addOption(createOption(true, false, PERPLEXITY_PARAM, "perplexity", "perplexity parameter [default=" + Config.DEFAULT_PERPLEXILITY + "]", "number"));
+		options.addOption(createOption(true, false, PCA_COLUMNS_PARAM, "pca", "number of PCA columns [default=" + Config.DEFAULT_PCA_COLUMNS + "]", "number"));
 
 		CommandLineParser parser = new BasicParser();
 		try {
@@ -103,7 +115,7 @@ public class CommandLineOptions {
 
 	/**
 	 * Creates {@link Option} object.
-	 * 
+	 *
 	 * @param arg
 	 *          has the {@link Option} argument
 	 * @param required
@@ -133,7 +145,7 @@ public class CommandLineOptions {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return {@link #ok}
 	 */
 	public boolean isValid() {
@@ -153,7 +165,7 @@ public class CommandLineOptions {
 
 	/**
 	 * Create {@link ProcessParameters} object from the input data.
-	 * 
+	 *
 	 * @return {@link ProcessParameters} object from the input data
 	 */
 	public ProcessParameters getParameters() {
@@ -186,6 +198,22 @@ public class CommandLineOptions {
 				params = params.threads(i);
 			} catch (NumberFormatException e) {
 				logger.warn("Problem with parameter: " + cmd.getOptionValue(THREAD_PARAM) + ". Integer value expected. Using default.");
+			}
+		}
+		if (cmd.getOptionValue(PERPLEXITY_PARAM) != null) {
+			try {
+				Double d = Double.valueOf(cmd.getOptionValue(PERPLEXITY_PARAM));
+				params = params.perplexity(d);
+			} catch (NumberFormatException e) {
+				logger.warn("Problem with parameter: " + cmd.getOptionValue(PERPLEXITY_PARAM) + ". Double value expected. Using default.");
+			}
+		}
+		if (cmd.getOptionValue(PCA_COLUMNS_PARAM) != null) {
+			try {
+				Integer i = Integer.valueOf(cmd.getOptionValue(PCA_COLUMNS_PARAM));
+				params = params.pcaColumns(i);
+			} catch (NumberFormatException e) {
+				logger.warn("Problem with parameter: " + cmd.getOptionValue(PCA_COLUMNS_PARAM) + ". Integer value expected. Using default.");
 			}
 		}
 		return params;
