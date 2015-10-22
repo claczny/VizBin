@@ -1,3 +1,5 @@
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![VizBin - Seeing is ... binning](http://claczny.github.io/VizBin/images/vizbin_logo.png)
+
 #DISCLAIMER
 
 VizBin and its code are published under the BSD License (4-clause). 
