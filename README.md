@@ -1,4 +1,4 @@
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![VizBin - Seeing is ... binning](http://claczny.github.io/VizBin/images/vizbin_logo.png)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![VizBin - Seeing is ... binning](http://claczny.github.io/VizBin/images/vizbin_logo.png)
 
 #DISCLAIMER
 
