@@ -30,6 +30,8 @@ import lcsb.vizbin.data.Sequence;
  */
 public class DataExporter {
 
+  private static String lastUsedDirectory = null;
+
 	public static File exportCluster(JFrame parentFrame, String inFileName, List<Sequence> sequenceList) {
 		File outFile = null;
 		File inFile = new File(inFileName);
@@ -123,13 +125,14 @@ public class DataExporter {
 	}
 
 	private static File getSelectedFile() {
-		final JFileChooser fc = new JFileChooser();
+		final JFileChooser fc = new JFileChooser(lastUsedDirectory);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setMultiSelectionEnabled(false);
 		int returnVal = fc.showSaveDialog(null);
 		if (fc.getSelectedFile() == null)
 			return null;
 		else {
+      lastUsedDirectory = fc.getSelectedFile().getParent();
 			if (fc.getSelectedFile().exists()) {
 				returnVal = JOptionPane.showConfirmDialog(
 						null, "The file you specified already exists, do you wish to overwrite it?", "Confirm overwrite", JOptionPane.YES_NO_OPTION);
