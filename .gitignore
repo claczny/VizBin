@@ -1,4 +1,4 @@
-.class
+*.class
 
 #dist file
 VizBin-dist.jar
