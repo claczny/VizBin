@@ -1,2 +1,5 @@
 language: c
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y libblas-dev maven
 script: make
