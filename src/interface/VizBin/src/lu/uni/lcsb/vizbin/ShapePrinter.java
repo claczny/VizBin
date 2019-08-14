@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 
-import lcsb.vizbin.graphics.sl.shapes.StarPolygon;
+import lu.uni.lcsb.vizbin.service.graphics.sl.shapes.StarPolygon;
 
 public class ShapePrinter {
 
