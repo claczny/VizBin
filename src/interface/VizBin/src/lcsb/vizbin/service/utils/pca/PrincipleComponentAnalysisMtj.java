@@ -34,7 +34,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 
 	@Override
 	public void setup(int numSamples, int sampleSize) {
-		svd = new SVD(numSamples, sampleSize, true, true);
+		svd = new SVD(numSamples, sampleSize, true);
 		A = new DenseMatrix(numSamples, sampleSize);
 		sample = 0;
 		this.sampleSize = sampleSize;
