@@ -2,7 +2,7 @@
 # Basic Ubuntu setup
 #####
 # Resolve dependencies on a system-level (most convenient)
-time sudo apt-get install virtualbox-guest-x11 vim subversion git openjdk-7-jre autoconf bison cmake flex g++ intltool libtool scons autopoint gperf ruby libgsl0ldbl libblas-dev libgsl0-dev libboost-all-dev clang llvm-dev automake autogen libtool patch libxml2-dev uuid-dev libssl-dev libmpc-dev libmpfr-dev libgmp-dev ant openjdk-7-jdk
+time sudo apt-get install virtualbox-guest-x11 vim subversion git openjdk-7-jre autoconf bison cmake flex g++ intltool libtool scons autopoint gperf ruby libgsl0ldbl libblas-dev libgsl0-dev libboost-all-dev clang llvm-dev automake autogen libtool patch libxml2-dev uuid-dev libssl-dev libmpc-dev libmpfr-dev libgmp-dev ant openjdk-7-jdk maven
 
 #####
 # Get and build cross-compiler and toolchain for OSX

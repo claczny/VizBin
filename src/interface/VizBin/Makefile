@@ -3,7 +3,7 @@ JAR = dist/VizBin-dist.jar
 .PHONY: VizBin clean
 
 VizBin:
-	ant
+	mvn compile assembly:single
 
 install: $(JAR)
 install:
@@ -12,4 +12,5 @@ install:
 	@echo "done."
 
 clean:
-	@echo "Nothing to be cleaned in VizBin."
+	mvn clean
+	rm -rf src/tsne
