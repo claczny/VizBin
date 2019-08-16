@@ -1,6 +1,21 @@
 language: c
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
-script: 
-  - make clean linux install
+stages:
+  - build
+  - test
+jobs:
+  include:
+    - stage: build
+      name: build-linux
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
+      script: 
+        - make clean linux install
+    - stage: test
+      name: test java
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get install -y openjdk-8-jdk
+      script:
+        - cd src/interface/VizBin/
+        - mvn test
