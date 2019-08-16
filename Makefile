@@ -11,9 +11,9 @@ all: backend_all interface
 
 linux: backend_linux interface
 windows: backend_windows interface
-macos: backend_macos interface
+osx: backend_osx interface
 
-backend_all: backend_linux backend_windows backend_macos
+backend_all: backend_linux backend_windows backend_osx
 	 $(MAKE) -C $(BACKEND_PATH)
 
 backend_linux:
@@ -30,8 +30,8 @@ backend_windows:
 	install -m 0755  $(BACKEND_PATH)/pbh_tsne.exe $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne.exe
 	@echo "done."
 
-backend_macos:
-	 $(MAKE) -C $(BACKEND_PATH) macos
+backend_osx:
+	 $(MAKE) -C $(BACKEND_PATH) osx
 	@echo "COPYING: mac OS binaries into destination folder ..."
 	mkdir -p $(INTERFACE_PATH)/$(PREFIX)
 	install -m 0755 $(BACKEND_PATH)/pbh_tsne_osx $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne_osx
