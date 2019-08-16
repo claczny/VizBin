@@ -28,7 +28,7 @@ PSOURCES = quadtree.cpp ptsne.cpp
 CXXFLAGS = -O3
 CXXFLAGS_LINUX = $(CXXFLAGS) -static -I$(HOME)/boost/boost_1_55_0
 CXXFLAGS_WIN = $(CXXFLAGS) -static -I$(MXECROSS)/include
-CXXFLAGS_OSX = $(CXXFLAGS) -I$(HOME)/boost/boost_1_55_0 -I$(OSXCROSS)/SDK/MacOSX10.7.sdk/System/Library/Frameworks/vecLib.framework/Versions/A/Headers
+CXXFLAGS_OSX = $(CXXFLAGS) -I$(HOME)/boost/boost_1_55_0  -I$(OSXCROSS)/SDK/MacOSX10.14.sdk/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/Headers
 
 #####
 # LINKER FLAGS
@@ -39,7 +39,7 @@ LDLIBS_LINUX = -lgslcblas
 LDFLAGS_WIN = -L$(MXECROSS)/lib
 LDLIBS_WIN = -lcblas -lblas -lgfortran -lquadmath
 
-LDFLAGS_OSX = -L$(OSXCROSS)/SDK/MacOSX10.7.sdk/usr/lib
+LDFLAGS_OSX = -L$(OSXCROSS)/SDK/MacOSX10.14.sdk/usr/lib
 LDLIBS_OSX = -lcblas
 
 .PHONY:	all install linux windows osx clean clean_linux clean_windows clean_osx

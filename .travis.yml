@@ -29,6 +29,34 @@ jobs:
         - make clean 
         - make windows 
         - make install
+#    - stage: build
+#      name: build-osx
+#      before_install:
+#        - apt-get update
+#        - apt-get install -y clang make libssl-devel lzma-devel libxml2-devel
+#
+#        - cd $HOME
+#        - sudo apt-get update
+#        - git clone https://github.com/tpoechtrager/osxcross.git
+#        - cd osxcross
+#        # normally we should download this file - but due to licensing issue this cannot be done automatically without breaking license
+#        # so create an account sign up as developer accept license and download:
+#        # wget https://download.developer.apple.com/Developer_Tools/Xcode_10.3/Xcode_10.3.xip
+#        - ./tools/gen_sdk_package_pbzx.sh Xcode_10.3.xip
+#        - mv MacOSX10.14.sdk.tar.xz tarballs/
+#        - ./build.sh
+#        - ./build_gcc.sh
+#        - cd $HOME
+#        - mkdir boost && cd boost
+#        - wget --content-disposition "http://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.55.0%2F&ts=1402397648&use_mirror=softlayer-ams"
+#        - tar -xzf boost_1_55_0.tar.gz
+#        - cd $HOME/claczny/VizBin
+#
+#      script:
+#        - make clean
+#        - make osx
+#        - make install
+
     - stage: test
       name: test java
       before_install:
