@@ -1,6 +1,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![VizBin - Seeing is ... binning](http://claczny.github.io/VizBin/images/vizbin_logo.png)
 
-#DISCLAIMER
+# DISCLAIMER
 
 VizBin and its code are published under the BSD License (4-clause). 
 For more details, s.a. the [sample template](https://spdx.org/licenses/BSD-4-Clause).
@@ -19,7 +19,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 This product includes software developed by the Delft University of Technology.
 
-#LICENSES
+# LICENSES
 
 1. ejml-0.23.jar:
  - Download page: http://code.google.com/p/efficient-java-matrix-library/
