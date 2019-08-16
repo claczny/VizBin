@@ -10,7 +10,9 @@ jobs:
         - sudo apt-get update
         - sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
       script: 
-        - make clean linux install
+        - make clean 
+        - make linux 
+        - make install
     - stage: build
       name: build-windows
       before_install:
@@ -24,7 +26,9 @@ jobs:
         - sudo apt-get update
         - sudo apt-get install -y mxe-x86-64-w64-mingw32.static-gcc mxe-x86-64-w64-mingw32.static-cblas mxe-x86-64-w64-mingw32.static-boost mxe-x86-64-w64-mingw32.static-blas
       script:
-        - make clean windows install
+        - make clean 
+        - make windows 
+        - make install
     - stage: test
       name: test java
       before_install:
