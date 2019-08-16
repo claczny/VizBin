@@ -11,6 +11,19 @@ jobs:
         - sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
       script: 
         - make clean linux install
+    - stage: build
+      name: build-windows
+      before_install:
+        - sudo apt-get update
+        - sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
+
+        #tools required for cross platform compilation by mxe
+        - sudo apt-get install -y apt-transport-https
+        - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 86B72ED9
+        - sudo add-apt-repository 'deb [arch=amd64] http://mirror.mxe.cc/repos/apt trusty main'
+        - sudo apt-get install -y mxe-x86-64-w64-mingw32.static-gcc mxe-x86-64-w64-mingw32.static-cblas mxe-x86-64-w64-mingw32.static-boost mxe-x86-64-w64-mingw32.static-blas
+      script:
+        - make clean windows install
     - stage: test
       name: test java
       before_install:
