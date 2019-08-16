@@ -25,6 +25,7 @@ jobs:
         - sudo add-apt-repository 'deb [arch=amd64] http://mirror.mxe.cc/repos/apt trusty main'
         - sudo apt-get update
         - sudo apt-get install -y mxe-x86-64-w64-mingw32.static-gcc mxe-x86-64-w64-mingw32.static-cblas mxe-x86-64-w64-mingw32.static-boost mxe-x86-64-w64-mingw32.static-blas
+        - export PATH=$PATH:/usr/lib/mxe/usr/bin
       script:
         - make clean 
         - make windows 
