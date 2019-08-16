@@ -17,10 +17,9 @@ jobs:
       name: build-windows
       before_install:
         - sudo apt-get update
-        - sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
+        - sudo apt-get install -y maven apt-transport-https
 
         #tools required for cross platform compilation by mxe
-        - sudo apt-get install -y apt-transport-https
         - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 86B72ED9
         - sudo add-apt-repository 'deb [arch=amd64] http://mirror.mxe.cc/repos/apt trusty main'
         - sudo apt-get update
