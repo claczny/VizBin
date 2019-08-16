@@ -32,11 +32,10 @@ jobs:
 #    - stage: build
 #      name: build-osx
 #      before_install:
-#        - apt-get update
-#        - apt-get install -y clang make libssl-devel lzma-devel libxml2-devel
+#        - sudo apt-get update
+#        - sudo apt-get install -y clang make libssl-devel lzma-devel libxml2-devel
 #
 #        - cd $HOME
-#        - sudo apt-get update
 #        - git clone https://github.com/tpoechtrager/osxcross.git
 #        - cd osxcross
 #        # normally we should download this file - but due to licensing issue this cannot be done automatically without breaking license
