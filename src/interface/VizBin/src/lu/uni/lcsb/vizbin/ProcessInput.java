@@ -11,9 +11,6 @@ import org.apache.log4j.Logger;
 
 import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
 import lu.uni.lcsb.vizbin.data.DataSet;
-import lu.uni.lcsb.vizbin.service.DataSetFactory;
-import lu.uni.lcsb.vizbin.service.InvalidMetaFileException;
-import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
 
 /**
  *

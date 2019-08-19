@@ -18,7 +18,6 @@ import org.apache.log4j.*;
 
 import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
 import lu.uni.lcsb.vizbin.pca.PcaType;
-import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
 
 /**
  *

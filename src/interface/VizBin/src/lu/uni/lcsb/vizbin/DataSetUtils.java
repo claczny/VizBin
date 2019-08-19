@@ -7,7 +7,6 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import lu.uni.lcsb.vizbin.*;
 import lu.uni.lcsb.vizbin.data.DataSet;
 import lu.uni.lcsb.vizbin.data.Sequence;
 import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
