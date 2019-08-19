@@ -7,7 +7,7 @@ import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.Matrices;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.NotConvergedException;
-import no.uib.cipr.matrix.SVD;
+import no.uib.cipr.matrix.SVDCustom;
 
 public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysis {
 	/**
@@ -16,7 +16,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 	@SuppressWarnings("unused")
 	private final Logger	logger				= Logger.getLogger(PrincipleComponentAnalysisMtj.class);
 
-	private SVD						svd						= null;
+	private SVDCustom						svd						= null;
 
 	private int						sample				= 0;
 
@@ -24,7 +24,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 	private int						numSamples		= -1;
 	private int						numComponents	= -1;
 
-	private SVD						s;
+	private SVDCustom						s;
 	private DenseMatrix		a;
 	private Matrix				vRed;
 	private double				normFactor;
@@ -36,7 +36,7 @@ public class PrincipleComponentAnalysisMtj implements IPrincipleComponentAnalysi
 
 	@Override
 	public void setup(int numSamples, int sampleSize) {
-		svd = new SVD(numSamples, sampleSize, true);
+		svd = new SVDCustom(numSamples, sampleSize, true, true);
 		a = new DenseMatrix(numSamples, sampleSize);
 		sample = 0;
 		this.sampleSize = sampleSize;
