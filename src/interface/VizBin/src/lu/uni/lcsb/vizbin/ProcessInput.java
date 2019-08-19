@@ -90,7 +90,7 @@ public class ProcessInput extends ObjectWithProperties {
 		// Do some work and update value.
 	}
 
-	public void doProcess() {
+	public Thread doProcess() {
 		Thread thread = new Thread() {
 			public void run() {
 
@@ -235,6 +235,7 @@ public class ProcessInput extends ObjectWithProperties {
 			}
 		};
 		thread.start();
+		return thread;
 	}
 
 	public void restartApplication() {

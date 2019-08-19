@@ -9,6 +9,7 @@ import lu.uni.lcsb.vizbin.service.utils.pca.AllPcaTests;
 @RunWith(Suite.class)
 @SuiteClasses({
     AllPcaTests.class,
+    MainCliTest.class,
     ZipProjectTest.class })
 public class AllTests {
 

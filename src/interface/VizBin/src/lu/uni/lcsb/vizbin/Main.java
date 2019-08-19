@@ -51,7 +51,8 @@ public class Main {
 				}
 				ProcessParameters params = clo.getParameters();
 				ProcessInput process = new ProcessInput(params, null, settings.getBinFile());
-				process.doProcess();
+				Thread thread = process.doProcess();
+				thread.join();
 
 			} else {
 				clo.printHelp();
