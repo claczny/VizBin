@@ -331,48 +331,6 @@ public class DataSetUtils {
 		}
 	}
 
-	/*
-	 * Tomasz Sternal - removed this class, not updating window status in real
-	 * time
-	 */
-	// static class ProgressReader implements Runnable {
-	// private BufferedReader reader;
-	// private JLabel status;
-	// private JProgressBar progBar;
-	// private Integer newProgress = 0;
-	//
-	// public ProgressReader(InputStream is, final JLabel _status, final
-	// JProgressBar _progBar) {
-	// this.reader = new BufferedReader(new InputStreamReader(is));
-	// this.status = _status;
-	// this.progBar = _progBar;
-	// }
-	//
-	// public void run() {
-	// try {
-	// String line = reader.readLine();
-	// while (line != null) {
-	// logger.debug("TSNE: "+line);
-	// status.setText("TSNE: "+ line);
-	//
-	// // other operations take us to 35% completion, split remaining 65%
-	// between TSNE phases
-	// if (line.startsWith("Building tree")) newProgress = 5; // 40%
-	// if (line.startsWith("Learning embedding")) newProgress = 5; // 45%
-	// if (line.startsWith("Iteration")) { // there are 20 iterations
-	// newProgress = 2; // add 2% progress per iteration
-	// }
-	// if (line.contains("Wrote the")) newProgress = 5; // 90%
-	// progBar.setValue(progBar.getValue()+newProgress);
-	// line = reader.readLine();
-	// }
-	// reader.close();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
 	public static boolean isIsDataSetCreated() {
 		return isDataSetCreated;
 	}
@@ -388,25 +346,6 @@ public class DataSetUtils {
 	public static void setDataSet(DataSet dataSet) {
 		DataSetUtils.dataSet = dataSet;
 	}
-
-	// Tomasz Sternal - communication between DataSetUtils and ClusterPannel about
-	// pointList
-	// and polygonPoints is completely unnecessary
-	// public static ArrayList<Sequence> getPointList() {
-	// return pointList;
-	// }
-	//
-	// public static void setPointList(ArrayList<Sequence> pointList) {
-	// DataSetUtils.pointList = pointList;
-	// }
-	//
-	// public static List<Point2D> getPolygonPoints() {
-	// return polygonPoints;
-	// }
-	//
-	// public static void setPolygonPoints(List<Point2D> polygonPoints) {
-	// DataSetUtils.polygonPoints = polygonPoints;
-	// }
 
 	public static JFrame getDrawingFrame() {
 		return drawingFrame;
