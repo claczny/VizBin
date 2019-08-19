@@ -664,7 +664,11 @@ public class MainFrame extends javax.swing.JFrame {
 		menuFileReinitialize.setText("Reinitialize settings");
 		menuFileReinitialize.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				menuFileReinitializeActionPerformed(evt);
+				try {
+          menuFileReinitializeActionPerformed(evt);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
 			}
 		});
 		menuFile.add(menuFileReinitialize);
@@ -1121,7 +1125,7 @@ public class MainFrame extends javax.swing.JFrame {
 		System.exit(0);
 	}
 
-	private void menuFileReinitializeActionPerformed(java.awt.event.ActionEvent evt) {
+	private void menuFileReinitializeActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		Integer option = JOptionPane.showConfirmDialog(this, "Are you sure you want to reinitialize the settings?\n"
 				+ "This will recreate the config file and redeploy the OS-specific TSNE application.", "Confirm reinitialization", JOptionPane.YES_NO_OPTION);
 		if (option == JOptionPane.YES_OPTION) {

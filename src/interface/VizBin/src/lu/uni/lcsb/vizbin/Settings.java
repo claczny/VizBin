@@ -1,14 +1,12 @@
 package lu.uni.lcsb.vizbin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Properties;
 import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
+
 import java.awt.GraphicsEnvironment;
+import java.io.*;
 
 /**
  *
@@ -17,6 +15,9 @@ import java.awt.GraphicsEnvironment;
  *         Plugaru</a>
  */
 public class Settings {
+  
+  private static Logger logger = Logger.getLogger(Settings.class);
+  
 	/**
 	 * How big should be the buffer when reading file.
 	 */
@@ -76,7 +77,7 @@ public class Settings {
 		}
 	}
 
-	public void extractTSNEBin() {
+	public void extractTSNEBin() throws IOException {
 		String binName = getTSNEBinName();
 
 		if (binName != "") {
@@ -87,12 +88,13 @@ public class Settings {
 			int count = 0;
 			try {
 				instream = this.getClass().getClassLoader().getResourceAsStream("tsne/" + binName);
+				if (instream==null) {
+				  throw new FileNotFoundException("There is no pre-compiled version of tsne: " + binName);
+				}
 				outstream = new FileOutputStream(binFile);
 				while ((count = instream.read(buf)) >= 0) {
 					outstream.write(buf, 0, count);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			} finally {
 				try {
 					if (instream != null) {

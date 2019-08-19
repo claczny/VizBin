@@ -73,7 +73,6 @@ public class Main {
 			}
 		} catch (Exception e) {
 			logger.error(e, e);
-			e.printStackTrace();
 		}
 	}
 
