@@ -1,5 +1,7 @@
 package lu.uni.lcsb.vizbin;
 
+import java.awt.GraphicsEnvironment;
+
 // import java.io.FileInputStream;
 // import java.io.FileNotFoundException;
 // import java.io.IOException;
@@ -9,7 +11,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import java.awt.GraphicsEnvironment;
+import lu.uni.lcsb.vizbin.settings.ISettings;
+import lu.uni.lcsb.vizbin.settings.Settings;
 
 // import org.apache.log4j.PropertyConfigurator;
 
@@ -32,10 +35,13 @@ public class Main {
 	 * Default class logger.
 	 */
 	private static Logger		logger		= null;
-	private static Settings	settings	= null;
+	
+	static ISettings	settings	= null;
 
 	public static void main(String[] args) {
+	  if (settings == null) {
 		settings = new Settings();
+	  }
 		logger = Logger.getLogger(Main.class);
 
 		try {

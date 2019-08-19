@@ -18,6 +18,7 @@ import org.apache.log4j.*;
 
 import lu.uni.lcsb.vizbin.clustering.ClusterPanel;
 import lu.uni.lcsb.vizbin.pca.PcaType;
+import lu.uni.lcsb.vizbin.settings.ISettings;
 
 /**
  *
@@ -55,7 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private Boolean																defLog									= true;
 	private Boolean																moreOpionsVisible				= false;
-	private Settings															settings								= null;
+	private ISettings															settings								= null;
 
 	/**
 	 * Data file from which results where computed.
@@ -127,7 +128,7 @@ public class MainFrame extends javax.swing.JFrame {
 		// this.textfield_labels.setText("/Users/cedric.laczny/Documents/phd/projects/BINNING/publication/VizBin_-_Application_Note/revision_01/data/DaVis_testdat.loglength.ann");
 	}
 
-	void setSettings(Settings settings) {
+	void setSettings(ISettings settings) {
 		this.settings = settings;
 	}
 

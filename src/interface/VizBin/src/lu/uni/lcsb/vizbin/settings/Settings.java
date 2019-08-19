@@ -1,9 +1,11 @@
-package lu.uni.lcsb.vizbin;
+package lu.uni.lcsb.vizbin.settings;
 
 import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
+
+import lu.uni.lcsb.vizbin.PluginUtils;
 
 import java.awt.GraphicsEnvironment;
 import java.io.*;
@@ -14,7 +16,7 @@ import java.io.*;
  * @author <a href="mailto:valentin.plugaru.001@student.uni.lu">Valentin
  *         Plugaru</a>
  */
-public class Settings {
+public class Settings implements ISettings {
   
   private static Logger logger = Logger.getLogger(Settings.class);
   
@@ -41,11 +43,13 @@ public class Settings {
 		System.setProperty("settingsPath", System.getProperty("user.home") + "/" + settingsDirName);
 	}
 
-	public boolean settingsExist() {
+	@Override
+  public boolean settingsExist() {
 		return settingsPath.isDirectory() && settingsFile.isFile();
 	}
 
-	public String getTSNEBinName() {
+	@Override
+  public String getTSNEBinName() {
 		String os = System.getProperty("os.name");
 		if (os.toUpperCase().contains("WINDOWS")) {
 			return "pbh_tsne.exe";
@@ -59,7 +63,8 @@ public class Settings {
 		return "";
 	}
 
-	public void createSettings() {
+	@Override
+  public void createSettings() {
 
 		try {
 			settingsPath.mkdir();
@@ -77,7 +82,8 @@ public class Settings {
 		}
 	}
 
-	public void extractTSNEBin() throws IOException {
+	@Override
+  public void extractTSNEBin() throws IOException {
 		String binName = getTSNEBinName();
 
 		if (binName != "") {
@@ -112,7 +118,8 @@ public class Settings {
 		}
 	}
 
-	void loadSettings() {
+    @Override
+	public void loadSettings() {
 		prop = new Properties();
 		try {
 			prop.load(new FileInputStream(settingsFile));
@@ -125,11 +132,8 @@ public class Settings {
 		}
 	}
 
-	/**
-	 * @return the settingsDirName
-	 * @see #settingsDirName
-	 */
-	public String getSettingsDirName() {
+	@Override
+  public String getSettingsDirName() {
 		return settingsDirName;
 	}
 
@@ -142,11 +146,8 @@ public class Settings {
 		this.settingsDirName = settingsDirName;
 	}
 
-	/**
-	 * @return the settingsFileName
-	 * @see #settingsFileName
-	 */
-	public String getSettingsFileName() {
+	@Override
+  public String getSettingsFileName() {
 		return settingsFileName;
 	}
 
@@ -159,11 +160,8 @@ public class Settings {
 		this.settingsFileName = settingsFileName;
 	}
 
-	/**
-	 * @return the pluginDirName
-	 * @see #pluginDirName
-	 */
-	public String getPluginDirName() {
+	@Override
+  public String getPluginDirName() {
 		return pluginDirName;
 	}
 
@@ -176,11 +174,8 @@ public class Settings {
 		this.pluginDirName = pluginDirName;
 	}
 
-	/**
-	 * @return the settingsPath
-	 * @see #settingsPath
-	 */
-	public File getSettingsPath() {
+	@Override
+  public File getSettingsPath() {
 		return settingsPath;
 	}
 
@@ -193,11 +188,8 @@ public class Settings {
 		this.settingsPath = settingsPath;
 	}
 
-	/**
-	 * @return the settingsFile
-	 * @see #settingsFile
-	 */
-	public File getSettingsFile() {
+	@Override
+  public File getSettingsFile() {
 		return settingsFile;
 	}
 
@@ -210,11 +202,8 @@ public class Settings {
 		this.settingsFile = settingsFile;
 	}
 
-	/**
-	 * @return the binFile
-	 * @see #binFile
-	 */
-	public File getBinFile() {
+	@Override
+  public File getBinFile() {
 		return binFile;
 	}
 
@@ -227,11 +216,8 @@ public class Settings {
 		this.binFile = binFile;
 	}
 
-	/**
-	 * @return the pluginUtils
-	 * @see #pluginUtils
-	 */
-	public PluginUtils getPluginUtils() {
+	@Override
+  public PluginUtils getPluginUtils() {
 		return pluginUtils;
 	}
 
