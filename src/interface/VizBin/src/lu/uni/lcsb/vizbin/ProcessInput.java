@@ -204,7 +204,9 @@ public class ProcessInput extends ObjectWithProperties {
 					showMessageDialog("Error! Java machine ran out of memmory.\n" + "Check input file size, or increase java heap size.\n"
 							+ "Application will now restart.");
 					e.printStackTrace();
-					restartApplication();
+					if (guiParameters!=null) {
+					  restartApplication();
+					}
 				} catch (InvalidMetaFileException e) {
 					logger.error(e.getMessage(), e);
 					updateStatus("Error! Check the logs.");
