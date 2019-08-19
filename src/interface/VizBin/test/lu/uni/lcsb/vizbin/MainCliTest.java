@@ -1,5 +1,6 @@
 package lu.uni.lcsb.vizbin;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.nullable;
 
@@ -19,8 +20,11 @@ public class MainCliTest {
 
   Logger logger = Logger.getLogger(MainCliTest.class);
 
+  EventStorageLoggerAppender appender = new EventStorageLoggerAppender(false);
+
   @Before
   public void setUp() {
+    Logger.getRootLogger().addAppender(appender);
     ISettings settings = Mockito.mock(ISettings.class);
     Main.settings = settings;
     TSNERunnerFactory tsneRunnerFactory = Mockito.mock(TSNERunnerFactory.class);
@@ -45,6 +49,7 @@ public class MainCliTest {
   public void tearDown() {
     Main.settings = null;
     DataSetUtils.tsneRunnerFactory = new TSNERunnerFactoryImpl();
+    Logger.getRootLogger().removeAppender(appender);
   }
 
   @Test
@@ -53,6 +58,12 @@ public class MainCliTest {
     File f = new File("output.txt");
     assertTrue(f.exists());
     f.delete();
+  }
+
+  @Test
+  public void testPrintHelp() {
+    Main.main(new String[] { "-h" });
+    assertEquals(0, appender.getErrors().size());
   }
 
 }

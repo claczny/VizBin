@@ -18,10 +18,16 @@ import org.apache.log4j.Logger;
  *
  */
 public class CommandLineOptions {
-	/**
+    /**
 	 * Default class logger.
 	 */
 	private final Logger				logger						= Logger.getLogger(CommandLineOptions.class);
+
+    /**
+     * One letter option name in command line for showing usage menu.
+     */
+    private static final String HELP_PARAM = "h";
+
 	/**
 	 * One letter option name in command line for setting number of threads.
 	 */
@@ -82,7 +88,12 @@ public class CommandLineOptions {
 	/**
 	 * Was the input data provided to this class valid or not.
 	 */
-	private boolean							ok;
+    private boolean                         ok;
+    
+    /**
+     * Was help flag in the input provided.
+     */
+    private boolean                         help = false;
 
 	/**
 	 * Default constructor.
@@ -94,7 +105,10 @@ public class CommandLineOptions {
 	 */
 	public CommandLineOptions(String[] args) throws ParseException {
 		options = new Options();
-		options.addOption(createOption(false, false, "h", "help", "print this help menu", null));
+		Options helpOptions = new Options();
+		Option helpOption =createOption(false, false, HELP_PARAM, "help", "print this help menu", null); 
+		options.addOption(helpOption);
+		helpOptions.addOption(helpOption);
 		options.addOption(createOption(true, true, INPUT_FILE_PARAM, "input", "input file in fasta format", "input-file"));
 		options.addOption(createOption(true, true, OUTPUT_FILE_PARAM, "output", "output file containing coordinates", "output-file"));
 		options.addOption(createOption(true, false, CUTOFF_PARAM, "cut-off", "minimum conting length [default=" + Config.DEFAULT_CONTIG_LENGTH + "]", "cut-off"));
@@ -105,8 +119,14 @@ public class CommandLineOptions {
 
 		CommandLineParser parser = new BasicParser();
 		try {
-			cmd = parser.parse(options, args);
-			ok = true;
+	        cmd = parser.parse(helpOptions, args, true);
+	        if (!cmd.hasOption(HELP_PARAM)) {
+	            cmd = parser.parse(options, args);
+	            ok = true;
+	        } else {
+	          ok = false;
+	          help = true;
+	        }
 		} catch (MissingOptionException e) {
 			ok = false;
 		}
@@ -144,13 +164,17 @@ public class CommandLineOptions {
 		return option;
 	}
 
-	/**
-	 *
-	 * @return {@link #ok}
-	 */
-	public boolean isValid() {
-		return ok;
-	}
+    /**
+    *
+    * @return {@link #ok}
+    */
+   public boolean isValid() {
+       return ok;
+   }
+
+  public boolean isHelp() {
+      return help;
+  }
 
 	/**
 	 * Print help about command line (information how to pass arguments into it).

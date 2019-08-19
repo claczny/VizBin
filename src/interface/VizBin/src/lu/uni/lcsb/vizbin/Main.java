@@ -62,7 +62,8 @@ public class Main {
 
 			} else {
 				clo.printHelp();
-				if(!GraphicsEnvironment.isHeadless()){
+				if (!clo.isHelp()) {
+				  if(!GraphicsEnvironment.isHeadless()){
 					MainFrame mframe = new MainFrame();
 					mframe.setVisible(true);
 					mframe.setSettings(settings);
@@ -75,6 +76,7 @@ public class Main {
 					} else {
 						settings.loadSettings();
 					}
+				  }
 				}
 			}
 		} catch (Exception e) {
