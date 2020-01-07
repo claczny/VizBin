@@ -21,16 +21,22 @@ This product includes software developed by the Delft University of Technology.
 
 # BUILD
 
-Build process can be triggered by running
+Pre-built files are available on the [Release page](https://github.com/claczny/VizBin/releases) so you can use VizBin right away and you do **not** need to build it.
+However, should you wish to build VizBin on your own, e.g., because you introduced some modifications, you are free to do so!
+Please take a look at platform-specific installation instructions as the whole build process has several requirements.
+Moreover, you might want to have a look at the wiki, specifically the [Minimal Build Environment](https://github.com/claczny/VizBin/wiki/Minimal-Build-Environment) for additional information.
+
+Generally, the build process can be triggered by running
 ```
 $ make all
 $ make install
 ```
-on linux machine. This will build VizBin-dist.jar file that can be run on linux, windows and osx. The whole build process require a lot of requirements to be installed. Please take a look at platform specific installation instruction to make sure that it can be run smoothly or create dist file for single operating system.
+.
+This will build the `VizBin-dist.jar` file that can be run on Linux, Windows and OSX.
 
-## linux
+## Linux
 
-Before building application we need to install dependencies:
+Please install the following dependencies or make sure they are installed on your system:
 ```
 sudo apt-get update
 sudo apt-get install -y libblas-dev libboost-all-dev libgsl0-dev maven
@@ -42,11 +48,13 @@ $ make linux
 $ make install
 ```
 
-This is included in travis continuous integration script - `build-linux` job in `.travis.yml`.
+This is included in travis' continuous integration script - `build-linux` job in `.travis.yml`.
 
-## windows
+## Windows
 
-To create windows binary file on linux we need to perform cross-compiling the application. We use [mxe](https://github.com/mxe/mxe) tool for that. All requirements can be installed as debian dependecies:
+To create a binary file for Windows on Linux, we need to cross-compile the application.
+We use [mxe](https://github.com/mxe/mxe) for that.
+All requirements can be installed as debian dependencies:
 
 ```
 sudo apt-get update
@@ -67,11 +75,15 @@ $ make linux
 $ make install
 ```
 
-This is included in travis continuous integration script - `build-windows` job in `.travis.yml`.
+This is included in travis' continuous integration script - `build-windows` job in `.travis.yml`.
 
-## osx
+## OSX
 
-To create osx binary file on linux we need to perform cross-compiling the application. We use [osxcross](https://github.com/tpoechtrager/osxcross) tool for that. Unfortunately installation is not straightforward because we require Mac OS X SDK. You can download it after accepting license from this [url](https://download.developer.apple.com/Developer_Tools/Xcode_10.3/Xcode_10.3.xip). The setup can be finished by executing (assuming that `Xcode_10.3.xip` file is in your `$HOME` directory):
+To create a binary file for OSX on Linux, we need to cross-compile the application.
+We use [osxcross](https://github.com/tpoechtrager/osxcross) for that.
+Unfortunately, the installation is not as straightforward as for the Windows binary because we require the Mac OS X SDK.
+However, you can download it after accepting the [SDK license](https://download.developer.apple.com/Developer_Tools/Xcode_10.3/Xcode_10.3.xip). 
+The setup can be finished by executing (assuming that `Xcode_10.3.xip` file is in your `$HOME` directory):
 
 ```
 sudo apt-get update
@@ -95,8 +107,6 @@ Now we can build VizBin:
 $ make linux
 $ make install
 ```
-
-
 
 ------
 ![University of Luxembourg](http://claczny.github.io/VizBin/images/Logo_Uni_quadri_88px.jpg) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![Fonds National de la Recherche](http://claczny.github.io/VizBin/images/fnr.gif) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![Luxembourg Centre for Systems Biomedicine](http://claczny.github.io/VizBin/images/LCSB_short_large_RGB_88px.jpg)
