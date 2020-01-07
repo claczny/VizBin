@@ -7,18 +7,37 @@ CLEANDIRS = $(BACKEND_PATH) $(INTERFACE_PATH)
 ####
 #COMPILE ALL
 ####
-all: backend interface
+all: backend_all interface
 
-backend:
+linux: backend_linux interface
+windows: backend_windows interface
+osx: backend_osx interface
+
+backend_all: backend_linux backend_windows backend_osx
 	 $(MAKE) -C $(BACKEND_PATH)
 
-interface:
-	@echo "COPYING: binaries into destination folder ..."
-	mkdir $(INTERFACE_PATH)/$(PREFIX)
+backend_linux:
+	 $(MAKE) -C $(BACKEND_PATH) linux
+	@echo "COPYING: linux binaries into destination folder ..."
+	mkdir -p $(INTERFACE_PATH)/$(PREFIX)
 	install -m 0755 $(BACKEND_PATH)/pbh_tsne $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne 
+	@echo "done."
+
+backend_windows:
+	 $(MAKE) -C $(BACKEND_PATH) windows
+	@echo "COPYING: windows binaries into destination folder ..."
+	mkdir -p $(INTERFACE_PATH)/$(PREFIX)
 	install -m 0755  $(BACKEND_PATH)/pbh_tsne.exe $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne.exe
+	@echo "done."
+
+backend_osx:
+	 $(MAKE) -C $(BACKEND_PATH) osx
+	@echo "COPYING: mac OS binaries into destination folder ..."
+	mkdir -p $(INTERFACE_PATH)/$(PREFIX)
 	install -m 0755 $(BACKEND_PATH)/pbh_tsne_osx $(INTERFACE_PATH)/$(PREFIX)/pbh_tsne_osx
 	@echo "done."
+
+interface:
 	$(MAKE) -C $(INTERFACE_PATH)
 
 ####

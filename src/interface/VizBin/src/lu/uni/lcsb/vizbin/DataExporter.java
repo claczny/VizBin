@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 // import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import lcsb.vizbin.data.Sequence;
+import lu.uni.lcsb.vizbin.data.Sequence;
 
 /**
  * 

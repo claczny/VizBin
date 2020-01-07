@@ -10,9 +10,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import lcsb.vizbin.InvalidArgumentException;
-import lcsb.vizbin.InvalidStateException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 

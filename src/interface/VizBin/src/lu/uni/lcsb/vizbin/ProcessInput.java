@@ -15,12 +15,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import lcsb.vizbin.data.DataSet;
-import lcsb.vizbin.graphics.PngGraphicsConverter;
-import lcsb.vizbin.service.DataSetFactory;
-import lcsb.vizbin.service.InvalidMetaFileException;
-import lcsb.vizbin.service.utils.DataSetUtils;
-import lcsb.vizbin.service.utils.PcaType;
+import lu.uni.lcsb.vizbin.data.DataSet;
+import lu.uni.lcsb.vizbin.graphics.PngGraphicsConverter;
+import lu.uni.lcsb.vizbin.service.DataSetFactory;
+import lu.uni.lcsb.vizbin.service.InvalidMetaFileException;
+import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
+import lu.uni.lcsb.vizbin.service.utils.PcaType;
 
 import org.apache.log4j.Logger;
 

@@ -28,12 +28,12 @@ import javax.swing.JPopupMenu.Separator;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import lcsb.vizbin.service.utils.DataSetUtils;
-import lcsb.vizbin.service.utils.PcaType;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
+
+import lu.uni.lcsb.vizbin.service.utils.DataSetUtils;
+import lu.uni.lcsb.vizbin.service.utils.PcaType;
 
 /**
  * 

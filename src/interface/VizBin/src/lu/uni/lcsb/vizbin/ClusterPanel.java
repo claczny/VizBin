@@ -23,10 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
-import lcsb.vizbin.data.Cluster;
-import lcsb.vizbin.data.DataSet;
-import lcsb.vizbin.data.Sequence;
-import lcsb.vizbin.service.ClusterFactory;
+import lu.uni.lcsb.vizbin.data.*;
+import lu.uni.lcsb.vizbin.service.ClusterFactory;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartPanel;
