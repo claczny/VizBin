@@ -13,23 +13,70 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+/**
+ * This class represents zip workspace with all data computed from input file.
+ * 
+ * @author Piotr Gawron
+ * 
+ */
 public class ZipProject {
-	Logger											logger					= Logger.getLogger(ZipProject.class);
+	/**
+	 * Size of the buffer that will be used to read files.
+	 */
+	private static final int		READ_BUFFER_SIZE	= 1024;
 
-	private static final String	DATA_FILE_NAME	= "data.fa";
-	private static final String	LABEL_FILE_NAME	= "label.txt";
-	private static final String	POINT_FILE_NAME	= "point.txt";
-	private static final String	LOG_FILE_NAME		= "log.txt";
+	/**
+	 * Default class logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger				logger						= Logger.getLogger(ZipProject.class);
 
+	/**
+	 * Filename in zip archive where {@link #dataInput} is stored.
+	 */
+	private static final String	DATA_FILE_NAME		= "data.fa";
+	/**
+	 * Filename in zip archive where {@link #labelInput} is stored.
+	 */
+	private static final String	LABEL_FILE_NAME		= "label.txt";
+	/**
+	 * Filename in zip archive where {@link #pointInput} is stored.
+	 */
+	private static final String	POINT_FILE_NAME		= "point.txt";
+	/**
+	 * Filename in zip archive where {@link #logInput} is stored.
+	 */
+	private static final String	LOG_FILE_NAME			= "log.txt";
+
+	/**
+	 * Filename with the input data to be included in the zip file.
+	 */
 	private String							dataInput;
+	/**
+	 * Filename with the labels of input sequences to be included in the zip file.
+	 */
 	private String							labelInput;
+	/**
+	 * Filename with the points for sequence to be included in the zip file.
+	 */
 	private String							pointInput;
+	/**
+	 * Filename with the log file to be included in the zip file.
+	 */
 	private String							logInput;
 
+	/**
+	 * Default constructor from zip file.
+	 * 
+	 * @param zipFileName
+	 *          zip archive where the workspace is stored
+	 * @throws IOException
+	 *           thrown when there is a problem with input file
+	 */
 	public ZipProject(String zipFileName) throws IOException {
 		ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFileName));
 		ZipEntry ze = zis.getNextEntry();
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[READ_BUFFER_SIZE];
 		while (ze != null) {
 			String fileName = ze.getName();
 
@@ -44,6 +91,7 @@ public class ZipProject {
 			} else if (fileName.equals(LOG_FILE_NAME)) {
 				logInput = tmpFile;
 			} else {
+				zis.close();
 				throw new InvalidArgumentException("Zip file contains unknown file: " + fileName);
 			}
 
@@ -68,6 +116,18 @@ public class ZipProject {
 		zis.close();
 	}
 
+	/**
+	 * Default constructor that creates zip from input files.
+	 * 
+	 * @param dataFileName
+	 *          file with sequences
+	 * @param labelFileName
+	 *          file with labels
+	 * @param pointFileName
+	 *          file with computed points
+	 * @param logFileName
+	 *          log file
+	 */
 	public ZipProject(String dataFileName, String labelFileName, String pointFileName, String logFileName) {
 		if (dataFileName == null) {
 			throw new InvalidArgumentException("Data file name cannot be null");
@@ -106,10 +166,22 @@ public class ZipProject {
 		logInput = logFileName;
 	}
 
+	/**
+	 * Checks if file exists.
+	 * 
+	 * @param fileName
+	 *          file to check
+	 * @return <code>true</code> if the file in parameter exists
+	 */
 	private boolean fileExists(String fileName) {
 		return new File(fileName).exists();
 	}
 
+	/**
+	 * Returns {@link InputStream} with input data (sequences).
+	 * 
+	 * @return {@link InputStream} with input data (sequences)
+	 */
 	public InputStream getDataInput() {
 		if (dataInput == null) {
 			return null;
@@ -122,6 +194,12 @@ public class ZipProject {
 		}
 	}
 
+	/**
+	 * Returns {@link InputStream} with labels or null if such file is not
+	 * available.
+	 * 
+	 * @return {@link InputStream} with labels
+	 */
 	public InputStream getLabelInput() {
 		if (labelInput == null) {
 			return null;
@@ -134,6 +212,11 @@ public class ZipProject {
 		}
 	}
 
+	/**
+	 * Returns {@link InputStream} with points.
+	 * 
+	 * @return {@link InputStream} with points
+	 */
 	public InputStream getPointInput() {
 		if (pointInput == null) {
 			return null;
@@ -146,6 +229,11 @@ public class ZipProject {
 		}
 	}
 
+	/**
+	 * Returns {@link InputStream} with log or null if such file is not available.
+	 * 
+	 * @return {@link InputStream} with log
+	 */
 	public InputStream getLogInput() {
 		if (logInput == null) {
 			return null;
@@ -158,6 +246,14 @@ public class ZipProject {
 		}
 	}
 
+	/**
+	 * Saves project to file.
+	 * 
+	 * @param file
+	 *          where the project should be saved
+	 * @throws IOException
+	 *           thrown when there is a problem with files (input or output)
+	 */
 	public void saveTo(String file) throws IOException {
 		FileOutputStream fos = new FileOutputStream(file);
 		ZipOutputStream zos = new ZipOutputStream(fos);

@@ -7,6 +7,7 @@
 **Features:**
 
 - remember export directory [\#41](https://github.com/claczny/VizBin/pull/41) ([ctSkennerton](https://github.com/ctSkennerton))
+- VizBin can be run from command line
 
 ## [v1.0.0](https://github.com/claczny/VizBin/tree/v1.0.0) (2015-10-22)
 - Version used at the time VizBin publication came out.

@@ -3,12 +3,10 @@ package lu.uni.lcsb.vizbin.service.utils.pca;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
-import lu.uni.lcsb.vizbin.service.utils.pca.IPrincipleComponentAnalysis;
-import lu.uni.lcsb.vizbin.service.utils.pca.PrincipleComponentAnalysisMtj;
+import lu.uni.lcsb.vizbin.pca.IPrincipleComponentAnalysis;
+import lu.uni.lcsb.vizbin.pca.PrincipleComponentAnalysisMtj;
 
 public class PrincipleComponentAnalysisMtjTest {
 	Logger											logger	= Logger.getLogger(PrincipleComponentAnalysisMtjTest.class);
@@ -73,44 +71,50 @@ public class PrincipleComponentAnalysisMtjTest {
 		return true;
 	}
 
-	@Test
-	public void test2() throws Exception {
-		try {
-			pca.setup(6, 4);
+    @Test
+    public void test2() throws Exception {
+        try {
+            pca.setup(6, 4);
 
-			double s1[] = new double[] { 7.52, -1.10, -7.95, 1.08 };
-			double s2[] = new double[] { -0.76, 0.62, 9.34, -7.10 };
-			double s3[] = new double[] { 5.13, 6.62, -5.66, 0.87 };
-			double s4[] = new double[] { -4.75, 8.52, 5.75, 5.30 };
-			double s5[] = new double[] { 1.33, 4.91, -5.49, -3.52 };
-			double s6[] = new double[] { -2.40, -6.77, 2.34, 3.95 };
+            double s1[] = new double[] { 7.52, -1.10, -7.95, 1.08 };
+            double s2[] = new double[] { -0.76, 0.62, 9.34, -7.10 };
+            double s3[] = new double[] { 5.13, 6.62, -5.66, 0.87 };
+            double s4[] = new double[] { -4.75, 8.52, 5.75, 5.30 };
+            double s5[] = new double[] { 1.33, 4.91, -5.49, -3.52 };
+            double s6[] = new double[] { -2.40, -6.77, 2.34, 3.95 };
 
-			double o1[] = new double[] { 9.770251684203519, 3.8293845380584166 };
-			double o2[] = new double[] { -9.444348971013547, 1.699568069610743 };
-			double o3[] = new double[] { 6.965227200665963, -4.073597911804497 };
-			double o4[] = new double[] { -7.641469730454019, -7.182741071486653 };
-			double o5[] = new double[] { 4.66890767186292, -2.5748936413029266 };
-			double o6[] = new double[] { -4.318567855264838, 8.302280016924918 };
+            double o1[] = new double[] { 9.770251684203519, 3.8293845380584166 };
+            double o2[] = new double[] { -9.444348971013547, 1.699568069610743 };
+            double o3[] = new double[] { 6.965227200665963, -4.073597911804497 };
+            double o4[] = new double[] { -7.641469730454019, -7.182741071486653 };
+            double o5[] = new double[] { 4.66890767186292, -2.5748936413029266 };
+            double o6[] = new double[] { -4.318567855264838, 8.302280016924918 };
 
-			pca.addSample(s1);
-			pca.addSample(s2);
-			pca.addSample(s3);
-			pca.addSample(s4);
-			pca.addSample(s5);
-			pca.addSample(s6);
-			pca.computeBasis(2);
+            pca.addSample(s1);
+            pca.addSample(s2);
+            pca.addSample(s3);
+            pca.addSample(s4);
+            pca.addSample(s5);
+            pca.addSample(s6);
+            pca.computeBasis(2);
 
-			assertTrue(arrayEquals(o1, pca.sampleToEigenSpace(s1)));
-			assertTrue(arrayEquals(o2, pca.sampleToEigenSpace(s2)));
-			assertTrue(arrayEquals(o3, pca.sampleToEigenSpace(s3)));
-			assertTrue(arrayEquals(o4, pca.sampleToEigenSpace(s4)));
-			assertTrue(arrayEquals(o5, pca.sampleToEigenSpace(s5)));
-			assertTrue(arrayEquals(o6, pca.sampleToEigenSpace(s6)));
+            assertTrue(arrayEquals(o1, pca.sampleToEigenSpace(s1)));
+            assertTrue(arrayEquals(o2, pca.sampleToEigenSpace(s2)));
+            assertTrue(arrayEquals(o3, pca.sampleToEigenSpace(s3)));
+            assertTrue(arrayEquals(o4, pca.sampleToEigenSpace(s4)));
+            assertTrue(arrayEquals(o5, pca.sampleToEigenSpace(s5)));
+            assertTrue(arrayEquals(o6, pca.sampleToEigenSpace(s6)));
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Test
+    public void testOutOfMemoryInBigSample() throws Exception {
+      pca.setup(29212, 512);
+      pca.addSample(new double[512]);
+    }
 
 }

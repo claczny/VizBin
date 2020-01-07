@@ -8,6 +8,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import lu.uni.lcsb.vizbin.graphics.PointShape;
+
 import org.apache.log4j.Logger;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CrosshairState;
@@ -16,7 +18,11 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.ui.RectangleEdge;
 
 public class ExtendedFastScatterPlot extends FastScatterPlot {
-	Logger										logger						= Logger.getLogger(ExtendedFastScatterPlot.class);
+	/**
+	 * Default class logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger										logger						= Logger.getLogger(ExtendedFastScatterPlot.class);
 
 	/**
     *
@@ -26,11 +32,11 @@ public class ExtendedFastScatterPlot extends FastScatterPlot {
 	
 	private final static int	POLYGON_EDGE_SIZE	= 6;
 
-	int[]											sizes;
-	Paint[]										colors;
-	PointShape[]							shapes;
+	private int[]											sizes;
+	private Paint[]										colors;
+	private PointShape[]							shapes;
 	// Double[] alpha;
-	List<Point2D>							polygon;
+	private List<Point2D>							polygon;
 
 	public ExtendedFastScatterPlot(float[][] data, NumberAxis domainAxis, NumberAxis rangeAxis, int[] sizes, Paint[] colors, PointShape[] shapes,
 			List<Point2D> polygon) {
