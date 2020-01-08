@@ -71,7 +71,7 @@ export PATH=$PATH:/usr/lib/mxe/usr/bin
 
 Now we can build VizBin:
 ```
-$ make linux
+$ make windows
 $ make install
 ```
 
@@ -104,7 +104,7 @@ tar -xzf boost_1_55_0.tar.gz
 
 Now we can build VizBin:
 ```
-$ make linux
+$ make osx
 $ make install
 ```
 
