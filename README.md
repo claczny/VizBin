@@ -87,7 +87,7 @@ The setup can be finished by executing (assuming that `Xcode_10.3.xip` file is i
 
 ```
 sudo apt-get update
-sudo apt-get install -y clang make libssl-devel lzma-devel libxml2-devel
+sudo apt-get install -y clang make libssl-dev lzma-dev libxml2-dev liblzma-dev libbz2-dev
 
 cd $HOME
 git clone https://github.com/tpoechtrager/osxcross.git
