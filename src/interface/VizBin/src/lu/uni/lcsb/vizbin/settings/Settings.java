@@ -1,14 +1,12 @@
 package lu.uni.lcsb.vizbin.settings;
 
-import java.util.Properties;
-import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
-
-import lu.uni.lcsb.vizbin.PluginUtils;
-
 import java.awt.GraphicsEnvironment;
 import java.io.*;
+import java.util.Properties;
+
+import javax.swing.JOptionPane;
+
+import lu.uni.lcsb.vizbin.PluginUtils;
 
 /**
  *
@@ -17,8 +15,6 @@ import java.io.*;
  *         Plugaru</a>
  */
 public class Settings implements ISettings {
-  
-  private static Logger logger = Logger.getLogger(Settings.class);
   
 	/**
 	 * How big should be the buffer when reading file.
